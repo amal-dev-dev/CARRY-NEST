@@ -6,6 +6,7 @@
     --white: #ffffff;
 }
 
+/* Reset */
 * {
     margin: 0;
     padding: 0;
@@ -18,6 +19,7 @@ body {
     color: var(--dark);
 }
 
+/* Container */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -35,7 +37,7 @@ body {
     margin-left: -91px;
 }
 
-/* Login Card */
+/* Center Section */
 .login-section {
     display: flex;
     justify-content: center;
@@ -44,13 +46,14 @@ body {
     min-height: 70vh;
 }
 
+/* Card */
 .login-card {
-    background: transparent;
     width: 100%;
     max-width: 450px;
     text-align: center;
 }
 
+/* Title */
 .login-card h2 {
     font-size: 2rem;
     margin-bottom: 10px;
@@ -59,7 +62,7 @@ body {
 .subtitle {
     color: var(--text-muted);
     font-size: 0.9rem;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 /* Social Buttons */
@@ -67,50 +70,63 @@ body {
     display: flex;
     gap: 15px;
     justify-content: center;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .social-btn {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 20px;
+    padding: 10px 18px;
     border: 1px solid #ddd;
-    background: white;
+    background: var(--white);
     border-radius: 25px;
     cursor: pointer;
     font-size: 0.85rem;
+    transition: 0.3s;
+}
+
+.social-btn:hover {
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
 
 .social-btn img {
     width: 18px;
 }
 
-/* Form Styling */
+/* Form */
 .login-form {
     text-align: left;
 }
 
 .input-group {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .input-group label {
     display: block;
     font-size: 0.8rem;
     color: var(--text-muted);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
+/* Inputs */
 .input-group input {
     width: 100%;
-    padding: 12px 0;
+    padding: 10px 0;
     border: none;
     border-bottom: 1px solid #ccc;
     background: transparent;
     outline: none;
+    font-size: 0.9rem;
+    transition: 0.3s;
 }
 
+.input-group input:focus {
+    border-bottom: 1px solid var(--accent);
+}
+
+/* Password */
 .password-wrapper {
     position: relative;
 }
@@ -118,16 +134,22 @@ body {
 .password-wrapper i {
     position: absolute;
     right: 5px;
-    top: 15px;
-    color: #ccc;
+    top: 12px;
+    color: #bbb;
     cursor: pointer;
 }
 
+/* Options */
 .form-options {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 0.8rem;
-    margin: 20px 0 30px;
+    margin: 15px 0 25px;
+}
+
+.form-options input {
+    margin-right: 5px;
 }
 
 .forgot-link {
@@ -135,9 +157,10 @@ body {
     text-decoration: none;
 }
 
+/* Button */
 .btn-primary {
     width: 100%;
-    padding: 15px;
+    padding: 14px;
     background: var(--dark);
     color: white;
     border: none;
@@ -151,8 +174,9 @@ body {
     opacity: 0.85;
 }
 
+/* Bottom Text */
 .signup-prompt {
-    margin-top: 25px;
+    margin-top: 20px;
     font-size: 0.9rem;
 }
 
@@ -161,7 +185,7 @@ body {
     text-decoration: none;
 }
 
-/* Footer Styling */
+/* Footer */
 .footer {
     background: #000;
     color: #fff;
@@ -176,11 +200,13 @@ body {
     margin-bottom: 40px;
 }
 
-.footer-col h3, .footer-col h4 {
+.footer-col h3,
+.footer-col h4 {
     margin-bottom: 20px;
 }
 
-.footer-col p, .footer-col ul li {
+.footer-col p,
+.footer-col ul li {
     font-size: 0.85rem;
     color: #bbb;
     line-height: 1.6;
@@ -195,7 +221,7 @@ body {
     text-decoration: none;
 }
 
-/* Footer Contact Input */
+/* Contact */
 .contact-form {
     display: flex;
     gap: 10px;
@@ -218,12 +244,14 @@ body {
     cursor: pointer;
 }
 
+/* Social Icons */
 .social-icons {
     display: flex;
     gap: 15px;
     font-size: 1.2rem;
 }
 
+/* Bottom Bar */
 .bottom-bar {
     border-top: 1px solid #222;
     padding-top: 20px;
@@ -238,15 +266,22 @@ body {
     margin-left: 20px;
 }
 
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 768px) {
     .bottom-bar {
         flex-direction: column;
         gap: 15px;
         text-align: center;
     }
+
     .contact-info span {
         display: block;
         margin: 5px 0;
+    }
+}
+
+@media (max-width: 500px) {
+    .login-card {
+        max-width: 100%;
     }
 }

@@ -1,9 +1,16 @@
 {
   "name": "carry-nest",
   "version": "1.0.0",
-  "type": "module", 
+  "type": "module",
   "main": "server.js",
   "dependencies": {
-    "express": "^5.2.1"
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongoose": "^9.5.0",
+    "nodemon": "^3.1.14",
+    "path": "^0.12.7"
   }
 }
