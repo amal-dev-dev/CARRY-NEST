@@ -48,7 +48,7 @@
                 <button type="submit" class="btn-primary">SIGN IN</button>
             </form>
 
-            <p class="signup-prompt">Don't have an account? <a href="#">Sign up</a></p>
+            <p class="signup-prompt">Don't have an account? <a href="/user/signup">Sign up</a></p>
         </div>
     </main>
 
@@ -97,6 +97,17 @@
             </div>
         </div>
     </footer>
+
+    <script>
+
+        document.querySelectorAll(".fa-eye").forEach(icon => {
+        icon.addEventListener("click", () => {
+            const input = icon.previousElementSibling;
+            input.type = input.type === "password" ? "text" : "password";
+            });
+        });
+
+    </script>
 
 </body>
 </html>

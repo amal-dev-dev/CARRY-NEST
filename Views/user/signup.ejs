@@ -127,5 +127,16 @@
     </div>
 </footer>
 
+<script>
+
+document.querySelectorAll(".fa-eye").forEach(icon => {
+  icon.addEventListener("click", () => {
+    const input = icon.previousElementSibling;
+    input.type = input.type === "password" ? "text" : "password";
+  });
+});
+
+</script>
+
 </body>
 </html>
