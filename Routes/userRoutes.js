@@ -1,10 +1,16 @@
 import express from 'express';
 const router = express.Router();
-import userController from '../Controller/user/login.js';
-import auth from '../Middleware/userAuth.js';
+import userLogin from '../Controller/user/login.js';
+import userSignup from '../Controller/user/signup.js';
+import { requireAuth, isLoggedIn } from '../Middleware/userAuth.js';
 
-router.get('/login', auth, userController.loadLogin);
-router.post('/login', userController.login);
-router.get('/home', userController.loadHome);
+router.get('/login', isLoggedIn, userLogin.loadLogin);
+router.post('/login', userLogin.login);
+
+router.get('/signup', isLoggedIn, userSignup.loadSignup);
+router.post('/signup', userSignup.signup);
+
+router.get('/home', requireAuth, userLogin.loadHome);
+
 
 export default router;

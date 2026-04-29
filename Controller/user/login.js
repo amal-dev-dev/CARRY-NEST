@@ -12,10 +12,11 @@ const login = async (req, res) => {
             return res.render('user/login', { message: "User not found" });
         }
 
-        if (password !== user.password) {
-            return res.render('user/login', { message: "Incorrect password" });
-        }
+        const isMatch = await bcrypt.compare(password, user.password);
 
+        if (!isMatch) {
+        return res.render('user/login', { message: "Incorrect password" });
+        }
 
         req.session.user = {
             id: user._id,

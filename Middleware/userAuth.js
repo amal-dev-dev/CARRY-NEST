@@ -1,9 +1,20 @@
-const isLogin = (req, res, next) => {
-    if(req.session.user) {
-        res.redirect('/user/home');
-    } else {
-        next();
+// Protect private routes
+export const requireAuth = (req, res, next) => {
+    if (!req.session.user) {
+        return res.redirect('/user/login');
     }
-}
+    next();
+};
 
-export default isLogin
+// Prevent logged-in users from accessing login/signup
+export const isLoggedIn = (req, res, next) => {
+    if (req.session.user) {
+        return res.redirect('/user/home');
+    }
+    next();
+};
+
+export default {
+    requireAuth,
+    isLoggedIn
+}

@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import path from "path";
+import { promiseHooks } from "v8";
 
 const userSchema = new mongoose.Schema({
 
@@ -13,9 +15,17 @@ const userSchema = new mongoose.Schema({
         lowercase : true,
         trim: true,
     },
+    phone: {
+        type : String,
+        required : false,
+    },
     password: {
         type : String,
         required : true
+    },
+    referralCode: {
+        type : String,
+        default : null
     }
 
 });

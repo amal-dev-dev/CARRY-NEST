@@ -23,7 +23,10 @@
             <div class="social-login">
                 <button class="social-btn"><img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google"> Sign up</button>
             </div>
-
+            
+            <% if (typeof message !== 'undefined') { %>
+                <p style="color:red; text-align:center;"><%= message %></p>
+            <% } %>
             <form class="login-form" action="/user/login" method="POST">
                 <div class="input-group">
                     <label>Email / Phone</label>
@@ -47,7 +50,7 @@
                 <button type="submit" class="btn-primary">SIGN IN</button>
             </form>
 
-            <p class="signup-prompt">Don't have an account? <a href="#">Sign up</a></p>
+            <p class="signup-prompt">Don't have an account? <a href="/user/signup">Sign up</a></p>
         </div>
     </main>
 
