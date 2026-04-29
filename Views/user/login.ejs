@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carry Nest - Sign In</title>
-    <link rel="stylesheet" href="Styles/user/login.css">
+    <link rel="stylesheet" href="/Styles/user/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -22,18 +22,17 @@
 
             <div class="social-login">
                 <button class="social-btn"><img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google"> Sign up</button>
-                <button class="social-btn"><img src="https://www.svgrepo.com/show/448224/facebook.svg" alt="Facebook"> Sign up</button>
             </div>
 
-            <form class="login-form">
+            <form class="login-form" action="/user/login" method="POST">
                 <div class="input-group">
                     <label>Email / Phone</label>
-                    <input type="email" placeholder="example@gmail.com" required>
+                    <input type="email" name="email" placeholder="example@gmail.com" required>
                 </div>
                 <div class="input-group">
                     <label>Password</label>
                     <div class="password-wrapper">
-                        <input type="password" placeholder="••••••••" required>
+                        <input type="password"  name="password" placeholder="••••••••" required>
                         <i class="far fa-eye"></i>
                     </div>
                 </div>
@@ -48,7 +47,7 @@
                 <button type="submit" class="btn-primary">SIGN IN</button>
             </form>
 
-            <p class="signup-prompt">Don't have an account? <a href="/user/signup">Sign up</a></p>
+            <p class="signup-prompt">Don't have an account? <a href="#">Sign up</a></p>
         </div>
     </main>
 
@@ -100,7 +99,7 @@
 
     <script>
 
-        document.querySelectorAll(".fa-eye").forEach(icon => {
+        document.querySelectorAll(".far.fa-eye").forEach(icon => {
         icon.addEventListener("click", () => {
             const input = icon.previousElementSibling;
             input.type = input.type === "password" ? "text" : "password";
