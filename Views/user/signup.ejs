@@ -24,16 +24,19 @@
 
         <!-- Social -->
         <div class="social-login">
-            <button type="button" class="social-btn">
-                <img src="https://www.svgrepo.com/show/355037/google.svg">
-                Sign up
-            </button>
+            <a href="/auth/google" style="text-decoration: none;">
+                <button type="button" class="social-btn">
+                    <img src="https://www.svgrepo.com/show/355037/google.svg">
+                    Sign up
+                </button>
+            </a>
         </div>
 
         <!-- Form -->
         <% if (typeof message !== 'undefined') { %>
             <p style="color:red; text-align:center;"><%= message %></p>
         <% } %>
+        
         <form class="login-form" action="/user/signup" method="POST">
 
             <div class="input-group">
