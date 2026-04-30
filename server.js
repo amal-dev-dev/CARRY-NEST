@@ -10,7 +10,7 @@ import passport from './Config/passport.js';
 import authRoutes from './Routes/user/authRoutes.js';
 
 dotenv.config();
-console.log(process.env.GOOGLE_CLIENT_ID);
+
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 
