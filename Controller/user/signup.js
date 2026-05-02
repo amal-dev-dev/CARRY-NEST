@@ -28,8 +28,8 @@ const signup = async (req, res) => {
             return res.render('user/signup', { message: "Passwords do not match" });
         }
 
-        if (password.length < 4) {
-            return res.render('user/signup', { message: "Password must be at least 4 characters" });
+        if (password.length < 6) {
+            return res.render('user/signup', { message: "Password must be at least 6 characters" });
         }
 
         const existingUser = await Users.findOne({ email: cleanEmail });
