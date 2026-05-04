@@ -12,5 +12,11 @@ router.post('/signup', userSignup.signup);
 
 router.get('/home', requireAuth, userLogin.loadHome);
 
+router.get('/verify-otp', (req, res) => {
+    res.render('user/verify-otp');
+});
+
+router.post('/verify-otp', userSignup.verifyOTP);
+
 
 export default router;

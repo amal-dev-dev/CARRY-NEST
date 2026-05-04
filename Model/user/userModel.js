@@ -26,6 +26,16 @@ const userSchema = new mongoose.Schema({
     referralCode: {
         type : String,
         default : null
+    },
+    otp: {
+        type: String
+    },
+    otpExpiry: {
+        type: Date
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 
 });

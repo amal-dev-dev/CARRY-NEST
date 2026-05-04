@@ -1,5 +1,7 @@
 import Users from '../../Model/user/userModel.js';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 
 const loadSignup = (req, res) => {
     res.render('user/signup');
@@ -7,57 +9,103 @@ const loadSignup = (req, res) => {
 
 const signup = async (req, res) => {
     try {
-        const {
-            name,
-            email,
-            phone,
-            password,
-            confirmPassword,
-            referralCode
-        } = req.body;
+        const { name, email, password } = req.body;
 
-        const cleanName = name.trim();
-        const cleanEmail = email.trim().toLowerCase();
-        const cleanPhone = phone.trim();
+        const existingUser = await Users.findOne({ email });
 
-        if (!cleanName || !cleanEmail || !password || !confirmPassword) {
-            return res.render('user/signup', { message: "All fields are required" });
-        }
-
-        if (password !== confirmPassword) {
-            return res.render('user/signup', { message: "Passwords do not match" });
-        }
-
-        if (password.length < 4) {
-            return res.render('user/signup', { message: "Password must be at least 4 characters" });
-        }
-
-        const existingUser = await Users.findOne({ email: cleanEmail });
         if (existingUser) {
             return res.render('user/signup', { message: "User already exists" });
         }
 
+        if (!email) {
+            return res.redirect('/user/signup');
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
         const newUser = new Users({
-            name: cleanName,
-            email: cleanEmail,
-            phone: cleanPhone, // optional field
+            name,
+            email,
             password: hashedPassword,
-            referralCode: referralCode || null
+            otp,
+            otpExpiry: Date.now() + 5 * 60 * 1000,
+            isVerified: false
         });
 
         await newUser.save();
 
-         res.redirect('/user/login');
+        await sendOTP(email, otp);
+
+        req.session.tempUser = email;
+
+        res.redirect('/user/verify-otp');
+
+    } catch (error) {
+        console.log("🔥 SIGNUP ERROR:", error);
+        res.render('user/signup', { message: "Signup failed" });
+}
+};
+
+const sendOTP = async (email, otp) => {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'OTP Verification',
+        text: `Your OTP is ${otp}`
+    });
+};
+
+const verifyOTP = async (req, res) => {
+    try {
+        const enteredOtp = req.body.otp.trim();
+
+        const email = req.session.tempUser;
+
+        if (!email) {
+            return res.redirect('/user/signup');
+        }
+
+        const user = await Users.findOne({ email });
+
+        if (!user) {
+            return res.send("User not found");
+        }
+
+        if (String(user.otp).trim() !== enteredOtp) {
+            return res.render('user/verify-otp', { message: "Invalid OTP" });
+        }
+
+        if (user.otpExpiry < Date.now()) {
+            return res.render('user/verify-otp', { message: "OTP expired" });
+        }
+
+        user.isVerified = true;
+        user.otp = null;
+        user.otpExpiry = null;
+
+        await user.save();
+
+        res.redirect('/user/login');
 
     } catch (error) {
         console.log(error);
-        res.render('user/signup', { message: "Signup failed" });
+        res.render('user/verify-otp', { message: "Something went wrong" });
     }
 };
 
 export default {
     loadSignup,
-    signup
+    signup,
+    sendOTP,
+    verifyOTP
 };
