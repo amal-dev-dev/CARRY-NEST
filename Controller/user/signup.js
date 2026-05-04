@@ -13,6 +13,19 @@ const signup = async (req, res) => {
 
         const existingUser = await Users.findOne({ email });
 
+        if (!cleanName || !cleanEmail || !password || !confirmPassword) {
+            return res.render('user/signup', { message: "All fields are required" });
+        }
+
+        if (password !== confirmPassword) {
+            return res.render('user/signup', { message: "Passwords do not match" });
+        }
+
+        if (password.length < 6) {
+            return res.render('user/signup', { message: "Password must be at least 6 characters" });
+        }
+
+        const existingUser = await Users.findOne({ email: cleanEmail });
         if (existingUser) {
             return res.render('user/signup', { message: "User already exists" });
         }
@@ -43,7 +56,7 @@ const signup = async (req, res) => {
         res.redirect('/user/verify-otp');
 
     } catch (error) {
-        console.log("🔥 SIGNUP ERROR:", error);
+        console.log("SIGNUP ERROR:", error);
         res.render('user/signup', { message: "Signup failed" });
 }
 };
