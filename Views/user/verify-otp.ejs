@@ -16,15 +16,19 @@
         <div class="auth-card">
             <h2>Enter The OTP</h2>
             <p class="subtitle">The OTP was sent to your registered email.<br>Please check the spam folder.</p>
+
+            <% if (typeof message !== 'undefined') { %>
+                <p style="color:red; text-align:center;"><%= message %></p>
+            <% } %>
             
-            <form class="auth-form">
+            <form class="auth-form" action="/user/verify-otp" method="POST">
                 <div class="input-group">
                     <label for="otp">OTP</label>
-                    <input type="text" id="otp" placeholder="******" maxlength="6">
+                    <input type="text" id="otp" name="otp" placeholder="******" maxlength="7" required>
                 </div>
                 <button type="submit" class="btn-primary">Reset Password</button>
             </form>
-            <a href="#" class="back-link">Back To Sign in</a>
+            <a href="/user/login" class="back-link">Back To Sign in</a>
         </div>
     </main>
 

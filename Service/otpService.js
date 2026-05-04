@@ -6,7 +6,4 @@ const otpExpiryTime = () => {
   return Date.now() + 5 * 60 * 1000; // 5 minutes
 };
 
-export default { 
-    generateOTP, 
-    otpExpiryTime
-};
+export { generateOTP, otpExpiryTime };

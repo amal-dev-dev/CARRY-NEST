@@ -1,13 +1,14 @@
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import Users from "../../Model/user/userModel.js";
-import generateOTP from "../../Service/otpService.js";
+import { generateOTP } from "../../Service/otpService.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 const forgotPassword = async (req, res) => {
   try {
+
     const { email } = req.body;
 
     const user = await Users.findOne({ email });
@@ -18,18 +19,14 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    // ✅ Generate OTP
-    const otp = generateOTP();
 
-    // ✅ Hash OTP
+    const otp = generateOTP();
     const hashedOtp = await bcrypt.hash(otp, 10);
 
-    // ✅ Save in DB
     user.otp = hashedOtp;
     user.otpExpiry = Date.now() + 5 * 60 * 1000;
     await user.save();
 
-    // ✅ Send Email
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -40,16 +37,16 @@ const forgotPassword = async (req, res) => {
 
     await transporter.sendMail({
       to: email,
-      subject: "Password Reset OTP",
+      subject: "OTP",
       text: `Your OTP is ${otp}`
     });
 
-    // ✅ Store email in session (IMPORTANT)
     req.session.email = email;
 
     res.redirect("/user/verify-otp");
 
   } catch (err) {
+    console.log("❌ ERROR:", err);
     res.render("user/forgot-password", {
       message: "Something went wrong"
     });
@@ -58,29 +55,31 @@ const forgotPassword = async (req, res) => {
 
 const verifyOTP = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+
+    const { otp } = req.body;
+
+    const email = req.session.email;
 
     const user = await Users.findOne({ email });
 
     if (!user) {
-      return res.render("user/verify-otp", {
-        message: "User not found"
-      });
+      return res.render("user/verify-otp", { message: "User not found" });
+    }
+
+    if (!user.otp) {
+      return res.render("user/verify-otp", { message: "No OTP found" });
     }
 
     if (user.otpExpiry < Date.now()) {
-      return res.render("user/verify-otp", {
-        message: "OTP expired"
-      });
+      return res.render("user/verify-otp", { message: "OTP expired" });
     }
 
     const isMatch = await bcrypt.compare(otp, user.otp);
 
     if (!isMatch) {
-      return res.render("user/verify-otp", {
-        message: "Invalid OTP"
-      });
+      return res.render("user/verify-otp", { message: "Invalid OTP" });
     }
+
 
     user.isOtpVerified = true;
     await user.save();
@@ -88,15 +87,15 @@ const verifyOTP = async (req, res) => {
     res.redirect("/user/reset-password");
 
   } catch (err) {
-    res.render("user/verify-otp", {
-      message: "Error verifying OTP"
-    });
+    console.error("❌ ERROR:", err);
+    res.render("user/verify-otp", { message: "Error verifying OTP" });
   }
 };
 
 const resetPassword = async (req, res) => {
   try {
-    const { email, newPassword } = req.body;
+    const { newPassword } = req.body;
+    const email = req.session.email;
 
     const user = await Users.findOne({ email });
 
@@ -115,9 +114,13 @@ const resetPassword = async (req, res) => {
 
     await user.save();
 
+    // clear session (optional but good)
+    req.session.email = null;
+
     res.redirect("/user/login");
 
   } catch (err) {
+    console.error(err);
     res.render("user/reset-password", {
       message: "Reset failed"
     });
