@@ -8,7 +8,6 @@ dotenv.config();
 
 const forgotPassword = async (req, res) => {
   try {
-
     const { email } = req.body;
 
     const user = await Users.findOne({ email });
@@ -19,12 +18,12 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-
     const otp = generateOTP();
+
     const hashedOtp = await bcrypt.hash(otp, 10);
 
-    user.otp = hashedOtp;
-    user.otpExpiry = Date.now() + 5 * 60 * 1000;
+    user.resetOtp = hashedOtp;
+    user.resetOtpExpiry = Date.now() + 5 * 60 * 1000;
     await user.save();
 
     const transporter = nodemailer.createTransport({
@@ -43,7 +42,7 @@ const forgotPassword = async (req, res) => {
 
     req.session.email = email;
 
-    res.redirect("/user/verify-otp");
+    res.redirect("/user/forgot-otp");
 
   } catch (err) {
     console.log("❌ ERROR:", err);
@@ -55,72 +54,80 @@ const forgotPassword = async (req, res) => {
 
 const verifyOTP = async (req, res) => {
   try {
-
     const { otp } = req.body;
-
     const email = req.session.email;
+
+
+    if (!email) {
+      return res.redirect("/user/forgot-password");
+    }
 
     const user = await Users.findOne({ email });
 
     if (!user) {
-      return res.render("user/verify-otp", { message: "User not found" });
+      return res.render("user/forgot-otp", { message: "User not found" });
     }
 
-    if (!user.otp) {
-      return res.render("user/verify-otp", { message: "No OTP found" });
+    if (!user.resetOtp) {
+      return res.render("user/forgot-otp", { message: "OTP not found" });
     }
 
-    if (user.otpExpiry < Date.now()) {
-      return res.render("user/verify-otp", { message: "OTP expired" });
+    if (user.resetOtpExpiry < Date.now()) {
+      return res.render("user/forgot-otp", { message: "OTP expired" });
     }
 
-    const isMatch = await bcrypt.compare(otp, user.otp);
+    const isMatch = await bcrypt.compare(otp, user.resetOtp);
 
     if (!isMatch) {
-      return res.render("user/verify-otp", { message: "Invalid OTP" });
+      return res.render("user/forgot-otp", { message: "Invalid OTP" });
     }
-
 
     user.isOtpVerified = true;
     await user.save();
 
+    req.session.isOtpVerified = true;
+
     res.redirect("/user/reset-password");
 
   } catch (err) {
-    console.error("❌ ERROR:", err);
-    res.render("user/verify-otp", { message: "Error verifying OTP" });
+    console.log("❌ VERIFY ERROR:", err);
+    res.render("user/forgot-otp", { message: "Error verifying OTP" });
   }
 };
 
 const resetPassword = async (req, res) => {
   try {
     const { newPassword } = req.body;
+
     const email = req.session.email;
+
+    if (!email) {
+      return res.redirect("/user/forgot-password");
+    }
 
     const user = await Users.findOne({ email });
 
-    if (!user || !user.isOtpVerified) {
-      return res.render("user/reset-password", {
+   if (!user || (!user.isOtpVerified && !req.session.isOtpVerified)) {
+    return res.render("user/reset-password", {
         message: "OTP not verified"
-      });
-    }
+    });
+}
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     user.password = hashedPassword;
-    user.otp = null;
-    user.otpExpiry = null;
     user.isOtpVerified = false;
+    user.resetOtp = null;
+    user.resetOtpExpiry = null;
 
     await user.save();
 
-    // clear session (optional but good)
-    req.session.email = null;
+    req.session.destroy();
 
     res.redirect("/user/login");
 
   } catch (err) {
-    console.error(err);
+    console.log("❌ RESET ERROR:", err);
     res.render("user/reset-password", {
       message: "Reset failed"
     });
@@ -132,7 +139,11 @@ const loadForgotPassword = (req, res) => {
 };
 
 const loadVerifyOTP = (req, res) => {
-  res.render("user/verify-otp");
+  if (!req.session.email) {
+    return res.redirect("/user/forgot-password");
+  }
+
+  res.render("user/forgot-otp");
 };
 
 const loadResetPassword = (req, res) => {

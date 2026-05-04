@@ -5,43 +5,54 @@ import { promiseHooks } from "v8";
 const userSchema = new mongoose.Schema({
 
     name: {
-        type : String,
-        required : true,
+        type: String,
+        required: true,
     },
+
     email: {
-        type : String,
-        required : true,
-        unique : true,
-        lowercase : true,
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
         trim: true,
     },
+
     phone: {
-        type : String,
-        required : false,
+        type: String,
     },
+
     password: {
-        type : String,
-        required : false, 
+        type: String,
     },
+
     referralCode: {
-        type : String,
-        default : null
-    },
-    otp: {
         type: String,
         default: null
     },
-    isVerified: {
-        type: Boolean,
-        default: false
+
+    // ✅ SIGNUP OTP
+    signupOtp: {
+        type: String,
+        default: null
     },
-    otpExpiry: {
+    signupOtpExpiry: {
         type: Date,
         default: null
     },
-    isOtpVerified: {
-    type: Boolean,
-    default: false
+
+    // ✅ FORGOT PASSWORD OTP
+    resetOtp: {
+        type: String,
+        default: null
+    },
+    resetOtpExpiry: {
+        type: Date,
+        default: null
+    },
+
+    isVerified: {
+        type: Boolean,
+        default: false
     }
 
 });

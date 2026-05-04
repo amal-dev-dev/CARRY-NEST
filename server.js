@@ -21,7 +21,10 @@ app.use(nocache());
 app.use(session({
     secret: "yourSecretKey",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // important for localhost
+    }
 }));
 
 app.use(passport.initialize());

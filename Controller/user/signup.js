@@ -1,17 +1,20 @@
 import Users from '../../Model/user/userModel.js';
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 
+// ================= SIGNUP PAGE =================
 const loadSignup = (req, res) => {
     res.render('user/signup');
 };
 
+// ================= SIGNUP =================
 const signup = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, phone, password, confirmPassword } = req.body;
 
-        const existingUser = await Users.findOne({ email });
+        const cleanName = name.trim();
+        const cleanEmail = email.trim().toLowerCase();
+        const cleanPhone = phone.trim();
 
         if (!cleanName || !cleanEmail || !password || !confirmPassword) {
             return res.render('user/signup', { message: "All fields are required" });
@@ -21,46 +24,52 @@ const signup = async (req, res) => {
             return res.render('user/signup', { message: "Passwords do not match" });
         }
 
-        if (password.length < 6) {
-            return res.render('user/signup', { message: "Password must be at least 6 characters" });
-        }
-
         const existingUser = await Users.findOne({ email: cleanEmail });
+
         if (existingUser) {
             return res.render('user/signup', { message: "User already exists" });
         }
 
-        if (!email) {
-            return res.redirect('/user/signup');
-        }
-
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
         const newUser = new Users({
-            name,
-            email,
+            name: cleanName,
+            email: cleanEmail,
+            phone: cleanPhone,
             password: hashedPassword,
-            otp,
-            otpExpiry: Date.now() + 5 * 60 * 1000,
+            signupOtp: otp,
+            signupOtpExpiry: Date.now() + 5 * 60 * 1000,
             isVerified: false
         });
 
         await newUser.save();
 
-        await sendOTP(email, otp);
+        req.session.userIdForOtp = newUser._id;
 
-        req.session.tempUser = email;
 
-        res.redirect('/user/verify-otp');
+        await sendOTP(cleanEmail, otp);
+
+        res.redirect('/user/signup/otp');
 
     } catch (error) {
         console.log("SIGNUP ERROR:", error);
         res.render('user/signup', { message: "Signup failed" });
-}
+    }
 };
 
+// ================= LOAD OTP PAGE =================
+const loadVerifyOTP = (req, res) => {
+    const userId = req.session.userIdForOtp;
+
+    if (!userId) {
+        return res.redirect('/user/signup');
+    }
+
+    res.render("user/signup-otp");
+};
+
+// ================= SEND OTP =================
 const sendOTP = async (email, otp) => {
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -78,47 +87,61 @@ const sendOTP = async (email, otp) => {
     });
 };
 
+// ================= VERIFY OTP =================
 const verifyOTP = async (req, res) => {
     try {
-        const enteredOtp = req.body.otp.trim();
+        const userId = req.session.userIdForOtp;
+        const { otp } = req.body;
 
-        const email = req.session.tempUser;
-
-        if (!email) {
+        if (!userId) {
             return res.redirect('/user/signup');
         }
 
-        const user = await Users.findOne({ email });
+        const user = await Users.findById(userId);
 
         if (!user) {
-            return res.send("User not found");
+            return res.redirect('/user/signup');
         }
 
-        if (String(user.otp).trim() !== enteredOtp) {
-            return res.render('user/verify-otp', { message: "Invalid OTP" });
+        if (!user.signupOtp) {
+            return res.render('user/signup-otp', {
+                message: "OTP not found. Try again"
+            });
         }
 
-        if (user.otpExpiry < Date.now()) {
-            return res.render('user/verify-otp', { message: "OTP expired" });
+        if (user.signupOtpExpiry < Date.now()) {
+            return res.render('user/signup-otp', {
+                message: "OTP expired"
+            });
+        }
+
+        if (user.signupOtp !== otp.trim()) {
+            return res.render('user/signup-otp', {
+                message: "Invalid OTP"
+            });
         }
 
         user.isVerified = true;
-        user.otp = null;
-        user.otpExpiry = null;
+        user.signupOtp = null;
+        user.signupOtpExpiry = null;
 
         await user.save();
+
+        req.session.userIdForOtp = null;
 
         res.redirect('/user/login');
 
     } catch (error) {
-        console.log(error);
-        res.render('user/verify-otp', { message: "Something went wrong" });
+        console.log("VERIFY ERROR:", error);
+        res.render('user/signup-otp', {
+            message: "Something went wrong"
+        });
     }
 };
 
 export default {
     loadSignup,
     signup,
-    sendOTP,
+    loadVerifyOTP,
     verifyOTP
 };

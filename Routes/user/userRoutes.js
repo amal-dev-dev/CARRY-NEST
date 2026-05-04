@@ -8,29 +8,31 @@ import authController from '../../Controller/user/forgotPassword.js';
 import { requireAuth, isLoggedIn } from '../../Middleware/userAuth.js';
 import { otpLimiter } from '../../Middleware/otpLimiter.js'; 
 
+// LOGIN
 router.get('/login', isLoggedIn, userLogin.loadLogin);
 router.post('/login', userLogin.login);
 
+// SIGNUP
 router.get('/signup', isLoggedIn, userSignup.loadSignup);
 router.post('/signup', userSignup.signup);
 
+// SIGNUP OTP
+router.get('/signup/otp', userSignup.loadVerifyOTP);
+router.post('/signup/otp', userSignup.verifyOTP);
+
+// HOME
 router.get('/home', requireAuth, userLogin.loadHome);
 
-router.get('/verify-otp', (req, res) => {
-    res.render('user/verify-otp');
-});
+// FORGOT PASSWORD
+router.get('/forgot-password', authController.loadForgotPassword);
+router.post('/forgot-password', otpLimiter, authController.forgotPassword);
 
-router.post('/verify-otp', userSignup.verifyOTP);
+// FORGOT PASSWORD OTP
+router.get('/forgot-otp', authController.loadVerifyOTP);
+router.post('/forgot-otp', authController.verifyOTP);
 
-
-router.get("/forgot-password", authController.loadForgotPassword);
-router.post("/forgot-password", otpLimiter, authController.forgotPassword);
-
-router.get("/verify-otp", authController.loadVerifyOTP);
-router.post("/verify-otp", authController.verifyOTP);
-
-router.get("/reset-password", authController.loadResetPassword);
-router.post("/reset-password", authController.resetPassword);
-
+// RESET PASSWORD
+router.get('/reset-password', authController.loadResetPassword);
+router.post('/reset-password', authController.resetPassword);
 
 export default router;

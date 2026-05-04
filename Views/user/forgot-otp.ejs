@@ -1,64 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify OTP - Carry Nest</title>
-
-<link rel="stylesheet" href="/Styles/user/verify-otp.css">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
-
-<header class="main-header">
-    <div class="container">
-        <h1 class="logo">CARRY NEST</h1>
-    </div>
-</header>
-
-<main class="login-section">
-    <div class="login-card otp-container">
-
-        <h2>Verify OTP</h2>
-        <p class="subtitle">Enter the 6-digit code sent to your email</p>
-
-        <% if (typeof message !== 'undefined') { %>
-            <div class="error-message">
-                <%= message %>
-            </div>
-        <% } %>
-
-        <form action="/user/verify-otp" method="POST" id="otpForm">
-
-            <div class="otp-inputs">
-                <input type="text" maxlength="1">
-                <input type="text" maxlength="1">
-                <input type="text" maxlength="1">
-                <input type="text" maxlength="1">
-                <input type="text" maxlength="1">
-                <input type="text" maxlength="1">
-            </div>
-
-            <input type="hidden" name="otp" id="otpValue">
-
-            <button type="submit" class="btn-primary">VERIFY</button>
-
-        </form>
-
-        <div class="resend">
-            <p>Didn't receive OTP?</p>
-            <a href="/user/resend-otp">Resend OTP</a>
-        </div>
-
-    </div>
-</main>
-
-<script src="/JS/otp.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enter OTP - CARRY NEST</title>
-    <link rel="stylesheet" href="/styles/user/verify-otp.css">
+    <link rel="stylesheet" href="/styles/user/forgot-otp.css">
 </head>
 <body>
 
@@ -75,12 +21,12 @@
                 <p style="color:red; text-align:center;"><%= message %></p>
             <% } %>
             
-            <form class="auth-form" action="/user/verify-otp" method="POST">
+            <form class="auth-form" action="/user/forgot-otp" method="POST">
                 <div class="input-group">
                     <label for="otp">OTP</label>
-                    <input type="text" id="otp" name="otp" placeholder="******" maxlength="7" required>
+                    <input type="text" id="otp" name="otp" placeholder="******" maxlength="6" required>
                 </div>
-                <button type="submit" class="btn-primary">Reset Password</button>
+                <button type="submit" class="btn-primary">Verify OTP</button>
             </form>
             <a href="/user/login" class="back-link">Back To Sign in</a>
         </div>
@@ -142,6 +88,61 @@
             </div>
         </div>
     </footer>
+
+</body>
+</html>
+
+<footer class="footer">
+  <div class="footer-container">
+
+    <div class="footer-col">
+      <h4>CARRY NEST</h4>
+      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Service</h4>
+      <ul>
+        <li>Laptop Bags</li>
+        <li>Trekking Bags</li>
+        <li>School Bags</li>
+        <li>Office Bags</li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li>About Us</li>
+        <li>Portfolio</li>
+        <li>Blog</li>
+        <li>Contact</li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <input type="text" placeholder="Enter your email">
+      <button class="send-btn">Send</button>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 Carry Nest. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+
+    document.querySelectorAll(".fa-solid.fa-eye.toggle-eye").forEach(icon => {
+        icon.addEventListener("click", () => {
+            const input = icon.previousElementSibling;
+            input.type = input.type === "password" ? "text" : "password";
+        });
+    });
+
+</script>
 
 </body>
 </html>
