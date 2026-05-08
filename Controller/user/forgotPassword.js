@@ -45,7 +45,7 @@ const forgotPassword = async (req, res) => {
     res.redirect("/user/forgot-otp");
 
   } catch (err) {
-    console.log("❌ ERROR:", err);
+    console.log("ERROR:", err);
     res.render("user/forgot-password", {
       message: "Something went wrong"
     });
@@ -90,7 +90,7 @@ const verifyOTP = async (req, res) => {
     res.redirect("/user/reset-password");
 
   } catch (err) {
-    console.log("❌ VERIFY ERROR:", err);
+    console.log("VERIFY ERROR:", err);
     res.render("user/forgot-otp", { message: "Error verifying OTP" });
   }
 };
@@ -127,7 +127,7 @@ const resetPassword = async (req, res) => {
     res.redirect("/user/login");
 
   } catch (err) {
-    console.log("❌ RESET ERROR:", err);
+    console.log("RESET ERROR:", err);
     res.render("user/reset-password", {
       message: "Reset failed"
     });

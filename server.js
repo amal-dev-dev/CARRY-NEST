@@ -9,11 +9,11 @@ import connectDB from './DB/connectDB.js';
 import passport from './Config/passport.js';
 import authRoutes from './Routes/user/authRoutes.js';
 
-
 dotenv.config();
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
@@ -23,7 +23,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false, // important for localhost
+        secure: false, 
     }
 }));
 

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - CARRY NEST</title>
+    <link rel="stylesheet" href="/Styles/user/edit-profile.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header class="navbar">
+        <div class="nav-content">
+            <h1 class="logo">CARRY NEST</h1>
+            <div class="search-container">
+                <input type="text" placeholder="Search for products..." class="search-input">
+            </div>
+            <div class="nav-icons">
+                <span>🛒</span>
+                <span>👤</span>
+                <span>❤️</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Edit Personal Information</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+
+            <div class="profile-upload-section">
+                <div class="avatar-wrapper">
+                    <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=000&color=fff" alt="<%= user.name %>" class="profile-img">
+                    <div class="camera-icon-badge">📷</div>
+                </div>
+                <p class="upload-hint">Click the camera icon to update your profile picture</p>
+            </div>
+
+            <form class="edit-form" action="/user/profile/edit" method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" value="<%= user.name %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                            <input type="email" id="email" name="email" value="<%= user.email %>" required>
+                            <button type="button" class="btn-send-otp" onclick="sendOTP()">Send OTP</button>
+                        <div id="otpSection" style="display:none; margin-top:10px;">
+                            <input type="text" id="otp" placeholder="Enter OTP" class="otp-input">
+                            <button type="button" class="btn-verify" onclick="verifyOTP()">Verify OTP</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Phone Number</label>
+                    <input type="tel" name="phone" value="<%= user.phone %>" required>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/user/profile" class="btn-cancel" style="text-decoration: none;">Cancel</a>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let emailVerified = false;
+        const originalEmail = "<%= user.email %>";
+
+        function sendOTP() {
+            const email = document.getElementById("email").value;
+
+            if (email === originalEmail) {
+                alert("Email is same as current");
+                return;
+            }
+
+            fetch("/user/send-email-otp", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ newEmail: email })
+            })
+            .then(res => res.json())
+            .then(() => {
+            alert("OTP sent to email");
+            document.getElementById("otpSection").style.display = "block";
+            });
+        }
+
+        function verifyOTP() {
+            const email = document.getElementById("email").value;
+            const otp = document.getElementById("otp").value;
+
+                fetch("/user/verify-email-otp", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ newEmail, otp })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Email updated successfully");
+                    location.reload(); // or redirect
+                } else {
+                    alert(data.message); // 👈 VERY IMPORTANT
+                }
+            });
+        }
+
+        document.querySelector(".edit-form").addEventListener("submit", function(e) {
+            const currentEmail = document.getElementById("email").value;
+
+            if (currentEmail !== originalEmail && !emailVerified) {
+                e.preventDefault();
+                alert("Please verify your new email first!");
+            }
+        });
+</script>
+
+</body>
+</html>

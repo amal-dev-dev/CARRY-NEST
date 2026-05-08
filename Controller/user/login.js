@@ -18,11 +18,7 @@ const login = async (req, res) => {
         return res.render('user/login', { message: "Incorrect password" });
         }
 
-        req.session.user = {
-            id: user._id,
-            name: user.name,
-            email: user.email
-        };
+        req.session.user = user._id;
 
         res.redirect('/user/home');
 

@@ -1,0 +1,190 @@
+:root {
+    --primary-black: #000000;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+    --bg-light: #f9fafb;
+    --accent-blue: #eff6ff;
+    --required-red: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #f3f4f6;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.address-container {
+    background: #fff;
+    width: 100%;
+    max-width: 650px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.address-header {
+    background: var(--primary-black);
+    color: white;
+    padding: 25px;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.header-title h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.address-header p {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+/* Form Styling */
+.address-form {
+    padding: 30px;
+}
+
+.section-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.required { color: var(--required-red); }
+.optional { color: var(--text-muted); font-size: 0.75rem; }
+
+input, textarea {
+    padding: 12px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus, textarea:focus {
+    border-color: var(--primary-black);
+}
+
+/* Address Type Cards */
+.address-type-section {
+    margin-top: 30px;
+}
+
+.address-type-section label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.type-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.type-card {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+}
+
+.type-card input {
+    display: none; /* Hide actual radio button */
+}
+
+.type-card.selected {
+    background: var(--accent-blue);
+    border-color: var(--primary-black);
+    color: var(--primary-blue);
+}
+
+.check-mark {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.8rem;
+}
+
+/* Save Button */
+.save-btn {
+    width: 100%;
+    margin-top: 40px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid var(--primary-black);
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.save-btn:hover {
+    background: var(--primary-black);
+    color: white;
+}
+
+/* Responsive Logic */
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .full-width {
+        grid-column: span 1;
+    }
+
+    .address-form {
+        padding: 20px;
+    }
+}

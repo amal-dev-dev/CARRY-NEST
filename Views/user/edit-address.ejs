@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARRY NEST | Edit Information</title>
+    <link rel="stylesheet" href="/Styles/user/edit-address.css">
+</head>
+<body>
+
+    <div class="form-container">
+        <header class="form-header">
+            <div class="header-content">
+                <span class="icon">📍</span> 
+                <h1>Edit Address</h1>
+            </div>
+            <p>Please provide accurate delivery details for your order.</p>
+        </header>
+
+        <form class="main-form" action="/user/address/edit/<%= address._id %>" method="POST">
+            <div class="section-title">
+                <span class="icon">👤</span> Contact Details
+            </div>
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Full Name <span class="required">*</span></label>
+                    <input type="text" name="fullName" value="<%= address.fullName %>" placeholder="Jone joy" >
+                </div>
+                <div class="input-group">
+                    <label>Phone Number <span class="required">*</span></label>
+                    <input type="text" name="phone" value="<%= address.phone %>" placeholder="+91 90673 82638" >
+                </div>
+                
+                <div class="input-group full-width">
+                    <label>Location</label>
+                    <input type="text" name="location" value="<%= address.location %>" placeholder="" >
+                </div>
+
+                <div class="input-group">
+                    <label>Pincode <span class="required">*</span></label>
+                    <input type="text" name="pincode" value="<%= address.pincode %>" placeholder="110001" >
+                </div>
+                <div class="input-group">
+                    <label>City <span class="required">*</span></label>
+                    <input type="text" name="city" value="<%= address.city %>" placeholder="New Delhi" >
+                </div>
+                <div class="input-group">
+                    <label>State <span class="required">*</span></label>
+                    <input type="text" name="state" value="<%= address.state %>" placeholder="Delhi" >
+                </div>
+
+                <div class="input-group full-width">
+                    <label>Detailed Address <span class="required">*</span></label>
+                    <textarea name="detailedAddress" placeholder="House No., Building Name, Street, Area"><%= address.detailedAddress %></textarea>
+                </div>
+
+                <div class="input-group full-width">
+                    <label>Landmark <span class="optional">(Optional)</span></label>
+                    <input type="text" name="landmark" value="<%= address.landmark %>" placeholder="Near City Park" >
+                </div>
+            </div>
+
+            <button type="submit" class="save-btn">Save Changes</button>
+        </form>
+    </div>
+
+</body>
+</html>
