@@ -1,4 +1,5 @@
 import Users from '../../Model/user/userModel.js';
+import { generateOTP, otpExpiryTime } from '../../Service/otpService.js';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
@@ -9,43 +10,46 @@ const loadSignup = (req, res) => {
 
 const signup = async (req, res) => {
     try {
+
         const { name, email, password } = req.body;
 
         const existingUser = await Users.findOne({ email });
 
         if (existingUser) {
-            return res.render('user/signup', { message: "User already exists" });
-        }
-
-        if (!email) {
-            return res.redirect('/user/signup');
+            return res.render('user/signup', {
+                message: "User already exists"
+            });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otp = generateOTP();
 
-        const newUser = new Users({
+        const user = new Users({
             name,
             email,
             password: hashedPassword,
             otp,
-            otpExpiry: Date.now() + 5 * 60 * 1000,
+            otpExpiry: otpExpiryTime(),
             isVerified: false
         });
 
-        await newUser.save();
+        await user.save();
 
-        await sendOTP(email, otp);
+        await sendOTP(user.email, otp);
 
         req.session.tempUser = email;
 
-        res.redirect('/user/verify-otp');
+        res.redirect('/user/signup-otp');
 
     } catch (error) {
-        console.log("🔥 SIGNUP ERROR:", error);
-        res.render('user/signup', { message: "Signup failed" });
-}
+
+        console.log("SIGNUP ERROR:", error);
+
+        res.render('user/signup', {
+            message: "Signup failed"
+        });
+    }
 };
 
 const sendOTP = async (email, otp) => {
@@ -82,11 +86,14 @@ const verifyOTP = async (req, res) => {
         }
 
         if (String(user.otp).trim() !== enteredOtp) {
-            return res.render('user/verify-otp', { message: "Invalid OTP" });
+            return res.render('user/signup-otp', { message: "Invalid OTP" });
         }
 
         if (user.otpExpiry < Date.now()) {
-            return res.render('user/verify-otp', { message: "OTP expired" });
+        return res.render('user/signup-otp', {
+            message: "OTP expired",
+            otpExpiry: user.otpExpiry
+        });
         }
 
         user.isVerified = true;
@@ -99,13 +106,81 @@ const verifyOTP = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.render('user/verify-otp', { message: "Something went wrong" });
+        res.render('user/signup-otp', { message: "Something went wrong" });
     }
 };
+
+const loadVerifyOTP = async (req, res) => {
+
+    try {
+
+        const email = req.session.tempUser;
+
+        if (!email) {
+            return res.redirect('/user/signup');
+        }
+
+        const user = await Users.findOne({ email });
+
+        if (!user) {
+            return res.redirect('/user/signup');
+        }
+
+        res.render('user/signup-otp', {
+            message: null,
+            otpExpiry: user.otpExpiry
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.redirect('/user/signup');
+    }
+};
+
+const resendOTP = async (req, res) => {
+
+    try {
+
+        const email = req.session.tempUser;
+
+        if (!email) {
+            return res.redirect('/user/signup');
+        }
+
+        const user = await Users.findOne({ email });
+
+        if (!user) {
+            return res.redirect('/user/signup');
+        }
+
+        const otp = generateOTP();
+
+        user.otp = otp;
+
+        user.otpExpiry = otpExpiryTime();
+
+        await user.save();
+
+        await sendOTP(email, otp);
+
+        res.redirect('/user/signup-otp');
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.redirect('/user/signup');
+    }
+};
+
 
 export default {
     loadSignup,
     signup,
     sendOTP,
-    verifyOTP
+    verifyOTP,
+    loadVerifyOTP,
+    resendOTP
 };

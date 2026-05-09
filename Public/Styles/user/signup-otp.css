@@ -1,0 +1,250 @@
+:root {
+    --bg-light: #f4f7ff;
+    --footer-bg: #000000;
+    --accent-blue: #00a3ff;
+    --text-gray: #666;
+    --input-bg: #e8efff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    padding: 30px 8%;
+}
+
+.logo {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+/* Auth Section */
+.auth-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 20px;
+}
+
+.auth-card {
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.auth-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.otp-extra{
+    margin-top: 15px;
+    text-align: center;
+}
+
+.timer-text{
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.resend-btn{
+    background: none;
+    border: none;
+    color: #0d6efd;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.resend-btn:disabled{
+    color: gray;
+    cursor: not-allowed;
+}
+
+.subtitle {
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-bottom: 35px;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 25px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-gray);
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background-color: var(--input-bg);
+    border-bottom: 1px solid #ccd6e0;
+    font-size: 1rem;
+    letter-spacing: 2px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: transform 0.2s;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.back-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Footer Section */
+.footer {
+    background: var(--footer-bg);
+    color: #fff;
+    padding: 60px 8% 30px;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-bottom: 50px;
+}
+
+.footer-col h3 {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.footer-col p, .footer-col li {
+    font-size: 0.85rem;
+    color: #a0a0a0;
+    line-height: 1.6;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col a {
+    color: #a0a0a0;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-col a:hover {
+    color: #fff;
+}
+
+/* Footer Subscription */
+.subscribe-box {
+    display: flex;
+    margin-top: 15px;
+    background: #222;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.subscribe-box input {
+    background: transparent;
+    border: none;
+    padding: 10px;
+    color: #fff;
+    flex: 1;
+    font-size: 0.8rem;
+}
+
+.send-btn {
+    background: #2d3748;
+    color: #fff;
+    border: none;
+    padding: 0 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.social-icons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.social-icon {
+    width: 32px;
+    height: 32px;
+    background: #333;
+    border-radius: 6px;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    border-top: 1px solid #222;
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.info-links {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+    .header { padding: 20px 5%; }
+    .footer { padding: 40px 5%; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .footer-bottom { 
+        flex-direction: column; 
+        text-align: center; 
+    }
+    .info-links { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+    .footer-top { grid-template-columns: 1fr; }
+    .auth-card h2 { font-size: 1.5rem; }
+}
