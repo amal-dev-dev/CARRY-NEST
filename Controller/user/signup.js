@@ -1,4 +1,5 @@
 import Users from '../../Model/user/userModel.js';
+import { generateOTP, otpExpiryTime } from '../../Service/otpService.js';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 
@@ -10,7 +11,12 @@ const loadSignup = (req, res) => {
 // ================= SIGNUP =================
 const signup = async (req, res) => {
     try {
+<<<<<<< HEAD
         const { name, email, phone, password, confirmPassword } = req.body;
+=======
+
+        const { name, email, password } = req.body;
+>>>>>>> user-signup
 
         const cleanName = name.trim();
         const cleanEmail = email.trim().toLowerCase();
@@ -27,6 +33,7 @@ const signup = async (req, res) => {
         const existingUser = await Users.findOne({ email: cleanEmail });
 
         if (existingUser) {
+<<<<<<< HEAD
             return res.render('user/signup', { message: "User already exists" });
         }
 
@@ -40,14 +47,36 @@ const signup = async (req, res) => {
             password: hashedPassword,
             signupOtp: otp,
             signupOtpExpiry: Date.now() + 5 * 60 * 1000,
+=======
+            return res.render('user/signup', {
+                message: "User already exists"
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const otp = generateOTP();
+
+        const user = new Users({
+            name,
+            email,
+            password: hashedPassword,
+            otp,
+            otpExpiry: otpExpiryTime(),
+>>>>>>> user-signup
             isVerified: false
         });
 
-        await newUser.save();
+        await user.save();
 
+<<<<<<< HEAD
         req.session.userIdForOtp = newUser._id;
+=======
+        await sendOTP(user.email, otp);
+>>>>>>> user-signup
 
 
+<<<<<<< HEAD
         await sendOTP(cleanEmail, otp);
 
         res.redirect('/user/signup/otp');
@@ -55,6 +84,17 @@ const signup = async (req, res) => {
     } catch (error) {
         console.log("SIGNUP ERROR:", error);
         res.render('user/signup', { message: "Signup failed" });
+=======
+        res.redirect('/user/signup-otp');
+
+    } catch (error) {
+
+        console.log("SIGNUP ERROR:", error);
+
+        res.render('user/signup', {
+            message: "Signup failed"
+        });
+>>>>>>> user-signup
     }
 };
 
@@ -103,6 +143,7 @@ const verifyOTP = async (req, res) => {
             return res.redirect('/user/signup');
         }
 
+<<<<<<< HEAD
         if (!user.signupOtp) {
             return res.render('user/signup-otp', {
                 message: "OTP not found. Try again"
@@ -119,6 +160,17 @@ const verifyOTP = async (req, res) => {
             return res.render('user/signup-otp', {
                 message: "Invalid OTP"
             });
+=======
+        if (String(user.otp).trim() !== enteredOtp) {
+            return res.render('user/signup-otp', { message: "Invalid OTP" });
+        }
+
+        if (user.otpExpiry < Date.now()) {
+        return res.render('user/signup-otp', {
+            message: "OTP expired",
+            otpExpiry: user.otpExpiry
+        });
+>>>>>>> user-signup
         }
 
         user.isVerified = true;
@@ -132,16 +184,94 @@ const verifyOTP = async (req, res) => {
         res.redirect('/user/login');
 
     } catch (error) {
+<<<<<<< HEAD
         console.log("VERIFY ERROR:", error);
         res.render('user/signup-otp', {
             message: "Something went wrong"
         });
+=======
+        console.log(error);
+        res.render('user/signup-otp', { message: "Something went wrong" });
+>>>>>>> user-signup
     }
 };
+
+const loadVerifyOTP = async (req, res) => {
+
+    try {
+
+        const email = req.session.tempUser;
+
+        if (!email) {
+            return res.redirect('/user/signup');
+        }
+
+        const user = await Users.findOne({ email });
+
+        if (!user) {
+            return res.redirect('/user/signup');
+        }
+
+        res.render('user/signup-otp', {
+            message: null,
+            otpExpiry: user.otpExpiry
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.redirect('/user/signup');
+    }
+};
+
+const resendOTP = async (req, res) => {
+
+    try {
+
+        const email = req.session.tempUser;
+
+        if (!email) {
+            return res.redirect('/user/signup');
+        }
+
+        const user = await Users.findOne({ email });
+
+        if (!user) {
+            return res.redirect('/user/signup');
+        }
+
+        const otp = generateOTP();
+
+        user.otp = otp;
+
+        user.otpExpiry = otpExpiryTime();
+
+        await user.save();
+
+        await sendOTP(email, otp);
+
+        res.redirect('/user/signup-otp');
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.redirect('/user/signup');
+    }
+};
+
 
 export default {
     loadSignup,
     signup,
+<<<<<<< HEAD
     loadVerifyOTP,
     verifyOTP
+=======
+    sendOTP,
+    verifyOTP,
+    loadVerifyOTP,
+    resendOTP
+>>>>>>> user-signup
 };

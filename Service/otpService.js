@@ -3,7 +3,7 @@ const generateOTP = () => {
 };
 
 const otpExpiryTime = () => {
-  return Date.now() + 5 * 60 * 1000; // 5 minutes
+  return Date.now() + 2 * 60 * 1000; // 5 minutes
 };
 
 export { generateOTP, otpExpiryTime };

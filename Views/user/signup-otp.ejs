@@ -27,7 +27,21 @@
                     <input type="text" id="otp" name="otp" placeholder="******" maxlength="7" required>
                 </div>
                 <button type="submit" class="btn-primary">Verify OTP</button>
-            </form>
+                    <div class="otp-extra">
+                        <p id="timer" class="timer-text"></p>
+                    </div>
+                </form>
+                <div class="otp-extra">
+                    <p id="timer" class="timer-text"></p>
+                    <form action="/user/resend-otp" method="POST">
+                            <button type="submit"
+                                id="resendBtn"
+                                class="resend-btn"
+                                disabled>
+                            Resend OTP
+                        </button>
+                    </form>
+                </div>
             <a href="/user/signup" class="back-link">Back To Sign up</a>
         </div>
     </main>
@@ -89,50 +103,6 @@
         </div>
     </footer>
 
-</body>
-</html>
-
-<footer class="footer">
-  <div class="footer-container">
-
-    <div class="footer-col">
-      <h4>CARRY NEST</h4>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-    </div>
-
-    <div class="footer-col">
-      <h4>Service</h4>
-      <ul>
-        <li>Laptop Bags</li>
-        <li>Trekking Bags</li>
-        <li>School Bags</li>
-        <li>Office Bags</li>
-      </ul>
-    </div>
-
-    <div class="footer-col">
-      <h4>Company</h4>
-      <ul>
-        <li>About Us</li>
-        <li>Portfolio</li>
-        <li>Blog</li>
-        <li>Contact</li>
-      </ul>
-    </div>
-
-    <div class="footer-col">
-      <h4>Contact Us</h4>
-      <input type="text" placeholder="Enter your email">
-      <button class="send-btn">Send</button>
-    </div>
-
-  </div>
-
-  <div class="footer-bottom">
-    <p>© 2026 Carry Nest. All rights reserved.</p>
-  </div>
-</footer>
-
 <script>
 
     document.querySelectorAll(".fa-solid.fa-eye.toggle-eye").forEach(icon => {
@@ -141,6 +111,41 @@
             input.type = input.type === "password" ? "text" : "password";
         });
     });
+
+      const expiryTime = new Date("<%= otpExpiry %>").getTime();
+
+    const timer = document.getElementById('timer');
+
+    const resendBtn = document.getElementById('resendBtn');
+
+    function updateTimer(){
+
+        const now = Date.now();
+
+        const remaining = expiryTime - now;
+
+        if(remaining <= 0){
+
+            timer.innerHTML = "OTP Expired";
+
+            resendBtn.disabled = false;
+
+            clearInterval(interval);
+
+            return;
+        }
+
+        const minutes = Math.floor(remaining / 1000 / 60);
+
+        const seconds = Math.floor((remaining / 1000) % 60);
+
+        timer.innerHTML =
+            `OTP expires in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    updateTimer();
+
+    const interval = setInterval(updateTimer, 1000);
 
 </script>
 
