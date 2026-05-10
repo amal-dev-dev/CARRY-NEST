@@ -28,6 +28,17 @@
                 </div>
                 <button type="submit" class="btn-primary">Verify OTP</button>
             </form>
+              <div class="otp-extra">
+                    <p id="timer" class="timer-text"></p>
+                    <form action="/user/forgot/resend-otp" method="POST">
+                            <button type="submit"
+                                id="resendBtn"
+                                class="resend-btn"
+                                disabled>
+                            Resend OTP
+                        </button>
+                    </form>
+                </div>
             <a href="/user/login" class="back-link">Back To Sign in</a>
         </div>
     </main>
@@ -141,6 +152,40 @@
             input.type = input.type === "password" ? "text" : "password";
         });
     });
+
+    const expiryTime = new Date("<%= otpExpiry %>").getTime();
+    const timer = document.getElementById('timer');
+
+    const resendBtn = document.getElementById('resendBtn');
+
+    function updateTimer(){
+
+        const now = Date.now();
+
+        const remaining = expiryTime - now;
+
+        if(remaining <= 0){
+
+            timer.innerHTML = "OTP Expired";
+
+            resendBtn.disabled = false;
+
+            clearInterval(interval);
+
+            return;
+        }
+
+        const minutes = Math.floor(remaining / 1000 / 60);
+
+        const seconds = Math.floor((remaining / 1000) % 60);
+
+        timer.innerHTML =
+        `OTP expires in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    updateTimer();
+
+    const interval = setInterval(updateTimer, 1000);
 
 </script>
 
