@@ -5,7 +5,9 @@ import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 
 const loadSignup = (req, res) => {
-    res.render('user/signup');
+    res.render('user/signup', {
+        message: null
+    });
 };
 
 const signup = async (req, res) => {

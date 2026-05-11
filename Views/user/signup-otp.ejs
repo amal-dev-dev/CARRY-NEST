@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enter OTP - CARRY NEST</title>
     <link rel="stylesheet" href="/styles/user/signup-otp.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -16,15 +17,11 @@
         <div class="auth-card">
             <h2>Enter The OTP</h2>
             <p class="subtitle">The OTP was sent to your registered email.<br>Please check the spam folder.</p>
-
-            <% if (typeof message !== 'undefined') { %>
-                <p style="color:red; text-align:center;"><%= message %></p>
-            <% } %>
             
             <form class="auth-form" action="/user/signup/otp" method="POST">
                 <div class="input-group">
                     <label for="otp">OTP</label>
-                    <input type="text" id="otp" name="otp" placeholder="******" maxlength="6" required>
+                    <input type="text" id="otp" name="otp" placeholder="******" maxlength="6" >
                 </div>
                 <button type="submit" class="btn-primary">Verify OTP</button>
                     <div class="otp-extra">
@@ -103,7 +100,31 @@
         </div>
     </footer>
 
-<script>
+<<script>
+
+    const message = `<%= typeof message !== 'undefined' ? message : '' %>`;
+
+    if(message){
+         Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: message
+        });
+    }
+
+
+    const otpForm = document.querySelector("form");
+    otpForm.addEventListener("submit", (e) => {
+        const otp = document.getElementById("otp").value.trim();
+        if(!otp){
+            e.preventDefault();
+            Swal.fire({
+                icon: "warning",
+                title: "OTP Required",
+                text: "Please enter OTP"
+            });
+        }
+    });
 
     document.querySelectorAll(".fa-solid.fa-eye.toggle-eye").forEach(icon => {
         icon.addEventListener("click", () => {
