@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enter OTP - CARRY NEST</title>
     <link rel="stylesheet" href="/styles/user/signup-otp.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -16,18 +17,28 @@
         <div class="auth-card">
             <h2>Enter The OTP</h2>
             <p class="subtitle">The OTP was sent to your registered email.<br>Please check the spam folder.</p>
-
-            <% if (typeof message !== 'undefined') { %>
-                <p style="color:red; text-align:center;"><%= message %></p>
-            <% } %>
             
             <form class="auth-form" action="/user/signup/otp" method="POST">
                 <div class="input-group">
                     <label for="otp">OTP</label>
-                    <input type="text" id="otp" name="otp" placeholder="******" maxlength="7" required>
+                    <input type="text" id="otp" name="otp" placeholder="******" maxlength="6" >
                 </div>
                 <button type="submit" class="btn-primary">Verify OTP</button>
-            </form>
+                    <div class="otp-extra">
+                        <p id="timer" class="timer-text"></p>
+                    </div>
+                </form>
+                <div class="otp-extra">
+                    <p id="timer" class="timer-text"></p>
+                    <form action="/user/resend-otp" method="POST">
+                            <button type="submit"
+                                id="resendBtn"
+                                class="resend-btn"
+                                disabled>
+                            Resend OTP
+                        </button>
+                    </form>
+                </div>
             <a href="/user/signup" class="back-link">Back To Sign up</a>
         </div>
     </main>
@@ -89,51 +100,31 @@
         </div>
     </footer>
 
-</body>
-</html>
+<<script>
 
-<footer class="footer">
-  <div class="footer-container">
+    const message = `<%= typeof message !== 'undefined' ? message : '' %>`;
 
-    <div class="footer-col">
-      <h4>CARRY NEST</h4>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
-    </div>
+    if(message){
+         Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: message
+        });
+    }
 
-    <div class="footer-col">
-      <h4>Service</h4>
-      <ul>
-        <li>Laptop Bags</li>
-        <li>Trekking Bags</li>
-        <li>School Bags</li>
-        <li>Office Bags</li>
-      </ul>
-    </div>
 
-    <div class="footer-col">
-      <h4>Company</h4>
-      <ul>
-        <li>About Us</li>
-        <li>Portfolio</li>
-        <li>Blog</li>
-        <li>Contact</li>
-      </ul>
-    </div>
-
-    <div class="footer-col">
-      <h4>Contact Us</h4>
-      <input type="text" placeholder="Enter your email">
-      <button class="send-btn">Send</button>
-    </div>
-
-  </div>
-
-  <div class="footer-bottom">
-    <p>© 2026 Carry Nest. All rights reserved.</p>
-  </div>
-</footer>
-
-<script>
+    const otpForm = document.querySelector("form");
+    otpForm.addEventListener("submit", (e) => {
+        const otp = document.getElementById("otp").value.trim();
+        if(!otp){
+            e.preventDefault();
+            Swal.fire({
+                icon: "warning",
+                title: "OTP Required",
+                text: "Please enter OTP"
+            });
+        }
+    });
 
     document.querySelectorAll(".fa-solid.fa-eye.toggle-eye").forEach(icon => {
         icon.addEventListener("click", () => {
@@ -142,7 +133,42 @@
         });
     });
 
-</script>
 
+    const expiryTime = new Date("<%= otpExpiry %>").getTime();
+
+    const timer = document.getElementById('timer');
+
+    const resendBtn = document.getElementById('resendBtn');
+
+    function updateTimer(){
+
+        const now = Date.now();
+
+        const remaining = expiryTime - now;
+
+        if(remaining <= 0){
+
+            timer.innerHTML = "OTP Expired";
+
+            resendBtn.disabled = false;
+
+            clearInterval(interval);
+
+            return;
+        }
+
+        const minutes = Math.floor(remaining / 1000 / 60);
+
+        const seconds = Math.floor((remaining / 1000) % 60);
+
+        timer.innerHTML =
+        `OTP expires in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    updateTimer();
+
+    const interval = setInterval(updateTimer, 1000);
+
+</script>
 </body>
 </html>

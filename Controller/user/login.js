@@ -28,7 +28,9 @@ const login = async (req, res) => {
 };
 
 const loadLogin = (req, res) => {
-    res.render('user/login');
+    res.render("user/login", {
+        message: null
+    });
 };
 
 const loadHome = (req, res) => {

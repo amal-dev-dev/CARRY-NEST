@@ -1,18 +1,20 @@
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import Users from "../../Model/user/userModel.js";
-import { generateOTP } from "../../Service/otpService.js";
+import { generateOTP,otpExpiryTime } from "../../Service/otpService.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 const forgotPassword = async (req, res) => {
   try {
+
     const { email } = req.body;
 
     const user = await Users.findOne({ email });
 
     if (!user) {
+
       return res.render("user/forgot-password", {
         message: "User not found"
       });
@@ -23,7 +25,9 @@ const forgotPassword = async (req, res) => {
     const hashedOtp = await bcrypt.hash(otp, 10);
 
     user.resetOtp = hashedOtp;
-    user.resetOtpExpiry = Date.now() + 5 * 60 * 1000;
+
+    user.resetOtpExpiry = otpExpiryTime();
+
     await user.save();
 
     const transporter = nodemailer.createTransport({
@@ -36,7 +40,7 @@ const forgotPassword = async (req, res) => {
 
     await transporter.sendMail({
       to: email,
-      subject: "OTP",
+      subject: "OTP Verification",
       text: `Your OTP is ${otp}`
     });
 
@@ -45,7 +49,9 @@ const forgotPassword = async (req, res) => {
     res.redirect("/user/forgot-otp");
 
   } catch (err) {
+
     console.log("ERROR:", err);
+
     res.render("user/forgot-password", {
       message: "Something went wrong"
     });
@@ -65,7 +71,10 @@ const verifyOTP = async (req, res) => {
     const user = await Users.findOne({ email });
 
     if (!user) {
-      return res.render("user/forgot-otp", { message: "User not found" });
+      return res.render("user/forgot-otp", {
+      message: "OTP not found",
+      otpExpiry: user?.resetOtpExpiry
+    });
     }
 
     if (!user.resetOtp) {
@@ -73,13 +82,19 @@ const verifyOTP = async (req, res) => {
     }
 
     if (user.resetOtpExpiry < Date.now()) {
-      return res.render("user/forgot-otp", { message: "OTP expired" });
+      return res.render("user/forgot-otp", {
+      message: "OTP expired",
+      otpExpiry: user.resetOtpExpiry
+    });
     }
 
     const isMatch = await bcrypt.compare(otp, user.resetOtp);
 
     if (!isMatch) {
-      return res.render("user/forgot-otp", { message: "Invalid OTP" });
+      return res.render("user/forgot-otp", {
+      message: "Invalid OTP",
+      otpExpiry: user.resetOtpExpiry
+    });
     }
 
     user.isOtpVerified = true;
@@ -91,7 +106,10 @@ const verifyOTP = async (req, res) => {
 
   } catch (err) {
     console.log("VERIFY ERROR:", err);
-    res.render("user/forgot-otp", { message: "Error verifying OTP" });
+    res.render("user/forgot-otp", {
+      message: "Error verifying OTP",
+      otpExpiry: Date.now()
+    });
   }
 };
 
@@ -134,16 +152,87 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const resendOTP = async (req, res) => {
+
+    try {
+
+        const email = req.session.email;
+
+        if (!email) {
+            return res.redirect('/user/forgot-password');
+        }
+
+        const user = await Users.findOne({ email });
+
+        if (!user) {
+            return res.redirect('/user/forgot-password');
+        }
+
+        const otp = generateOTP();
+
+        const hashedOtp = await bcrypt.hash(otp, 10);
+
+        user.resetOtp = hashedOtp;
+
+        user.resetOtpExpiry = otpExpiryTime();
+
+        await user.save();
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        await transporter.sendMail({
+            to: email,
+            subject: "Resend OTP",
+            text: `Your OTP is ${otp}`
+        });
+
+        res.redirect('/user/forgot-otp');
+
+    } catch (error) {
+
+        console.log(error);
+
+        res.redirect('/user/forgot-password');
+    }
+};
+
 const loadForgotPassword = (req, res) => {
   res.render("user/forgot-password");
 };
 
-const loadVerifyOTP = (req, res) => {
-  if (!req.session.email) {
-    return res.redirect("/user/forgot-password");
-  }
+const loadVerifyOTP = async (req, res) => {
 
-  res.render("user/forgot-otp");
+  try {
+
+    const email = req.session.email;
+
+    if (!email) {
+      return res.redirect("/user/forgot-password");
+    }
+
+    const user = await Users.findOne({ email });
+
+    if (!user) {
+      return res.redirect("/user/forgot-password");
+    }
+
+    res.render("user/forgot-otp", {
+      otpExpiry: user.resetOtpExpiry,
+      message: null
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.redirect("/user/forgot-password");
+  }
 };
 
 const loadResetPassword = (req, res) => {
@@ -157,5 +246,6 @@ export default {
     resetPassword,
     loadForgotPassword,
     loadVerifyOTP,
-    loadResetPassword   
+    loadResetPassword,
+    resendOTP   
 };  

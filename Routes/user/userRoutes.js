@@ -1,41 +1,32 @@
 import express from 'express';
 const router = express.Router();
-
 import userLogin from '../../Controller/user/login.js';
 import userSignup from '../../Controller/user/signup.js';
-import authController from '../../Controller/user/forgotPassword.js';
 import profileController from '../../Controller/user/profile.js';
 import addressController from '../../Controller/user/address.js';
 
+import userForgotPassword from '../../Controller/user/forgotPassword.js';
 import { requireAuth, isLoggedIn } from '../../Middleware/userAuth.js';
-import { otpLimiter } from '../../Middleware/otpLimiter.js'; 
 
-// LOGIN
 router.get('/login', isLoggedIn, userLogin.loadLogin);
 router.post('/login', userLogin.login);
 
-// SIGNUP
 router.get('/signup', isLoggedIn, userSignup.loadSignup);
 router.post('/signup', userSignup.signup);
 
-// SIGNUP OTP
-router.get('/signup/otp', userSignup.loadVerifyOTP);
-router.post('/signup/otp', userSignup.verifyOTP);
-
-// HOME
 router.get('/home', requireAuth, userLogin.loadHome);
 
-// FORGOT PASSWORD
-router.get('/forgot-password', authController.loadForgotPassword);
-router.post('/forgot-password', otpLimiter, authController.forgotPassword);
+router.get('/signup-otp', userSignup.loadVerifyOTP);
+router.post('/signup/otp', userSignup.verifyOTP);
+router.post('/resend-otp', userSignup.resendOTP);
 
-// FORGOT PASSWORD OTP
-router.get('/forgot-otp', authController.loadVerifyOTP);
-router.post('/forgot-otp', authController.verifyOTP);
-
-// RESET PASSWORD
-router.get('/reset-password', authController.loadResetPassword);
-router.post('/reset-password', authController.resetPassword);
+router.get('/forgot-password', userForgotPassword.loadForgotPassword);
+router.post('/forgot-password', userForgotPassword.forgotPassword);
+router.get('/forgot-otp', userForgotPassword.loadVerifyOTP);
+router.post('/forgot-otp', userForgotPassword.verifyOTP);
+router.get('/reset-password', userForgotPassword.loadResetPassword);
+router.post('/reset-password', userForgotPassword.resetPassword);
+router.post('/forgot/resend-otp', userForgotPassword.resendOTP);
 
 // PROFILE
 router.get('/profile', requireAuth, profileController.loadProfile);

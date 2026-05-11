@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carry Nest - Sign Up</title>
     <link rel="stylesheet" href="/Styles/user/signup.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -31,22 +31,17 @@
                 </button>
             </a>
         </div>
-
-        <!-- Form -->
-        <% if (typeof message !== 'undefined') { %>
-            <p style="color:red; text-align:center;"><%= message %></p>
-        <% } %>
         
         <form class="login-form" action="/user/signup" method="POST">
 
             <div class="input-group">
                 <label>Name</label>
-                <input type="text" name="name" placeholder="Enter your name">
+                <input type="text" name="name" placeholder="Enter your name" >
             </div>
 
             <div class="input-group">
                 <label>Email</label>
-                <input type="email" name="email" placeholder="example@gmail.com">
+                <input type="email" name="email" placeholder="example@gmail.com" >
             </div>
 
             <div class="input-group">
@@ -129,11 +124,113 @@
 
 <script>
 
+ const message = `<%= typeof message !== 'undefined' ? message : '' %>`;
+
+        if(message){
+            
+            Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: message
+        });
+    }
+
+const signupForm = document.querySelector("form");
+
+signupForm.addEventListener("submit", (e) => {
+
+    const name = document.querySelector('input[name="name"]').value.trim();
+    const email = document.querySelector('input[name="email"]').value.trim();
+    const phone = document.querySelector('input[name="phone"]').value.trim();
+    const password = document.querySelector('input[name="password"]').value.trim();
+    const confirmPassword = document.querySelector('input[name="confirmPassword"]').value.trim();
+
+    if(!name && !email && !password && !confirmPassword){
+        e.preventDefault();
+        Swal.fire({
+            icon: "warning",
+            title: "Missing Fields",
+            text: "Please fill all fields"
+        });
+
+        return;
+    }
+    
+    if(!name){
+        e.preventDefault();
+        Swal.fire({
+            icon: "warning",
+            title: "Name Required",
+            text: "Please enter your name"
+        });
+
+        return;
+    }
+
+    if(!email){
+        e.preventDefault();
+        Swal.fire({
+            icon: "warning",
+            title: "Email Required",
+            text: "Please enter your email"
+        });
+
+        return;
+    }
+
+
+    if(!phone){
+        e.preventDefault();
+        Swal.fire({
+            icon: "warning",
+            title: "Phone Required",
+            text: "Please enter your phone number"
+        });
+
+        return;
+    }
+
+    if(!password){
+        e.preventDefault();
+        Swal.fire({
+            icon: "warning",
+            title: "Password Required",
+            text: "Please enter your password"
+        });
+
+        return;
+    }
+
+
+    if(!confirmPassword){
+        e.preventDefault();
+        Swal.fire({
+            icon: "warning",
+            title: "Confirm Password",
+            text: "Please confirm your password"
+        });
+
+        return;
+    }
+
+    if(password !== confirmPassword){
+        e.preventDefault();
+        Swal.fire({
+            icon: "error",
+            title: "Password Error",
+            text: "Passwords do not match"
+        });
+
+        return;
+    }
+});
+
+
 document.querySelectorAll(".fa-eye").forEach(icon => {
-  icon.addEventListener("click", () => {
-    const input = icon.previousElementSibling;
-    input.type = input.type === "password" ? "text" : "password";
-  });
+    icon.addEventListener("click", () => {
+        const input = icon.previousElementSibling;
+        input.type = input.type === "password"? "text": "password";
+    });
 });
 
 </script>
