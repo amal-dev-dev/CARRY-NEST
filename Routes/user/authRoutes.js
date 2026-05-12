@@ -14,11 +14,8 @@ router.get('/google/callback',
         failureRedirect: '/user/login'
     }),
     (req, res) => {
-        req.session.user = {
-            id: req.user._id,
-            name: req.user.name,
-            email: req.user.email
-        };
+
+        req.session.user = req.user._id;
 
         res.redirect('/user/home');
     }

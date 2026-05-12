@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CARRY NEST - Saved Addresses</title>
     <link rel="stylesheet" href="/Styles/user/address.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -44,7 +45,7 @@
                     <span class="nav-icon">🔑</span> Change Password
                 </a>
                 <div class="nav-divider"></div>
-                <a href="#" class="nav-item logout-btn">
+                <a href="/user/logout" class="nav-item logout-btn">
                     <span class="nav-icon">🚪</span> Logout
                 </a>
             </nav>
@@ -89,10 +90,13 @@
                             <p><%= address.mobile %></p>
                         </div>
                         <div class="address-actions">
-                            <a href="/user/address/delete/<%= address._id %>" style="text-decoration: none;"
-                            onclick="return confirm('Delete this address?')">
-                                Delete
-                            </a>
+                            <form action="/user/address/delete/<%= address._id %>" 
+                                method="POST"
+                                class="delete-form">
+                                <button type="submit" class="delete-btn">
+                                    Delete
+                                </button>
+                            </form>
                         </div>
                     </div>
                     <% }) %>
@@ -159,6 +163,33 @@
             </div>
         </div>
     </footer>
+
+<script>
+
+document.querySelectorAll(".delete-form").forEach(form => {
+
+    form.addEventListener("submit", (e) => {
+
+        e.preventDefault();
+
+        Swal.fire({
+            title: "Delete Address?",
+            text: "This address will be removed permanently",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Delete",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+
+            if(result.isConfirmed){
+
+                form.submit();
+            }
+        });
+    });
+});
+
+</script>
 
 </body>
 </html>

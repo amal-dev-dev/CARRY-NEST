@@ -13,7 +13,7 @@
         <aside class="sidebar-container">
             <div class="user-id-card">
                 <div class="avatar-box">
-                    <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=000&color=fff" alt="<%= user.name %>">
+                    <img src="<%= user.profileImage || 'https://ui-avatars.com/api/?name=' + user.name %>">
                 </div>
                 <h3><%= user.name %></h3>
                 <p class="user-email"><%= user.email %></p>
@@ -44,7 +44,7 @@
                     <span class="nav-icon">🔑</span> Change Password
                 </a>
                 <div class="nav-divider"></div>
-                <a href="#" class="nav-item logout-btn">
+                <a href="/user/logout" class="nav-item logout-btn">
                     <span class="nav-icon">🚪</span> Logout
                 </a>
             </nav>

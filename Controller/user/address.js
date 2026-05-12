@@ -89,7 +89,7 @@ const addAddress = async (req, res) => {
 
         await newAddress.save();
 
-        res.redirect("/address");
+        res.redirect("/user/address");
 
     } catch (error) {
 
@@ -147,7 +147,7 @@ const updateAddress = async (req, res) => {
 
         });
 
-        res.redirect("/address");
+        res.redirect("/user/address");
 
     } catch (error) {
 
@@ -164,8 +164,7 @@ const deleteAddress = async (req, res) => {
     try {
 
         await Address.findByIdAndDelete(req.params.id);
-
-        res.redirect("/address");
+        res.redirect("/user/address");
 
     } catch (error) {
 

@@ -20,6 +20,7 @@ const transporter = nodemailer.createTransport({
 // LOAD PROFILE
 const loadProfile = async (req, res) => {
     try {
+
         if (!req.session.user) {
             return res.redirect('/user/login');
         }
@@ -48,26 +49,58 @@ const loadEditProfile = async (req, res) => {
 // UPDATE PROFILE
 const updateProfile = async (req, res) => {
     try {
-        const { name, phone } = req.body;
 
+        const { name, phone } = req.body;
+        const image = req.file ? req.file.path : undefined;
 
         if (!name || name.trim() === "") {
+
             const user = await Users.findById(req.session.user);
+
             return res.render('user/edit-profile', {
                 user,
                 message: "Name is required"
             });
         }
 
+        const nameRegex = /^[A-Za-z\s]+$/;
+
+        if (!nameRegex.test(name.trim())) {
+
+            const user = await Users.findById(req.session.user);
+
+            return res.render('user/edit-profile', {
+                user,
+                message: "Name should contain only letters"
+            });
+        }
+
+        if (phone && phone.trim().length !== 10) {
+
+            const user = await Users.findById(req.session.user);
+
+            return res.render('user/edit-profile', {
+                user,
+                message: "Phone number must be 10 digits"
+            });
+        }
+
         await Users.findByIdAndUpdate(req.session.user, {
+
             name: name.trim(),
-            phone: phone.trim()
+
+            phone: phone ? phone.trim() : "",
+
+            ...(image && { profileImage: image })
+
         });
 
         res.redirect('/user/profile');
 
     } catch (error) {
+
         console.log(error);
+
         res.redirect('/user/profile');
     }
 };

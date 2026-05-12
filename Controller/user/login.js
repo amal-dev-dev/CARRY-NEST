@@ -41,10 +41,25 @@ const loadHome = (req, res) => {
     res.render('user/home');
 };
 
+const logout = (req, res) => {
+
+    req.session.destroy((err) => {
+
+        if (err) {
+            console.log(err);
+            return res.redirect('/user/home');
+        }
+
+        res.clearCookie('connect.sid');
+
+        res.redirect('/user/login');
+    });
+};
 
 
 export default {
     login,
     loadLogin,
-    loadHome
+    loadHome,
+    logout
 };

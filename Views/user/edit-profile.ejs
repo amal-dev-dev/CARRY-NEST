@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - CARRY NEST</title>
     <link rel="stylesheet" href="/Styles/user/edit-profile.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
-    <!-- Header Section -->
+    <!-- Header -->
     <header class="navbar">
         <div class="nav-content">
             <h1 class="logo">CARRY NEST</h1>
             <div class="search-container">
-                <input type="text" placeholder="Search for products..." class="search-input">
+                <input type="text"
+                       placeholder="Search for products..."
+                       class="search-input">
             </div>
             <div class="nav-icons">
                 <span>🛒</span>
@@ -23,7 +26,7 @@
         </div>
     </header>
 
-    <!-- Modal Overlay -->
+    <!-- Modal -->
     <div class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
@@ -31,100 +34,230 @@
                 <button class="close-btn">&times;</button>
             </div>
 
+            <!-- IMAGE PREVIEW -->
             <div class="profile-upload-section">
                 <div class="avatar-wrapper">
-                    <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=000&color=fff" alt="<%= user.name %>" class="profile-img">
-                    <div class="camera-icon-badge">📷</div>
+                    <img
+                        src="<%= user.profileImage || ('https://ui-avatars.com/api/?name=' + user.name) %>"
+                        alt="Profile"
+                        class="profile-img"
+                        id="previewImage"
+                    >
                 </div>
-                <p class="upload-hint">Click the camera icon to update your profile picture</p>
+                <p class="upload-hint">
+                    Select image to update profile picture
+                </p>
             </div>
 
-            <form class="edit-form" action="/user/profile/edit" method="POST">
+            <!-- FORM -->
+            <form class="edit-form"
+                  action="/user/profile/edit"
+                  method="POST"
+                  enctype="multipart/form-data">
+
+                <!-- PROFILE IMAGE -->
+                <div class="form-group full-width">
+                    <label>Profile Image</label>
+                    <input
+                        type="file"
+                        name="profileImage"
+                        id="profileImageInput"
+                        accept="image/*"
+                    >
+                </div>
+
                 <div class="form-row">
+                    <!-- NAME -->
                     <div class="form-group">
                         <label>Full Name</label>
-                        <input type="text" name="name" value="<%= user.name %>" required>
+                        <input
+                            type="text"
+                            name="name"
+                            value="<%= user.name %>"
+                        >
                     </div>
+
+                    <!-- EMAIL -->
                     <div class="form-group">
                         <label>Email Address</label>
-                            <input type="email" id="email" name="email" value="<%= user.email %>" required>
-                            <button type="button" class="btn-send-otp" onclick="sendOTP()">Send OTP</button>
-                        <div id="otpSection" style="display:none; margin-top:10px;">
-                            <input type="text" id="otp" placeholder="Enter OTP" class="otp-input">
-                            <button type="button" class="btn-verify" onclick="verifyOTP()">Verify OTP</button>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="<%= user.email %>"
+                        >
+                        <button
+                            type="button"
+                            class="btn-send-otp"
+                            onclick="sendOTP()">
+                            Send OTP
+                        </button>
+
+                        <!-- OTP SECTION -->
+                        <div id="otpSection"
+                             style="display:none; margin-top:10px;">
+                            <input
+                                type="text"
+                                id="otp"
+                                placeholder="Enter OTP"
+                                class="otp-input"
+                            >
+                            <button
+                                type="button"
+                                class="btn-verify"
+                                onclick="verifyOTP()">
+                                Verify OTP
+                            </button>
                         </div>
                     </div>
                 </div>
 
+                <!-- PHONE -->
                 <div class="form-group full-width">
                     <label>Phone Number</label>
-                    <input type="tel" name="phone" value="<%= user.phone %>" required>
+                    <input
+                        type="tel"
+                        name="phone"
+                        value="<%= user.phone %>"
+                    >
                 </div>
 
+                <!-- BUTTONS -->
                 <div class="form-actions">
-                    <a href="/user/profile" class="btn-cancel" style="text-decoration: none;">Cancel</a>
-                    <button type="submit" class="btn-save">Save Changes</button>
+                    <a href="/user/profile"
+                       class="btn-cancel"
+                       style="text-decoration:none;">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn-save">
+                        Save Changes
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+<script>
 
-    <script>
-        let emailVerified = false;
-        const originalEmail = "<%= user.email %>";
+    let emailVerified = false;
+    const originalEmail = "<%= user.email %>";
 
-        function sendOTP() {
-            const email = document.getElementById("email").value;
+    // IMAGE PREVIEW
+    const imageInput = document.getElementById("profileImageInput");
+    const previewImage = document.getElementById("previewImage");
+    imageInput.addEventListener("change", function(){
+        const file = this.files[0];
+        if(file){
+            const reader = new FileReader();
+            reader.onload = function(e){
+                previewImage.src = e.target.result;
+            };
+              reader.readAsDataURL(file);
+        }
+    });
 
-            if (email === originalEmail) {
-                alert("Email is same as current");
-                return;
-            }
+    // SEND OTP
+    function sendOTP() {
 
-            fetch("/user/send-email-otp", {
+        const email = document.getElementById("email").value;
+        if (email === originalEmail) {
+            Swal.fire({
+                icon: "warning",
+                title: "Invalid Email",
+                text: "Email is same as current"
+            });
+            return;
+        }
+
+        fetch("/user/send-email-otp", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ newEmail: email })
+            body: JSON.stringify({
+                newEmail: email
             })
-            .then(res => res.json())
-            .then(() => {
-            alert("OTP sent to email");
+        })
+        .then(res => res.json())
+        .then(() => {
+            Swal.fire({
+                icon: "success",
+                title: "OTP Sent",
+                text: "OTP sent to email"
+            });
+
             document.getElementById("otpSection").style.display = "block";
-            });
-        }
-
-        function verifyOTP() {
-            const email = document.getElementById("email").value;
-            const otp = document.getElementById("otp").value;
-
-                fetch("/user/verify-email-otp", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ newEmail, otp })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    alert("Email updated successfully");
-                    location.reload(); // or redirect
-                } else {
-                    alert(data.message); // 👈 VERY IMPORTANT
-                }
-            });
-        }
-
-        document.querySelector(".edit-form").addEventListener("submit", function(e) {
-            const currentEmail = document.getElementById("email").value;
-
-            if (currentEmail !== originalEmail && !emailVerified) {
-                e.preventDefault();
-                alert("Please verify your new email first!");
-            }
         });
+
+    }
+
+    // VERIFY OTP
+    function verifyOTP() {
+
+        const email = document.getElementById("email").value;
+        const otp = document.getElementById("otp").value;
+
+        if(!otp){
+            Swal.fire({
+                icon: "warning",
+                title: "OTP Required",
+                text: "Please enter OTP"
+            });
+
+            return;
+        }
+        fetch("/user/verify-email-otp", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                newEmail: email,
+                otp: otp
+            })
+        })
+
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                emailVerified = true;
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Email updated successfully"
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Failed",
+                    text: data.message
+                });
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Something went wrong"
+            });
+        });
+    }
+
+    // FORM SUBMIT VALIDATION
+    document.querySelector(".edit-form")
+    .addEventListener("submit", function(e){
+        const currentEmail = document.getElementById("email").value;
+
+        if(currentEmail !== originalEmail && !emailVerified){
+            e.preventDefault();
+            Swal.fire({
+                icon: "warning",
+                title: "Verify Email",
+                text: "Please verify your new email first!"
+            });
+        }
+    });
+
 </script>
 
 </body>

@@ -53,7 +53,11 @@ const userSchema = new mongoose.Schema({
     isVerified: {
         type: Boolean,
         default: false
-    }
+    },
+    profileImage: {
+        type: String,
+        default: ""
+    },
 
 });
 

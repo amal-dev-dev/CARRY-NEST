@@ -4,12 +4,13 @@ import userLogin from '../../Controller/user/login.js';
 import userSignup from '../../Controller/user/signup.js';
 import profileController from '../../Controller/user/profile.js';
 import addressController from '../../Controller/user/address.js';
-
 import userForgotPassword from '../../Controller/user/forgotPassword.js';
 import { requireAuth, isLoggedIn } from '../../Middleware/userAuth.js';
+import upload from '../../Middleware/multer.js';
 
 router.get('/login', isLoggedIn, userLogin.loadLogin);
 router.post('/login', userLogin.login);
+router.get('/logout', userLogin.logout);
 
 router.get('/signup', isLoggedIn, userSignup.loadSignup);
 router.post('/signup', userSignup.signup);
@@ -33,7 +34,7 @@ router.get('/profile', requireAuth, profileController.loadProfile);
 
 //EDIT PROFILE
 router.get('/profile/edit', requireAuth, profileController.loadEditProfile);
-router.post('/profile/edit', requireAuth, profileController.updateProfile);
+router.post('/profile/edit', requireAuth, upload.single('profileImage'), profileController.updateProfile);
 
 // EMAIL UPDATE OTP
 router.get("/change-email", profileController.loadEmailChangePage);
@@ -53,6 +54,7 @@ router.post("/address/edit/:id", requireAuth, addressController.updateAddress);
 
 // DELETE ADDRESS
 router.get("/address/delete/:id", requireAuth, addressController.deleteAddress);
+router.post("/address/delete/:id", requireAuth, addressController.deleteAddress);
 
 
 export default router;
