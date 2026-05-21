@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CARRY NEST - Saved Addresses</title>
     <link rel="stylesheet" href="/Styles/user/address.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
@@ -14,7 +15,7 @@
         <aside class="sidebar-container">
             <div class="user-id-card">
                 <div class="avatar-box">
-                    <img src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=000&color=fff" alt="<%= user.name %>">
+                    <img src="<%= user.profileImage || 'https://ui-avatars.com/api/?name=' + user.name %>">
                 </div>
                 <h3><%= user.name %></h3>
                 <p class="user-email"><%= user.email %></p>
@@ -23,30 +24,30 @@
 
             <nav class="nav-menu">
                   <a href="/user/home" class="nav-item">
-                    <span class="nav-icon">🏠</span> Home
+                    <span class="nav-icon"><i class="fa-solid fa-house"></i></span> Home
                 </a>
                 <a href="/user/profile" class="nav-item">
-                    <span class="nav-icon">👤</span> Personal Information
+                    <span class="nav-icon"><i class="fa-regular fa-user"></i></span> Personal Information
                 </a>
                 <!-- Addresses is now the ACTIVE item with black background -->
                 <a href="/user/address" class="nav-item active">
-                    <span class="nav-icon">📍</span> Addresses
+                    <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span> Addresses
                 </a>
                 <a href="#" class="nav-item">
-                    <span class="nav-icon">🎁</span> Referrals
+                    <span class="nav-icon"><i class="fa-solid fa-gift"></i></span> Referrals
                 </a>
                 <a href="#" class="nav-item">
-                    <span class="nav-icon">📋</span> Order History
+                    <span class="nav-icon"><i class="fa-solid fa-box"></i></span> Order History
                 </a>
                 <a href="#" class="nav-item">
-                    <span class="nav-icon">💳</span> Wallet
+                    <span class="nav-icon"><i class="fa-solid fa-wallet"></i></span> Wallet
                 </a>
                 <a href="#" class="nav-item">
-                    <span class="nav-icon">🔑</span> Change Password
+                    <span class="nav-icon"><i class="fa-solid fa-key"></i></span> Change Password
                 </a>
                 <div class="nav-divider"></div>
                 <a href="/user/logout" class="nav-item logout-btn">
-                    <span class="nav-icon">🚪</span> Logout
+                    <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>Logout
                 </a>
             </nav>
         </aside>

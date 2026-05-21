@@ -4,189 +4,324 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - CARRY NEST</title>
+
     <link rel="stylesheet" href="/Styles/user/edit-profile.css">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
 
-    <!-- Header -->
-    <header class="navbar">
-        <div class="nav-content">
-            <h1 class="logo">CARRY NEST</h1>
-            <div class="search-container">
-                <input type="text"
-                       placeholder="Search for products..."
-                       class="search-input">
-            </div>
-            <div class="nav-icons">
-                <span>🛒</span>
-                <span>👤</span>
-                <span>❤️</span>
-            </div>
-        </div>
-    </header>
-
-    <!-- Modal -->
+    <!-- MAIN -->
     <div class="modal-overlay">
+
         <div class="modal-card">
+
+            <!-- HEADER -->
             <div class="modal-header">
+
                 <h2>Edit Personal Information</h2>
-                <button class="close-btn">&times;</button>
+
+                <a href="/user/profile" class="close-btn" style="text-decoration: none;">
+                    ×
+                </a>
+
             </div>
 
-            <!-- IMAGE PREVIEW -->
+            <!-- PROFILE IMAGE -->
             <div class="profile-upload-section">
+
                 <div class="avatar-wrapper">
+
                     <img
                         src="<%= user.profileImage || ('https://ui-avatars.com/api/?name=' + user.name) %>"
                         alt="Profile"
                         class="profile-img"
                         id="previewImage"
                     >
+
                 </div>
+
                 <p class="upload-hint">
                     Select image to update profile picture
                 </p>
+
             </div>
 
             <!-- FORM -->
-            <form class="edit-form"
-                  action="/user/profile/edit"
-                  method="POST"
-                  enctype="multipart/form-data">
+            <form
+                class="edit-form"
+                action="/user/profile/edit"
+                method="POST"
+                enctype="multipart/form-data"
+            >
 
-                <!-- PROFILE IMAGE -->
+                <!-- IMAGE -->
                 <div class="form-group full-width">
+
                     <label>Profile Image</label>
+
                     <input
                         type="file"
                         name="profileImage"
                         id="profileImageInput"
                         accept="image/*"
                     >
+
                 </div>
 
+                <!-- ROW -->
                 <div class="form-row">
+
                     <!-- NAME -->
                     <div class="form-group">
+
                         <label>Full Name</label>
+
                         <input
                             type="text"
                             name="name"
                             value="<%= user.name %>"
                         >
+
                     </div>
 
                     <!-- EMAIL -->
                     <div class="form-group">
+
                         <label>Email Address</label>
+
                         <input
                             type="email"
                             id="email"
                             name="email"
                             value="<%= user.email %>"
                         >
+
+                        <!-- SEND OTP -->
                         <button
                             type="button"
                             class="btn-send-otp"
-                            onclick="sendOTP()">
+                            onclick="sendOTP()"
+                        >
                             Send OTP
                         </button>
 
                         <!-- OTP SECTION -->
-                        <div id="otpSection"
-                             style="display:none; margin-top:10px;">
+                        <div
+                            id="otpSection"
+                            class="otp-section"
+                            style="display:none;"
+                        >
+
                             <input
                                 type="text"
                                 id="otp"
                                 placeholder="Enter OTP"
                                 class="otp-input"
                             >
+
                             <button
                                 type="button"
                                 class="btn-verify"
-                                onclick="verifyOTP()">
+                                onclick="verifyOTP()"
+                            >
                                 Verify OTP
                             </button>
+
+                            <!-- RESEND -->
+                            <div class="otp-action-row">
+
+                                <button
+                                    type="button"
+                                    id="resendBtn"
+                                    class="btn-resend"
+                                    onclick="resendOTP()"
+                                    disabled
+                                >
+                                    Resend OTP
+                                </button>
+
+                                <span id="timerText">
+                                    60s
+                                </span>
+
+                            </div>
+
                         </div>
+
                     </div>
+
                 </div>
 
                 <!-- PHONE -->
                 <div class="form-group full-width">
+
                     <label>Phone Number</label>
+
                     <input
                         type="tel"
                         name="phone"
                         value="<%= user.phone %>"
                     >
+
                 </div>
 
                 <!-- BUTTONS -->
                 <div class="form-actions">
-                    <a href="/user/profile"
-                       class="btn-cancel"
-                       style="text-decoration:none;">
+
+                    <a
+                        href="/user/profile"
+                        class="btn-cancel"
+                    >
                         Cancel
                     </a>
-                    <button type="submit" class="btn-save">
+
+                    <button
+                        type="submit"
+                        class="btn-save"
+                    >
                         Save Changes
                     </button>
+
                 </div>
+
             </form>
+
         </div>
+
     </div>
+
 <script>
 
     let emailVerified = false;
+    let timer;
+    let countdown = 60;
+
     const originalEmail = "<%= user.email %>";
 
     // IMAGE PREVIEW
     const imageInput = document.getElementById("profileImageInput");
     const previewImage = document.getElementById("previewImage");
-    imageInput.addEventListener("change", function(){
+
+    imageInput.addEventListener("change", function () {
+
         const file = this.files[0];
-        if(file){
+
+        if (file) {
+
             const reader = new FileReader();
-            reader.onload = function(e){
+
+            reader.onload = function (e) {
+
                 previewImage.src = e.target.result;
+
             };
-              reader.readAsDataURL(file);
+
+            reader.readAsDataURL(file);
+
         }
+
     });
+
+    // TIMER
+    function startTimer() {
+
+        const resendBtn = document.getElementById("resendBtn");
+        const timerText = document.getElementById("timerText");
+
+        resendBtn.disabled = true;
+
+        countdown = 60;
+
+        timerText.innerText = `${countdown}s`;
+
+        timer = setInterval(() => {
+
+            countdown--;
+
+            timerText.innerText = `${countdown}s`;
+
+            if (countdown <= 0) {
+
+                clearInterval(timer);
+
+                resendBtn.disabled = false;
+
+                timerText.innerText = "You can resend now";
+
+            }
+
+        }, 1000);
+
+    }
 
     // SEND OTP
     function sendOTP() {
 
         const email = document.getElementById("email").value;
+
         if (email === originalEmail) {
+
             Swal.fire({
                 icon: "warning",
                 title: "Invalid Email",
                 text: "Email is same as current"
             });
+
             return;
         }
 
         fetch("/user/send-email-otp", {
+
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json"
             },
+
             body: JSON.stringify({
                 newEmail: email
             })
-        })
-        .then(res => res.json())
-        .then(() => {
-            Swal.fire({
-                icon: "success",
-                title: "OTP Sent",
-                text: "OTP sent to email"
-            });
 
-            document.getElementById("otpSection").style.display = "block";
+        })
+
+        .then(res => res.json())
+
+        .then(data => {
+
+            if (data.success) {
+
+                Swal.fire({
+                    icon: "success",
+                    title: "OTP Sent",
+                    text: "OTP sent to email"
+                });
+
+                document.getElementById("otpSection").style.display = "block";
+
+                clearInterval(timer);
+
+                startTimer();
+
+            } else {
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Failed",
+                    text: data.message
+                });
+
+            }
+
         });
+
+    }
+
+    // RESEND OTP
+    function resendOTP() {
+
+        sendOTP();
 
     }
 
@@ -194,9 +329,11 @@
     function verifyOTP() {
 
         const email = document.getElementById("email").value;
+
         const otp = document.getElementById("otp").value;
 
-        if(!otp){
+        if (!otp) {
+
             Swal.fire({
                 icon: "warning",
                 title: "OTP Required",
@@ -205,57 +342,85 @@
 
             return;
         }
+
         fetch("/user/verify-email-otp", {
+
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json"
             },
+
             body: JSON.stringify({
                 newEmail: email,
                 otp: otp
             })
+
         })
 
         .then(res => res.json())
+
         .then(data => {
-            if(data.success){
+
+            if (data.success) {
+
                 emailVerified = true;
+
                 Swal.fire({
                     icon: "success",
                     title: "Success",
-                    text: "Email updated successfully"
+                    text: "Email verified successfully"
                 });
+
             } else {
+
                 Swal.fire({
                     icon: "error",
                     title: "Failed",
                     text: data.message
                 });
+
             }
+
         })
+
         .catch(error => {
+
             console.log(error);
+
             Swal.fire({
                 icon: "error",
                 title: "Error",
                 text: "Something went wrong"
             });
+
         });
+
     }
 
-    // FORM SUBMIT VALIDATION
-    document.querySelector(".edit-form")
-    .addEventListener("submit", function(e){
-        const currentEmail = document.getElementById("email").value;
+    // FORM VALIDATION
+    document
+    .querySelector(".edit-form")
+    .addEventListener("submit", function (e) {
 
-        if(currentEmail !== originalEmail && !emailVerified){
+        const currentEmail =
+        document.getElementById("email").value;
+
+        if (
+            currentEmail !== originalEmail &&
+            !emailVerified
+        ) {
+
             e.preventDefault();
+
             Swal.fire({
                 icon: "warning",
                 title: "Verify Email",
                 text: "Please verify your new email first!"
             });
+
         }
+
     });
 
 </script>

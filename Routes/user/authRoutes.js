@@ -9,15 +9,19 @@ router.get('/google',
 );
 
 // Step 2 → Callback
-router.get('/google/callback',
-    passport.authenticate('google', {
-        failureRedirect: '/user/login'
+router.get(
+    "/google/callback",
+
+    passport.authenticate("google", {
+        failureRedirect: "/user/login"
     }),
+
     (req, res) => {
 
         req.session.user = req.user._id;
 
-        res.redirect('/user/home');
+        res.redirect("/user/home");
+
     }
 );
 

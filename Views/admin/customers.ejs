@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Customers - Carry Nest Admin</title>
+
+    <link rel="stylesheet" href="/Styles/admin/customer.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- LOGO -->
+            <div class="logo-section">
+
+                <div class="logo-box">
+                    C
+                </div>
+
+                <h2>CARRY NEST</h2>
+
+            </div>
+
+            <!-- MENU -->
+            <div class="menu-wrapper">
+
+                <a href="/admin/dashboard"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-dashboard-line"></i>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-shopping-bag-line"></i>
+
+                        Products
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-shopping-cart-line"></i>
+
+                        Orders
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-arrow-go-back-line"></i>
+
+                        Returns
+
+                    </span>
+
+                </a>
+
+               <a href="/admin/customers"
+                class="menu-item active">
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-settings-3-line"></i>
+
+                        Settings
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- LOGOUT -->
+        <div class="logout-section">
+
+            <a href="/admin/logout" class="logout-btn">
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div class="top-left">
+
+                <p class="breadcrumb">
+                    Admin / Dashboard
+                </p>
+
+            </div>
+
+            <div class="top-right">
+
+                <input type="text"
+                       placeholder="Search..."
+                       class="top-search">
+
+                <span class="notification">
+                    🔔
+                </span>
+
+                <div class="admin-profile">
+
+                    <div class="admin-avatar">
+                        AD
+                    </div>
+
+                    <div>
+
+                        <h4>Admin User</h4>
+
+                        <span>Super Admin</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- PAGE HEADER -->
+        <section class="page-header">
+
+            <h1>Customers</h1>
+
+            <p>
+                View and manage customer profiles.
+            </p>
+
+        </section>
+
+        <!-- CUSTOMER TABLE -->
+        <section class="table-card">
+
+            <!-- TABLE TOP -->
+            <div class="table-top">
+
+                <h3>All Customers</h3>
+
+               <div class="table-actions">
+
+                    <!-- SEARCH -->
+
+                    <form action="/admin/customers"
+                        method="GET"
+                        class="search-form">
+
+                        <input
+                            type="text"
+                            name="search"
+                            value="<%= search %>"
+                            placeholder="Search users..."
+                            class="table-search"
+                        >
+
+                        <button type="submit"
+                                class="search-btn">
+
+                            Search
+
+                        </button>
+
+                        <a href="/admin/customers"
+                        class="clear-btn">
+
+                            Clear
+
+                        </a>
+
+                    </form>
+
+                    <!-- SORT -->
+
+                    <form action="/admin/customers"
+                        method="GET">
+
+                        <select name="sort"
+                                class="sort-select"
+                                onchange="this.form.submit()">
+
+                            <option value="latest"
+                                <%= sort === "latest" ? "selected" : "" %>>
+
+                                Latest
+
+                            </option>
+
+                            <option value="oldest"
+                                <%= sort === "oldest" ? "selected" : "" %>>
+
+                                Oldest
+
+                            </option>
+
+                        </select>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-responsive">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Customer</th>
+                        <th>Contact</th>
+                        <th>Orders</th>
+                        <th>Total Spent</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <% users.forEach((user)=> { %>
+
+                        <tr>
+
+                            <td>
+
+                                <div class="customer-info">
+
+                                    <div class="customer-avatar">
+                                        <%= user.name.charAt(0).toUpperCase() %>
+                                    </div>
+
+                                    <div>
+
+                                        <h4><%= user.name %></h4>
+
+                                        <span>
+                                            ID # <%= user._id %>
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+
+                                <div class="contact-info">
+
+                                    <p>📧 <%= user.email %></p>
+
+                                    <p>📞 <%= user.phone || "No phone" %></p>
+
+                                </div>
+
+                            </td>
+
+                            <td>0</td>
+
+                            <td>$0.00</td>
+
+                            <td>
+
+                                <% if(user.isBlocked){ %>
+
+                                    <span class="status blocked-status">
+                                        Blocked
+                                    </span>
+
+                                <% } else { %>
+
+                                    <span class="status active-status">
+                                        Active
+                                    </span>
+
+                                <% } %>
+
+                            </td>
+
+                            <td>
+
+                                <% if(user.isBlocked){ %>
+
+                                    <a href="/admin/unblock-user/<%= user._id %>"
+                                    class="action-btn unblock-btn">
+
+                                    Unblock
+
+                                    </a>
+
+                                <% } else { %>
+
+                                    <a href="/admin/block-user/<%= user._id %>"
+                                    class="action-btn block-btn">
+
+                                    Block
+
+                                    </a>
+
+                                <% } %>
+
+                            </td>
+
+                        </tr>
+
+                        <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="pagination-section">
+
+            <p>
+
+                Page <%= currentPage %> of <%= totalPages %>
+
+            </p>
+
+            <div class="pagination-btns">
+
+                <% if(currentPage > 1){ %>
+
+                    <a href="/admin/customers?page=<%= currentPage - 1 %>&search=<%= search %>&sort=<%= sort %>">
+
+                        ‹
+
+                    </a>
+
+                <% } %>
+
+                <% if(currentPage < totalPages){ %>
+
+                    <a href="/admin/customers?page=<%= currentPage + 1 %>&search=<%= search %>&sort=<%= sort %>">
+
+                        ›
+
+                    </a>
+
+                <% } %>
+
+            </div>
+
+        </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

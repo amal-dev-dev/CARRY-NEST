@@ -82,6 +82,12 @@ body {
     transform: translateX(5px);
 }
 
+.nav-icon i{
+    width:18px;
+    text-align:center;
+    font-size:15px;
+}
+
 /* BLACK ACTIVE STATE (Applied to Personal Information) */
 .nav-item.active {
     background: #000000;

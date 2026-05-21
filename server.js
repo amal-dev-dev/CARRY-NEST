@@ -8,6 +8,7 @@ import userRoutes from './Routes/user/userRoutes.js';
 import connectDB from './DB/connectDB.js';
 import passport from './Config/passport.js';
 import authRoutes from './Routes/user/authRoutes.js';
+import adminRoutes from "./Routes/admin/adminRoutes.js";
 
 dotenv.config();
 
@@ -17,7 +18,6 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
 
-app.use(nocache());
 app.use(session({
     secret: "yourSecretKey",
     resave: false,
@@ -27,10 +27,28 @@ app.use(session({
     }
 }));
 
+app.use((req, res, next) => {
+
+    res.setHeader(
+        "Cache-Control",
+        "no-cache, no-store, must-revalidate"
+    );
+    res.setHeader(
+        "Pragma",
+        "no-cache"
+    );
+    res.setHeader(
+        "Expires",
+        "0"
+    );
+
+    next();
+
+});
+
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/auth', authRoutes);
 
 // Create __filename and __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -43,7 +61,18 @@ app.set('views', path.join(__dirname, 'Views'));
 connectDB();
 
 app.use('/user',userRoutes);
+app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
 
+app.use((err, req, res, next) => {
+
+    console.log("GOOGLE ERROR:");
+
+    console.log(err);
+
+    res.send(err.message);
+
+});
 
 app.listen(PORT, ()=> {
     console.log(`Server Running on http://localhost:${PORT}`)

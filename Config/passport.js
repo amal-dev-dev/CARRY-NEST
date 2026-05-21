@@ -9,27 +9,33 @@ passport.use(new GoogleStrategy(
 {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/auth/google/callback'
-},
-async (accessToken, refreshToken, profile, done) => {
-    try {
-        const email = profile.emails[0].value;
+    callbackURL: "http://localhost:3000/auth/google/callback"
 
-        // Check user
+},
+
+async (accessToken, refreshToken, profile, done) => {
+
+    try {
+
+        const email = profile.emails[0].value;
         let user = await Users.findOne({ email });
+
+        if(user && user.isBlocked) {
+            return done(null, false, {message: "Your account has been blocked by admin"});
+        }
 
         if (!user) {
             user = await Users.create({
                 name: profile.displayName,
-                email: email,
-                password: null // Google user
+                email,
+                password: null
             });
         }
-
         return done(null, user);
 
-
     } catch (error) {
+
+        console.log(error);
         return done(error, null);
     }
 }));

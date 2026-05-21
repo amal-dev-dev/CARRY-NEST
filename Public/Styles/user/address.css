@@ -82,6 +82,12 @@ body {
     transform: translateX(5px);
 }
 
+.nav-icon i{
+    width:18px;
+    text-align:center;
+    font-size:15px;
+}
+
 /* BLACK ACTIVE STATE (Currently for Addresses) */
 .nav-item.active {
     background: #000000;
@@ -184,6 +190,15 @@ body {
     margin-top: 10px;
 }
 
+.address-actions button {
+    background-color: var(--footer-bg);
+    color: var(--sidebar-white);
+    cursor: pointer;
+    border-radius: 10%;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
 .remove-link {
     background: none;
     border: none;
@@ -202,6 +217,7 @@ body {
     margin-left: 680px;
     text-decoration: none;
 }
+
 
 /* --- Dark Footer Section --- */
 .footer {

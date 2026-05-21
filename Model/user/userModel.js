@@ -30,21 +30,21 @@ const userSchema = new mongoose.Schema({
         default: null
     },
 
-    // ✅ SIGNUP OTP
     signupOtp: {
         type: String,
         default: null
     },
+
     signupOtpExpiry: {
         type: Date,
         default: null
     },
 
-    // ✅ FORGOT PASSWORD OTP
     resetOtp: {
         type: String,
         default: null
     },
+
     resetOtpExpiry: {
         type: Date,
         default: null
@@ -54,12 +54,18 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+
     profileImage: {
         type: String,
         default: ""
     },
+    
+    isBlocked: {
+     type: Boolean,
+     default: false
+ },
 
-});
+}, { timestamps: true });
 
 const Users = mongoose.model('Users', userSchema);
 export default Users;

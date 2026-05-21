@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Dashboard - Carry Nest</title>
+
+    <link rel="stylesheet" href="/Styles/admin/dashboard.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- LOGO -->
+            <div class="logo-section">
+
+                <div class="logo-box">
+                    C
+                </div>
+
+                <h2>CARRY NEST</h2>
+
+            </div>
+
+            <!-- MENU -->
+            <div class="menu-wrapper">
+
+                <a href="/admin/dashboard"
+                class="menu-item active">
+
+                    <span class="menu-left">
+
+                        <i class="ri-dashboard-line"></i>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-shopping-bag-line"></i>
+
+                        Products
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-shopping-cart-line"></i>
+
+                        Orders
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-arrow-go-back-line"></i>
+
+                        Returns
+
+                    </span>
+
+                </a>
+
+               <a href="/admin/customers"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-settings-3-line"></i>
+
+                        Settings
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- LOGOUT -->
+        <div class="logout-section">
+
+            <a href="/admin/logout"
+               class="logout-btn">
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div class="top-left">
+
+                <p class="breadcrumb">
+                    Admin / Dashboard
+                </p>
+
+            </div>
+
+            <div class="top-right">
+
+                <input type="text"
+                       placeholder="Search..."
+                       class="top-search">
+
+                <span class="notification">
+                    🔔
+                </span>
+
+                <div class="admin-profile">
+
+                    <div class="admin-avatar">
+                        AD
+                    </div>
+
+                    <div>
+
+                        <h4>Admin User</h4>
+
+                        <span>Super Admin</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- PAGE HEADER -->
+        <section class="page-header">
+
+            <h1>Dashboard</h1>
+
+            <p>
+                Welcome back, manage your store efficiently.
+            </p>
+
+        </section>
+
+        <!-- CARDS -->
+        <section class="dashboard-cards">
+
+            <div class="card revenue-card">
+
+                <div class="card-icon">
+                    💰
+                </div>
+
+                <div>
+
+                    <h3>₹1,24,000</h3>
+
+                    <p>Total Revenue</p>
+
+                </div>
+
+            </div>
+
+            <div class="card orders-card">
+
+                <div class="card-icon">
+                    🛒
+                </div>
+
+                <div>
+
+                    <h3>1,248</h3>
+
+                    <p>Total Orders</p>
+
+                </div>
+
+            </div>
+
+            <div class="card users-card">
+
+                <div class="card-icon">
+                    👥
+                </div>
+
+                <div>
+
+                    <h3>856</h3>
+
+                    <p>Total Customers</p>
+
+                </div>
+
+            </div>
+
+            <div class="card products-card">
+
+                <div class="card-icon">
+                    📦
+                </div>
+
+                <div>
+
+                    <h3>126</h3>
+
+                    <p>Total Products</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- TABLE -->
+        <section class="table-card">
+
+            <div class="table-top">
+
+                <h3>Recent Orders</h3>
+
+                <button class="view-btn">
+                    View All
+                </button>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Customer</th>
+                            <th>Order ID</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>Amal Dev</td>
+
+                            <td>#ORD1024</td>
+
+                            <td>
+                                <span class="status completed">
+                                    Completed
+                                </span>
+                            </td>
+
+                            <td>₹4,500</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Rahul</td>
+
+                            <td>#ORD1025</td>
+
+                            <td>
+                                <span class="status pending">
+                                    Pending
+                                </span>
+                            </td>
+
+                            <td>₹2,000</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Arjun</td>
+
+                            <td>#ORD1026</td>
+
+                            <td>
+                                <span class="status cancelled">
+                                    Cancelled
+                                </span>
+                            </td>
+
+                            <td>₹1,200</td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>
