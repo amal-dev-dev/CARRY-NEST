@@ -18,18 +18,6 @@ const login = async (req, res) => {
             return res.render('admin/login', { message: "Invalid admin credentials" });
         }
 
-        if(!email && !password){
-            return res.render('admin/login',{ message: "Email and Password Required"});
-        }
-
-        if(!email) {
-            return res.render('admin/login',{ message: "Email Required"});
-        }
-
-        if(!password){
-            return res.render('admin/login',{ message: "Password Required"});
-        }
-
         req.session.admin = true;
         res.redirect("/admin/dashboard");
 
