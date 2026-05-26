@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Category Modal</title>
+
+  <link rel="stylesheet" href="/Styles/admin/add-category.css">
+</head>
+<body>
+
+  <div class="modal-container">
+
+    <div class="modal-header">
+
+      <h2>Add New Category</h2>
+
+      <span class="close-btn">&times;</span>
+
+    </div>
+
+    <!-- FORM START -->
+
+    <form action="/admin/add-category" method="POST">
+
+      <div class="modal-body">
+
+        <!-- CATEGORY NAME -->
+
+        <div class="form-group">
+
+          <label>Category Name *</label>
+
+          <input
+            type="text"
+            name="name"
+            placeholder="e.g., Apparel"
+            required
+          >
+
+        </div>
+
+        <!-- DESCRIPTION -->
+
+        <div class="form-group">
+
+          <label>Description</label>
+
+          <textarea
+            name="description"
+            placeholder="Brief description of the category"
+          ></textarea>
+
+        </div>
+
+        <!-- STATUS -->
+
+        <div class="status-section">
+
+          <label>Status</label>
+
+          <div class="toggle-wrapper">
+
+            <span>Category is active</span>
+
+            <label class="switch">
+
+              <input
+                type="checkbox"
+                name="isListed"
+                checked
+              >
+
+              <span class="slider"></span>
+
+            </label>
+
+          </div>
+
+        </div>
+
+        <!-- BUTTONS -->
+
+        <div class="button-group">
+
+          <a href="/admin/category"
+             class="cancel-btn">
+
+            Cancel
+
+          </a>
+
+          <button type="submit"
+                  class="add-btn">
+
+            Add Category
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </form>
+
+    <!-- FORM END -->
+
+  </div>
+
+</body>
+</html>

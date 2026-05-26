@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+
+    <link rel="stylesheet" href="/Styles/admin/category.css">
+
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- LOGO -->
+
+            <div class="logo-section">
+
+                <div class="logo-box">
+                    C
+                </div>
+
+                <h2>CARRY NEST</h2>
+
+            </div>
+
+            <!-- MENU -->
+
+            <div class="menu-wrapper">
+
+                <a href="/admin/dashboard"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-dashboard-line"></i>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+                <!-- PRODUCTS -->
+
+                <div class="menu-dropdown">
+
+                    <div class="menu-item active dropdown-toggle">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-bag-line"></i>
+
+                            Products
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+
+                    </div>
+
+                    <div class="submenu show">
+
+                        <a href="#">All Products</a>
+
+                        <a href="#">Add Product</a>
+
+                        <a href="/admin/category" class="active-submenu">Categories</a>
+
+                        <a href="#">Brands</a>
+
+                    </div>
+
+                </div>
+
+                <!-- ORDERS -->
+
+                <div class="menu-dropdown">
+
+                    <div class="menu-item dropdown-toggle">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                            Orders
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+
+                    </div>
+
+                    <div class="submenu">
+
+                        <a href="#">All Orders</a>
+
+                        <a href="#">Pending</a>
+
+                        <a href="#">Processing</a>
+
+                        <a href="#">Shipped</a>
+
+                    </div>
+
+                </div>
+
+                <!-- RETURNS -->
+
+                <div class="menu-dropdown">
+
+                    <div class="menu-item dropdown-toggle">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+
+                    </div>
+
+                    <div class="submenu">
+
+                        <a href="#">Requests</a>
+
+                        <a href="#">Refunds</a>
+
+                    </div>
+
+                </div>
+
+                <a href="/admin/customers"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- LOGOUT -->
+
+        <div class="logout-section">
+
+            <a href="/admin/logout"
+            class="logout-btn">
+
+                <i class="ri-logout-box-r-line"></i>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="top-left">
+
+                <p class="breadcrumb">
+
+                    Admin / Dashboard
+
+                </p>
+
+            </div>
+
+            <div class="top-right">
+
+                <input type="text"
+                placeholder="Search..."
+                class="top-search">
+
+                <span class="notification">
+
+                    <i class="ri-notification-3-line"></i>
+
+                </span>
+
+                <div class="admin-profile">
+
+                    <div class="admin-avatar">
+                        AD
+                    </div>
+
+                    <div>
+
+                        <h4>Admin User</h4>
+
+                        <span>Super Admin</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- PAGE HEADER -->
+
+        <section class="page-header">
+
+            <h1>Category Management</h1>
+
+            <p>
+                Manage your product categories
+            </p>
+
+        </section>
+
+        <!-- SEARCH SECTION -->
+
+        <section class="category-top">
+
+            <form action="/admin/category"
+            method="GET"
+            class="search-wrapper">
+
+                <input type="text"
+                name="search"
+                value="<%= search %>"
+                placeholder="Search categories...">
+
+                <select name="sort">
+
+                    <option value="desc"
+                    <%= sort === "desc" ? "selected" : "" %>>
+
+                        Descending
+
+                    </option>
+
+                    <option value="asc"
+                    <%= sort === "asc" ? "selected" : "" %>>
+
+                        Ascending
+
+                    </option>
+
+                </select>
+
+                <button type="submit"
+                class="search-btn">
+
+                    Search
+
+                </button>
+
+                <a href="/admin/category"
+                class="clear-search">
+
+                    Clear
+
+                </a>
+
+            </form>
+
+            <a href="/admin/add-category"
+            class="add-category-btn">
+
+                <i class="ri-add-line"></i>
+
+                Add Category
+
+            </a>
+
+        </section>
+
+        <!-- TABLE -->
+
+        <section class="table-card">
+
+            <div class="table-responsive">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Category Name</th>
+                            <th>Description</th>
+                            <th>Products</th>
+                            <th>Offers</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <% categories.forEach((category)=> { %>
+
+                            <tr>
+
+                                <td>
+                                    <%= category.name %>
+                                </td>
+
+                                <td>
+                                    <%= category.description %>
+                                </td>
+
+                                <td>
+                                    <%= category.productCount || 0 %> products
+                                </td>
+
+                                <td class="offer-link">
+
+                                    <i class="ri-price-tag-3-line"></i>
+
+                                    Add Offer
+
+                                </td>
+
+                                <td>
+
+                                    <label class="switch">
+
+                                        <input type="checkbox"
+                                        <%= category.isListed ? "checked" : "" %>>
+
+                                        <span class="slider"></span>
+
+                                    </label>
+
+                                </td>
+
+                                <td>
+
+                                <button class="edit-btn">
+
+                                   <a href="/admin/edit-category/<%= category._id %>"
+                                    class="edit-btn" >
+
+                                        <i class="ri-edit-line"></i>
+
+                                    </a>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                </tbody>
+
+            </table>
+
+            </div>
+
+            <!-- PAGINATION -->
+
+                <div class="pagination">
+
+                    <% if(currentPage > 1){ %>
+
+                        <a href="/admin/category?page=<%= currentPage - 1 %>&search=<%= search %>&sort=<%= sort %>"
+                        class="pagination-arrow">
+
+                            <i class="ri-arrow-left-s-line"></i>
+
+                        </a>
+
+                    <% } %>
+
+                    <span class="page-count">
+
+                        Page <%= currentPage %> of <%= totalPages %>
+
+                    </span>
+
+                    <% if(currentPage < totalPages){ %>
+
+                        <a href="/admin/category?page=<%= currentPage + 1 %>&search=<%= search %>&sort=<%= sort %>"
+                        class="pagination-arrow">
+
+                            <i class="ri-arrow-right-s-line"></i>
+
+                        </a>
+
+                    <% } %>
+
+                </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+
+const dropdowns = document.querySelectorAll(".dropdown-toggle");
+
+dropdowns.forEach((dropdown)=>{
+
+    dropdown.addEventListener("click",()=>{
+
+        const submenu =
+        dropdown.nextElementSibling;
+
+        submenu.classList.toggle("show");
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

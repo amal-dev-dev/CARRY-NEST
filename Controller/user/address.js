@@ -1,5 +1,5 @@
-import Address from "../../Model/user/addressModel.js";
-import User from "../../Model/user/userModel.js";
+import Address from "../../Model/addressModel.js";
+import User from "../../Model/userModel.js";
 
 
 // LOAD ADDRESS PAGE

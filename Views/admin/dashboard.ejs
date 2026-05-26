@@ -1,24 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Admin Dashboard - Carry Nest</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carry Nest Admin Dashboard</title>
 
     <link rel="stylesheet" href="/Styles/admin/dashboard.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
+    >
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
 <div class="dashboard-container">
 
     <!-- SIDEBAR -->
+
     <aside class="sidebar">
 
         <div>
 
             <!-- LOGO -->
+
             <div class="logo-section">
 
                 <div class="logo-box">
@@ -30,10 +38,12 @@
             </div>
 
             <!-- MENU -->
+
             <div class="menu-wrapper">
 
-                <a href="/admin/dashboard"
-                class="menu-item active">
+                <!-- DASHBOARD -->
+
+                <a href="/admin/dashboard" class="menu-item active">
 
                     <span class="menu-left">
 
@@ -45,44 +55,121 @@
 
                 </a>
 
-                <a href="#" class="menu-item">
+                <!-- PRODUCTS -->
 
-                    <span class="menu-left">
+                <div class="dropdown-wrapper active">
 
-                        <i class="ri-shopping-bag-line"></i>
+                    <button class="dropdown-btn">
 
-                        Products
+                        <span class="menu-left">
 
-                    </span>
+                            <i class="ri-shopping-bag-line"></i>
 
-                </a>
+                            Products
 
-                <a href="#" class="menu-item">
+                        </span>
 
-                    <span class="menu-left">
+                       <i class="ri-arrow-down-s-line dropdown-arrow"></i>
 
-                        <i class="ri-shopping-cart-line"></i>
+                    </button>
 
-                        Orders
+                    <div class="dropdown-menu">
 
-                    </span>
+                        <a href="#">
+                            All Products
+                        </a>
 
-                </a>
+                        <a href="#">
+                            Add Product
+                        </a>
 
-                <a href="#" class="menu-item">
+                        <a href="/admin/category" class="submenu">
+                            Categories
+                        </a>
 
-                    <span class="menu-left">
+                        <a href="#">
+                            Brands
+                        </a>
 
-                        <i class="ri-arrow-go-back-line"></i>
+                    </div>
 
-                        Returns
+                </div>
 
-                    </span>
+                <!-- ORDERS -->
 
-                </a>
+                <div class="dropdown-wrapper">
 
-               <a href="/admin/customers"
-                class="menu-item">
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                            Orders
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                    <div class="dropdown-menu">
+
+                        <a href="#">
+                            All Orders
+                        </a>
+
+                        <a href="#">
+                            Pending
+                        </a>
+
+                        <a href="#">
+                            Processing
+                        </a>
+
+                        <a href="#">
+                            Shipped
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- RETURNS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                    <div class="dropdown-menu">
+
+                        <a href="#">
+                            Requests
+                        </a>
+
+                        <a href="#">
+                            Refunds
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- CUSTOMERS -->
+
+                <a href="/admin/customers" class="menu-item">
 
                     <span class="menu-left">
 
@@ -94,11 +181,13 @@
 
                 </a>
 
+                <!-- WALLET -->
+
                 <a href="#" class="menu-item">
 
                     <span class="menu-left">
 
-                       <i class="ri-wallet-3-line"></i>
+                        <i class="ri-wallet-3-line"></i>
 
                         Wallet & Payments
 
@@ -106,11 +195,13 @@
 
                 </a>
 
+                <!-- PROMOTIONS -->
+
                 <a href="#" class="menu-item">
 
                     <span class="menu-left">
 
-                       <i class="ri-price-tag-3-line"></i>
+                        <i class="ri-price-tag-3-line"></i>
 
                         Promotions
 
@@ -118,25 +209,15 @@
 
                 </a>
 
+                <!-- REPORTS -->
+
                 <a href="#" class="menu-item">
 
                     <span class="menu-left">
 
-                       <i class="ri-bar-chart-box-line"></i>
+                        <i class="ri-bar-chart-box-line"></i>
 
                         Reports
-
-                    </span>
-
-                </a>
-
-                <a href="#" class="menu-item">
-
-                    <span class="menu-left">
-
-                       <i class="ri-settings-3-line"></i>
-
-                        Settings
 
                     </span>
 
@@ -147,10 +228,12 @@
         </div>
 
         <!-- LOGOUT -->
+
         <div class="logout-section">
 
-            <a href="/admin/logout"
-               class="logout-btn">
+            <a href="/admin/logout" class="logout-btn">
+
+                <i class="ri-logout-box-r-line"></i>
 
                 Logout
 
@@ -160,13 +243,15 @@
 
     </aside>
 
-    <!-- MAIN -->
+    <!-- MAIN CONTENT -->
+
     <main class="main-content">
 
         <!-- TOPBAR -->
+
         <header class="topbar">
 
-            <div class="top-left">
+            <div>
 
                 <p class="breadcrumb">
                     Admin / Dashboard
@@ -176,13 +261,13 @@
 
             <div class="top-right">
 
-                <input type="text"
-                       placeholder="Search..."
-                       class="top-search">
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    class="top-search"
+                >
 
-                <span class="notification">
-                    🔔
-                </span>
+                <i class="ri-notification-3-line notification"></i>
 
                 <div class="admin-profile">
 
@@ -204,169 +289,391 @@
 
         </header>
 
-        <!-- PAGE HEADER -->
-        <section class="page-header">
+        <!-- DASHBOARD HEADER -->
 
-            <h1>Dashboard</h1>
+        <section class="dashboard-header">
 
-            <p>
-                Welcome back, manage your store efficiently.
-            </p>
+            <div>
 
-        </section>
+                <h1>Dashboard Overview</h1>
 
-        <!-- CARDS -->
-        <section class="dashboard-cards">
-
-            <div class="card revenue-card">
-
-                <div class="card-icon">
-                    💰
-                </div>
-
-                <div>
-
-                    <h3>₹1,24,000</h3>
-
-                    <p>Total Revenue</p>
-
-                </div>
+                <p>
+                    Welcome back, here's what's happening today.
+                </p>
 
             </div>
 
-            <div class="card orders-card">
+            <div class="dashboard-actions">
 
-                <div class="card-icon">
-                    🛒
-                </div>
+                <button class="light-btn">
+                    Download Report
+                </button>
 
-                <div>
-
-                    <h3>1,248</h3>
-
-                    <p>Total Orders</p>
-
-                </div>
-
-            </div>
-
-            <div class="card users-card">
-
-                <div class="card-icon">
-                    👥
-                </div>
-
-                <div>
-
-                    <h3>856</h3>
-
-                    <p>Total Customers</p>
-
-                </div>
-
-            </div>
-
-            <div class="card products-card">
-
-                <div class="card-icon">
-                    📦
-                </div>
-
-                <div>
-
-                    <h3>126</h3>
-
-                    <p>Total Products</p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- TABLE -->
-        <section class="table-card">
-
-            <div class="table-top">
-
-                <h3>Recent Orders</h3>
-
-                <button class="view-btn">
-                    View All
+                <button class="dark-btn">
+                    Add Product
                 </button>
 
             </div>
 
-            <div class="table-responsive">
+        </section>
 
-                <table>
+        <!-- STATS -->
 
-                    <thead>
+        <section class="stats-grid">
+
+            <div class="stats-card">
+
+                <div class="stats-top">
+
+                    <span>Total Revenue</span>
+
+                    <i class="ri-money-dollar-circle-line"></i>
+
+                </div>
+
+                <h2>$45,231.89</h2>
+
+                <p class="growth green">
+                    ↗ 20.1% vs last month
+                </p>
+
+            </div>
+
+            <div class="stats-card">
+
+                <div class="stats-top">
+
+                    <span>Total Orders</span>
+
+                    <i class="ri-shopping-bag-line"></i>
+
+                </div>
+
+                <h2>1,342</h2>
+
+                <p class="growth green">
+                    ↗ 12.5% vs last month
+                </p>
+
+            </div>
+
+            <div class="stats-card">
+
+                <div class="stats-top">
+
+                    <span>Active Customers</span>
+
+                    <i class="ri-group-line"></i>
+
+                </div>
+
+                <h2>892</h2>
+
+                <p class="growth green">
+                    ↗ 4.3% vs last month
+                </p>
+
+            </div>
+
+            <div class="stats-card">
+
+                <div class="stats-top">
+
+                    <span>Pending Actions</span>
+
+                    <i class="ri-error-warning-line"></i>
+
+                </div>
+
+                <h2>25</h2>
+
+                <p class="growth green">
+                    ↗ 8 new vs last month
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- MIDDLE SECTION -->
+
+        <section class="middle-grid">
+
+            <!-- ACTIONS -->
+
+            <div class="action-card">
+
+                <h3>Action Required</h3>
+
+                <div class="action-item">
+
+                    <div class="action-left">
+
+                        <div class="action-icon blue">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                        </div>
+
+                        <span>Pending Orders</span>
+
+                    </div>
+
+                    <div class="action-right">
+
+                        <span>12</span>
+
+                        <i class="ri-arrow-right-line"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="action-item">
+
+                    <div class="action-left">
+
+                        <div class="action-icon orange">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                        </div>
+
+                        <span>Return Requests</span>
+
+                    </div>
+
+                    <div class="action-right">
+
+                        <span>5</span>
+
+                        <i class="ri-arrow-right-line"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="action-item">
+
+                    <div class="action-left">
+
+                        <div class="action-icon red">
+
+                            <i class="ri-alert-line"></i>
+
+                        </div>
+
+                        <span>Low Stock Products</span>
+
+                    </div>
+
+                    <div class="action-right">
+
+                        <span>8</span>
+
+                        <i class="ri-arrow-right-line"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RETURNS -->
+
+            <div class="returns-card">
+
+                <h3>Returns Snapshot</h3>
+
+                <div class="returns-grid">
+
+                    <div class="mini-card">
+
+                        <span>Requests Today</span>
+
+                        <h2>3</h2>
+
+                    </div>
+
+                    <div class="mini-card">
+
+                        <span>Refunds Pending</span>
+
+                        <h2>7</h2>
+
+                    </div>
+
+                </div>
+
+                <button class="process-btn">
+
+                    <i class="ri-refresh-line"></i>
+
+                    Process Returns
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- BOTTOM SECTION -->
+
+        <section class="bottom-grid">
+
+            <!-- ORDERS -->
+
+            <div class="recent-orders">
+
+                <div class="section-top">
+
+                    <h3>Recent Orders</h3>
+
+                    <a href="#">
+                        View All
+                    </a>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table>
+
+                        <thead>
 
                         <tr>
 
-                            <th>Customer</th>
                             <th>Order ID</th>
-                            <th>Status</th>
+                            <th>Customer</th>
                             <th>Amount</th>
+                            <th>Status</th>
+                            <th>Time</th>
 
                         </tr>
 
-                    </thead>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
 
                         <tr>
 
-                            <td>Amal Dev</td>
-
-                            <td>#ORD1024</td>
+                            <td>#ORD-001</td>
+                            <td>Alex Thompson</td>
+                            <td>$120.00</td>
 
                             <td>
-                                <span class="status completed">
-                                    Completed
+
+                                <span class="badge delivered">
+                                    Delivered
                                 </span>
+
                             </td>
 
-                            <td>₹4,500</td>
+                            <td>2 mins ago</td>
 
                         </tr>
 
                         <tr>
 
-                            <td>Rahul</td>
-
-                            <td>#ORD1025</td>
+                            <td>#ORD-002</td>
+                            <td>Sarah Parker</td>
+                            <td>$54.00</td>
 
                             <td>
-                                <span class="status pending">
+
+                                <span class="badge processing">
+                                    Processing
+                                </span>
+
+                            </td>
+
+                            <td>15 mins ago</td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>#ORD-003</td>
+                            <td>Michael Chen</td>
+                            <td>$299.99</td>
+
+                            <td>
+
+                                <span class="badge pending">
                                     Pending
                                 </span>
+
                             </td>
 
-                            <td>₹2,000</td>
+                            <td>1 hour ago</td>
 
                         </tr>
 
-                        <tr>
+                        </tbody>
 
-                            <td>Arjun</td>
+                    </table>
 
-                            <td>#ORD1026</td>
+                </div>
 
-                            <td>
-                                <span class="status cancelled">
-                                    Cancelled
-                                </span>
-                            </td>
+            </div>
 
-                            <td>₹1,200</td>
+            <!-- ALERTS -->
 
-                        </tr>
+            <div class="stock-alerts">
 
-                    </tbody>
+                <h3>Stock Alerts</h3>
 
-                </table>
+                <div class="alert-box">
+
+                    <div class="alert-top">
+
+                        <i class="ri-error-warning-line"></i>
+
+                        <span>Low Stock Warning</span>
+
+                    </div>
+
+                    <p>
+                        Wireless Headphones is below threshold.
+                    </p>
+
+                </div>
+
+                <div class="alert-box">
+
+                    <div class="alert-top">
+
+                        <i class="ri-error-warning-line"></i>
+
+                        <span>Low Stock Warning</span>
+
+                    </div>
+
+                    <p>
+                        Wireless Headphones is below threshold.
+                    </p>
+
+                </div>
+
+                <div class="alert-box">
+
+                    <div class="alert-top">
+
+                        <i class="ri-error-warning-line"></i>
+
+                        <span>Low Stock Warning</span>
+
+                    </div>
+
+                    <p>
+                        Wireless Headphones is below threshold.
+                    </p>
+
+                </div>
+
+                <button class="view-products-btn">
+                    View Products
+                </button>
 
             </div>
 
@@ -375,6 +682,28 @@
     </main>
 
 </div>
+
+<script>
+
+const dropdowns = document.querySelectorAll(".dropdown-btn");
+
+dropdowns.forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        const wrapper = btn.parentElement;
+
+        const menu = wrapper.querySelector(".dropdown-menu");
+
+        wrapper.classList.toggle("active");
+
+        menu.classList.toggle("show");
+
+    });
+
+});
+
+</script>
 
 </body>
 </html>

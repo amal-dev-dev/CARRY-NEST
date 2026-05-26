@@ -1,4 +1,4 @@
-import User from "../Model/user/userModel.js";
+import User from "../Model/userModel.js";
 
 // Protect private routes
 export const requireAuth = async (req, res, next) => {

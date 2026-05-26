@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Category</title>
+
+    <link rel="stylesheet" href="/Styles/admin/edit-category.css">
+
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
+</head>
+<body>
+
+    <div class="modal-overlay">
+
+        <div class="edit-modal">
+
+            <!-- HEADER -->
+
+            <div class="modal-header">
+
+                <h2>Edit Category</h2>
+
+                <a href="/admin/category" class="close-btn">
+                    <i class="ri-close-line"></i>
+                </a>
+
+            </div>
+
+            <!-- FORM -->
+
+            <form action="/admin/edit-category/<%= category._id %>" method="POST" class="modal-form">
+
+                <!-- CATEGORY NAME -->
+
+                <div class="form-group">
+
+                    <label>
+                        Category Name *
+                    </label>
+
+                    <input type="text"
+                    name="name"
+                    value="<%= category.name %>">
+
+                </div>
+
+                <!-- DESCRIPTION -->
+
+                <div class="form-group">
+
+                    <label>
+                        Description
+                    </label>
+
+                    <textarea name="description"><%= category.description %></textarea>
+
+                </div>
+
+                <!-- BUTTONS -->
+
+                <div class="button-group">
+
+                    <a href="/admin/category"
+                    class="cancel-btn">
+
+                        Cancel
+
+                    </a>
+
+                    <button type="submit"
+                    class="update-btn">
+
+                        Update Category
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

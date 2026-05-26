@@ -1,4 +1,4 @@
-import Users from '../../Model/user/userModel.js';
+import Users from '../../Model/userModel.js';
 import bcrypt from 'bcrypt';
 import nodemailer from "nodemailer";
 import { generateOTP,otpExpiryTime } from "../../Service/otpService.js";
