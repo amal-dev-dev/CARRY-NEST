@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Add Product - Carry Nest</title>
+
+    <link rel="stylesheet" href="/Styles/admin/add-product.css">
+
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- LOGO -->
+
+            <div class="logo-section">
+
+                <div class="logo-box">
+                    C
+                </div>
+
+                <h2>CARRY NEST</h2>
+
+            </div>
+
+            <!-- MENU -->
+
+            <div class="menu-wrapper">
+
+                <!-- DASHBOARD -->
+
+                <a href="/admin/dashboard" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-dashboard-line"></i>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+                <!-- PRODUCTS -->
+
+                <div class="dropdown-wrapper active">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-bag-line"></i>
+
+                            Products
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                    <div class="dropdown-menu show">
+
+                        <a href="/admin/products" class="submenu-active">
+                            All Products
+                        </a>
+
+                        <a href="/admin/add-product">
+
+                            Add Product
+
+                        </a>
+
+                        <a href="/admin/category">
+                            Categories
+                        </a>
+
+                        <a href="#">
+                            Brands
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- ORDERS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                            Orders
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                </div>
+
+                <!-- RETURNS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                </div>
+
+                <!-- CUSTOMERS -->
+
+                <a href="/admin/customers"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+                <!-- WALLET -->
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+                <!-- PROMOTIONS -->
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+                <!-- REPORTS -->
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- LOGOUT -->
+
+        <div class="logout-section">
+
+            <a href="/admin/logout"
+            class="logout-btn">
+
+                <i class="ri-logout-box-r-line"></i>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="top-left">
+
+                <p class="breadcrumb">
+
+                    Admin / Products / Edit Product
+
+                </p>
+
+            </div>
+
+            <div class="top-right">
+
+                <input type="text"
+                placeholder="Search..."
+                class="top-search">
+
+                <span class="notification">
+
+                    <i class="ri-notification-3-line"></i>
+
+                </span>
+
+                <div class="admin-profile">
+
+                    <div class="admin-avatar">
+                        AD
+                    </div>
+
+                    <div>
+
+                        <h4>Admin User</h4>
+
+                        <span>Super Admin</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- FORM START -->
+
+        <form action="/admin/products/<%= product._id %>?_method=PATCH"
+        method="POST"
+        enctype="multipart/form-data">
+
+            <!-- PAGE HEADER -->
+
+            <section class="page-header">
+
+                <div>
+
+                    <h1>Update Product</h1>
+
+                    <p>
+                        Manage your product inventory
+                    </p>
+
+                </div>
+
+                <div class="header-btns">
+
+                    <button type="button"
+                    class="cancel-btn">
+
+                        Cancel
+
+                    </button>
+
+                    <button type="submit"
+                    class="save-btn">
+
+                        <i class="ri-save-line"></i>
+
+                        Update Changes
+
+                    </button>
+
+                </div>
+
+            </section>
+
+            <!-- PRODUCT DETAILS -->
+
+            <section class="form-card">
+
+                <div class="section-title">
+
+                    <i class="ri-price-tag-3-line"></i>
+
+                    <h3>Product Details</h3>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Product Name</label>
+
+                        <input
+                        type="text"
+                        name="productName"
+                        value="<%= product.productName %>">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Brand</label>
+
+                        <select name="brand">
+
+                            <option
+                                value="American Tourister"
+                                <%= product.brand === "American Tourister" ? "selected" : "" %>>
+                                American Tourister
+                            </option>
+
+                            <option
+                                value="Safari"
+                                <%= product.brand === "Safari" ? "selected" : "" %>>
+                                Safari
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>Category</label>
+
+                            <select name="category">
+
+                                <% categories.forEach(cat => { %>
+
+                                    <option
+                                        value="<%= cat._id %>"
+                                        <%= product.category.toString() === cat._id.toString()
+                                            ? "selected"
+                                            : "" %>>
+
+                                        <%= cat.name %>
+
+                                    </option>
+
+                                <% }) %>
+
+                            </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Offer</label>
+
+                        <select name="offer">
+
+                            <option>10% OFF</option>
+
+                            <option>20% OFF</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Description</label>
+
+                    <textarea name="description"><%= product.description %></textarea>
+
+                </div>
+
+            </section>
+
+                <!-- PRODUCT VARIANTS -->
+
+                <section class="form-card">
+
+                    <div class="variant-top">
+
+                        <div class="section-title">
+
+                            <i class="ri-layout-grid-line"></i>
+
+                            <h3>Product Variants</h3>
+
+                        </div>
+
+                        <button type="button"
+                        class="variant-btn">
+
+                            <i class="ri-add-line"></i>
+
+                            Add Color Variant
+
+                        </button>
+
+                    </div>
+
+                    <div class="variant-card">
+
+                        <div class="variant-header">
+
+                            <div class="color-info">
+
+                                <div
+                                    class="color-circle"
+                                    id="colorCircle">
+                                </div>
+
+                               <input
+                                type="text"
+                                name="color"
+                                id="colorInput"
+                                value="<%= product.color %>">
+
+                            </div>
+
+                            <label class="switch">
+
+                                <input type="checkbox" checked>
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+                        <!-- TABLE -->
+
+                        <div class="variant-table">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>Size</th>
+                                        <th>Stock</th>
+                                        <th>Original Price</th>
+                                        <th>Sale Price</th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>
+
+                                        <td>
+
+                                            <input type="text"
+                                            name="size"
+                                            value="Standard">
+
+                                        </td>
+
+                                        <td>
+
+                                            <input
+                                                type="number"
+                                                name="stock"
+                                                value="<%= product.stock %>">
+
+                                        </td>
+
+                                        <td>
+
+                                            <input
+                                            type="number"
+                                            name="regularPrice"
+                                            value="<%= product.regularPrice %>">
+
+
+                                        </td>
+
+                                        <td>
+
+                                            <input
+                                                type="number"
+                                                name="salePrice"
+                                                value="<%= product.salePrice %>">
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td>
+
+                                            <input type="text"
+                                            value="Professional">
+
+                                        </td>
+
+                                        <td>
+
+                                            <input type="number"
+                                            placeholder="Stock">
+
+                                        </td>
+
+                                        <td>
+
+                                            <input type="number"
+                                            placeholder="₹ Original Price">
+
+                                        </td>
+
+                                        <td>
+
+                                            <input type="number"
+                                            placeholder="₹ Sale Price">
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td>
+
+                                            <input type="text"
+                                            value="Travel">
+
+                                        </td>
+
+                                        <td>
+
+                                            <input type="number"
+                                            placeholder="Stock">
+
+                                        </td>
+
+                                        <td>
+
+                                            <input type="number"
+                                            placeholder="₹ Original Price">
+
+                                        </td>
+
+                                        <td>
+
+                                            <input type="number"
+                                            placeholder="₹ Sale Price">
+
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        <!-- IMAGE UPLOAD -->
+
+                        <div class="image-upload">
+
+                            <!-- Existing Images -->
+
+                                <div class="existing-images">
+                                    <% product.productImage.forEach(image => { %>
+                                        <div class="image-preview">
+                                            <img
+                                            src="<%= image %>"
+                                            alt="Product Image"
+                                            style="width:80px;height:80px;object-fit:cover;border-radius:8px;">
+                                        </div>
+                                    <% }) %>
+                                </div>
+
+                            <!-- Upload New Images -->
+
+                            <div class="upload-box">
+
+                                <label for="images">
+
+                                    <i class="ri-upload-cloud-line"></i>
+
+                                    <p>Upload New Images</p>
+
+                                    <span>Minimum 3 Images</span>
+
+                                </label>
+
+                                <input
+                                    type="file"
+                                    id="images"
+                                    name="images"
+                                    multiple
+                                    accept="image/*">
+
+                            </div>
+
+                            <!-- New Selected Image Preview -->
+
+                            <div id="previewContainer"></div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+        </form>
+
+        <!-- FORM END -->
+
+    </main>
+
+</div>
+
+<script>
+
+const dropdowns = document.querySelectorAll(".dropdown-btn");
+
+dropdowns.forEach((dropdown)=>{
+
+    dropdown.addEventListener("click",()=>{
+
+        const menu =
+        dropdown.nextElementSibling;
+
+        if(menu){
+
+            menu.classList.toggle("show");
+
+        }
+
+    });
+
+});
+
+const imageInput = document.getElementById("images");
+
+const previewContainer = document.getElementById("previewContainer");
+
+imageInput.addEventListener("change", () => {
+
+    previewContainer.innerHTML = "";
+
+    Array.from(imageInput.files).forEach(file => {
+
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+
+            const img =
+            document.createElement("img");
+
+            img.src = e.target.result;
+
+            previewContainer.appendChild(img);
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+});
+
+
+const colorInput = document.getElementById("colorInput");
+const colorCircle = document.getElementById("colorCircle");
+
+colorInput.addEventListener("input", () => {
+
+    colorCircle.style.backgroundColor =
+        colorInput.value;
+
+});
+
+</script>
+
+</body>
+</html>

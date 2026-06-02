@@ -73,9 +73,9 @@
 
                     <div class="submenu show">
 
-                        <a href="#">All Products</a>
+                        <a href="/admin/products">All Products</a>
 
-                        <a href="#">Add Product</a>
+                        <a href="/admin/add-product">Add Product</a>
 
                         <a href="/admin/category" class="active-submenu">Categories</a>
 
@@ -388,16 +388,19 @@
                                 </td>
 
                                 <td>
+                                    <form
+                                        action="/admin/category/<%= category._id %>/<%= category.isListed ? 'unlist' : 'list' %>?_method=PATCH"
+                                        method="POST">
 
-                                    <label class="switch">
+                                        <label class="switch">
+                                            <input
+                                                type="checkbox"
+                                                <%= category.isListed ? "checked" : "" %>
+                                                onchange="this.form.submit()">
+                                            <span class="slider"></span>
+                                        </label>
 
-                                        <input type="checkbox"
-                                        <%= category.isListed ? "checked" : "" %>>
-
-                                        <span class="slider"></span>
-
-                                    </label>
-
+                                    </form>
                                 </td>
 
                                 <td>
@@ -405,7 +408,7 @@
                                 <button class="edit-btn">
 
                                    <a href="/admin/edit-category/<%= category._id %>"
-                                    class="edit-btn" >
+                                    class="edit-btn">
 
                                         <i class="ri-edit-line"></i>
 

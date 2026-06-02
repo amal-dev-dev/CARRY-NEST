@@ -9,12 +9,18 @@ import connectDB from './DB/connectDB.js';
 import passport from './Config/passport.js';
 import authRoutes from './Routes/user/authRoutes.js';
 import adminRoutes from "./Routes/admin/adminRoutes.js";
+import methodOverride from "method-override";
 
 dotenv.config();
 
 const app = express();
+
+
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(methodOverride("_method"));
 
 const PORT = process.env.PORT || 3000;
 

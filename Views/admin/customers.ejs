@@ -45,41 +45,95 @@
 
                 </a>
 
-                <a href="#" class="menu-item">
+                <div class="menu-dropdown">
 
-                    <span class="menu-left">
+                    <div class="menu-item dropdown-toggle">
 
-                        <i class="ri-shopping-bag-line"></i>
+                        <span class="menu-left">
 
-                        Products
+                            <i class="ri-shopping-bag-line"></i>
 
-                    </span>
+                            Products
 
-                </a>
+                        </span>
 
-                <a href="#" class="menu-item">
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
 
-                    <span class="menu-left">
+                    </div>
 
-                        <i class="ri-shopping-cart-line"></i>
+                    <div class="submenu">
 
-                        Orders
+                        <a href="/admin/products">
+                            All Products
+                        </a>
 
-                    </span>
+                        <a href="/admin/add-product">
+                            Add Product
+                        </a>
 
-                </a>
+                        <a href="/admin/category">
+                            Categories
+                        </a>
 
-                <a href="#" class="menu-item">
+                        <a href="#">
+                            Brands
+                        </a>
 
-                    <span class="menu-left">
+                    </div>
 
-                        <i class="ri-arrow-go-back-line"></i>
+                </div>
 
-                        Returns
+                <div class="menu-dropdown">
 
-                    </span>
+                    <div class="menu-item dropdown-toggle">
 
-                </a>
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                            Orders
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+
+                    </div>
+
+                    <div class="submenu">
+
+                        <a href="#">All Orders</a>
+
+                        <a href="#">Pending</a>
+
+                    </div>
+
+                </div>
+
+                <div class="menu-dropdown">
+
+                    <div class="menu-item dropdown-toggle">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+
+                    </div>
+
+                    <div class="submenu">
+
+                        <a href="#">Requests</a>
+
+                        <a href="#">Refunds</a>
+
+                    </div>
+
+                </div>
 
                <a href="/admin/customers"
                 class="menu-item active">
@@ -335,9 +389,9 @@
 
                                 <div class="contact-info">
 
-                                    <p>📧 <%= user.email %></p>
+                                    <p> <%= user.email %></p>
 
-                                    <p>📞 <%= user.phone || "No phone" %></p>
+                                    <p> <%= user.phone || "No phone" %></p>
 
                                 </div>
 
@@ -439,6 +493,24 @@
     </main>
 
 </div>
+
+<script>
+
+const dropdowns = document.querySelectorAll(".dropdown-toggle");
+
+dropdowns.forEach((dropdown)=>{
+
+    dropdown.addEventListener("click",()=>{
+
+        const submenu = dropdown.nextElementSibling;
+
+        submenu.classList.toggle("show");
+
+    });
+
+});
+
+</script>
 
 </body>
 </html>

@@ -77,7 +77,7 @@ body{
 .menu-item:hover,
 .menu-item.active{
     background:#0f172a;
-    color:white;
+    color:#3b82f6;
 }
 
 .logout-section{
@@ -102,6 +102,29 @@ body{
 
 .menu-left i{
     font-size:18px;
+}
+
+.submenu{
+    display:none;
+    flex-direction:column;
+    padding-left:20px;
+    margin-top:8px;
+}
+
+.submenu.show{
+    display:flex;
+}
+
+.submenu a{
+    padding:10px;
+    text-decoration:none;
+    color:#9ca3af;
+    font-size:14px;
+}
+
+.submenu a:hover,
+.active-submenu{
+    color:#fff !important;
 }
 
 /* MAIN CONTENT */

@@ -30,8 +30,7 @@
 
             <!-- FORM -->
 
-            <form action="/admin/edit-category/<%= category._id %>" method="POST" class="modal-form">
-
+            <form action="/admin/category/<%= category._id %>?_method=PATCH" method="POST">
                 <!-- CATEGORY NAME -->
 
                 <div class="form-group">

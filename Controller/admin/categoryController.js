@@ -202,7 +202,7 @@ const listCategory = async (req, res) => {
         });
 
 
-        res.redirect("/admin/categort");
+        res.redirect("/admin/category");
 
     } catch (error) {
         console.log(error);
