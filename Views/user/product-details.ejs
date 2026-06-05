@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= product.productName %></title>
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="/Styles/user/product-details.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <a href="/" class="logo">
+        CARRY NEST
+    </a>
+
+    <div class="nav-icons">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <i class="fa-regular fa-heart"></i>
+        <a href="/user/profile" style="color: black;"><i class="fa-regular fa-user"></i></a>
+    </div>
+
+</nav>
+
+<!-- BREADCRUMB -->
+
+<div class="breadcrumb">
+
+    <a href="/">Home</a>
+
+    <span>/</span>
+
+    <a href="/user/products">Products</a>
+
+    <span>/</span>
+
+    <span><%= product.productName %></span>
+
+</div>
+
+<!-- PRODUCT DETAILS -->
+
+<section class="product-details">
+
+    <div class="product-wrapper">
+
+        <!-- IMAGE SECTION -->
+
+        <div class="product-images">
+
+            <div class="main-image">
+
+                <img
+                    id="mainProductImage"
+                    src="<%= product.productImage[0] %>"
+                    alt="<%= product.productName %>"
+                >
+
+            </div>
+
+            <div class="thumbnail-gallery">
+
+                <% product.productImage.forEach(image => { %>
+
+                    <img
+                        src="<%= image %>"
+                        onclick="changeImage(this)"
+                        alt=""
+                    >
+
+                <% }) %>
+
+            </div>
+
+        </div>
+
+        <!-- PRODUCT INFO -->
+
+        <div class="product-info">
+
+            <h1>
+                <%= product.productName %>
+            </h1>
+
+            <div class="rating-summary">
+
+                ⭐ <%= averageRating.toFixed(1) %>
+
+                (<%= reviews.length %> Reviews)
+
+            </div>
+
+            <p class="brand">
+                Brand: <%= product.brand %>
+            </p>
+
+            <div class="price-box">
+
+                <span class="sale-price">
+                    ₹<%= product.salePrice %>
+                </span>
+
+                <% if(product.regularPrice){ %>
+
+                    <span class="regular-price">
+                        ₹<%= product.regularPrice %>
+                    </span>
+
+                <% } %>
+
+                    <span class="discount">
+                        <%= discountPercentage %>% OFF
+                    </span>
+
+            </div>
+
+            <p class="description">
+                <%= product.description %>
+            </p>
+
+            <div class="product-meta">
+
+                <p>
+                    <strong>Category:</strong>
+                    <%= product.category?.name || 'N/A' %>
+                </p>
+
+                <p>
+                    <strong>Color:</strong>
+                    <%= product.color %>
+                </p>
+
+                <p>
+                    <strong>Stock:</strong>
+                    <%= product.stock %>
+                </p>
+
+            </div>
+
+            <div class="quantity-box">
+
+                <button>-</button>
+
+                <input
+                    type="number"
+                    value="1"
+                    min="1"
+                    max="<%= product.stock %>"
+                >
+
+                <button>+</button>
+
+            </div>
+
+            <button class="cart-btn">
+                Add To Cart
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- RELATED PRODUCTS -->
+
+<section class="related-products">
+
+    <h2>You Might Also Like</h2>
+
+    <div class="related-grid">
+
+        <% relatedProducts.forEach(item => { %>
+
+            <a
+                href="/user/product-details/<%= item._id %>"
+                class="related-card"
+            >
+
+                <img
+                    src="<%= item.productImage[0] %>"
+                    alt="<%= item.productName %>"
+                >
+
+                <h4>
+                    <%= item.productName %>
+                </h4>
+
+                <p>
+                    ₹<%= item.salePrice %>
+                </p>
+
+            </a>
+
+        <% }) %>
+
+    </div>
+
+</section>
+
+<section class="reviews-section">
+
+    <h2>
+
+        Customer Reviews
+
+    </h2>
+
+    <% if(reviews.length > 0){ %>
+
+        <% reviews.forEach(review=>{ %>
+
+            <div class="review-card">
+
+                <h4>
+                    <%= review.userId?.name || "User" %>
+                </h4>
+
+                <div class="stars">
+
+                    <% for(let i=1;i<=5;i++){ %>
+
+                        <% if(i <= review.rating){ %>
+                            ★
+                        <% } else { %>
+                            ☆
+                        <% } %>
+
+                    <% } %>
+
+                </div>
+
+                <p>
+                    <%= review.comment %>
+                </p>
+
+                <!-- Review Images -->
+
+                <% if(review.image && review.image.length > 0){ %>
+
+                    <div class="review-images">
+
+                        <% review.image.forEach(img => { %>
+
+                            <img
+                                src="<%= img %>"
+                                alt="Review Image"
+                            >
+
+                        <% }) %>
+
+                    </div>
+
+                <% } %>
+
+                <small>
+                    <%= review.createdAt.toDateString() %>
+                </small>
+
+            </div>
+
+        <% }) %>
+
+    <% } else { %>
+
+        <p>
+
+            No reviews yet.
+
+        </p>
+
+    <% } %>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+    <div class="footer-grid">
+
+        <div>
+            <h3>CARRY NEST</h3>
+            <p>Premium Bags & Travel Accessories</p>
+        </div>
+
+        <div>
+            <h4>Service</h4>
+            <p>Shipping</p>
+            <p>Returns</p>
+            <p>Support</p>
+        </div>
+
+        <div>
+            <h4>Company</h4>
+            <p>About Us</p>
+            <p>Contact</p>
+            <p>Blog</p>
+        </div>
+
+        <div>
+
+            <h4>Newsletter</h4>
+
+            <input
+                type="email"
+                placeholder="Enter Email"
+            >
+
+            <button>
+                Subscribe
+            </button>
+
+        </div>
+
+    </div>
+
+</footer>
+
+<script>
+
+function changeImage(img){
+
+    document
+    .getElementById("mainProductImage")
+    .src = img.src;
+
+}
+
+</script>
+
+</body>
+</html>

@@ -2,6 +2,7 @@ import Users from '../../Model/userModel.js';
 import bcrypt from 'bcrypt';
 import nodemailer from "nodemailer";
 import { generateOTP,otpExpiryTime } from "../../Service/otpService.js";
+import Product from "../../Model/productModel.js";
 import dotenv from "dotenv";
 import crypto from 'crypto';
 
@@ -43,13 +44,21 @@ const loadLogin = (req, res) => {
     });
 };
 
-const loadHome = (req, res) => {
+const loadHome = async (req, res) => {
+    try {
 
-    if (!req.session.user) {
-        return res.redirect('/user/login');
+        const products = await Product.find({
+            isBlocked: false
+        })
+        .limit(4);
+
+        res.render("user/home", {
+            products
+        });
+
+    } catch (error) {
+        console.log(error);
     }
-
-    res.render('user/home');
 };
 
 const logout = (req, res) => {

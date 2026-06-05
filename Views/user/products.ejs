@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carry Nest Products</title>
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="/Styles/user/products.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        CARRY NEST
+    </div>
+
+    <div class="nav-icons">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <i class="fa-regular fa-heart"></i>
+        <a href="/user/profile" style="color: black;"><i class="fa-regular fa-user"></i></a>
+    </div>
+
+</nav>
+
+<!-- MOBILE FILTER BUTTON -->
+
+<div class="mobile-filter">
+    <button id="filterBtn">
+        <i class="fa-solid fa-filter"></i>
+        Filters
+    </button>
+</div>
+
+<!-- MAIN -->
+
+<section class="products-page">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <!-- Category -->
+
+        <form id="filterForm" method="GET" action="/user/products">
+
+            <div class="filter-content active">
+
+                <% categories.forEach(cat => { %>
+
+                    <label>
+
+                        <input
+                            type="radio"
+                            name="category"
+                            value="<%= cat._id %>"
+                            onchange="document.getElementById('filterForm').submit()"
+                            <%= category == cat._id ? "checked" : "" %>
+                        >
+
+                        <%= cat.name %>
+
+                    </label>
+
+                <% }) %>
+
+            </div>
+
+        </form>
+
+        <!-- Brand -->
+
+        <div class="filter-box"> 
+            <div class="filter-header"> 
+                <h4>Brand</h4> 
+                <span>+</span>
+            </div> 
+            <div class="filter-content"> 
+                <label><input type="checkbox"> Nike</label>
+                <label><input type="checkbox"> Puma</label> 
+                <label><input type="checkbox"> Adidas</label> 
+                <label><input type="checkbox"> Wildcraft</label> 
+            </div> 
+        </div>
+
+        <!-- Color -->
+
+        <div class="filter-box">
+
+            <div class="filter-header">
+                <h4>Color</h4>
+                <span>+</span>
+            </div>
+
+            <div class="filter-content">
+
+                <label><input type="checkbox"> Black</label>
+
+                <label><input type="checkbox"> Blue</label>
+
+                <label><input type="checkbox"> Brown</label>
+
+                <label><input type="checkbox"> Grey</label>
+
+            </div>
+
+        </div>
+
+        <!-- Price -->
+
+        <div class="filter-content">
+
+            <label>
+                <input
+                    type="radio"
+                    name="price"
+                    value="0-1000"
+                    onchange="document.getElementById('filterForm').submit()"
+                >
+                ₹0 - ₹1000
+            </label>
+
+            <label>
+                <input
+                    type="radio"
+                    name="price"
+                    value="1000-3000"
+                    onchange="document.getElementById('filterForm').submit()"
+                >
+                ₹1000 - ₹3000
+            </label>
+
+            <label>
+                <input
+                    type="radio"
+                    name="price"
+                    value="3000-5000"
+                    onchange="document.getElementById('filterForm').submit()"
+                >
+                ₹3000 - ₹5000
+            </label>
+
+        </div>
+
+    </aside>
+
+    <!-- PRODUCTS -->
+
+    <main class="products-content">
+
+        <div class="breadcrumb">
+
+            <a href="/user/home">Home</a>
+
+            <span>/</span>
+
+            <span>Products</span>
+
+        </div>
+
+        <h2>Our Collection Of Products</h2>
+
+        <form action="/user/products" method="GET" class="controls">
+
+            <input
+                type="text"
+                name="search"
+                value="<%= search || '' %>"
+                placeholder="Search Product"
+                class="product-search"
+            >
+
+            <button type="submit">
+                Search
+            </button>
+
+            <a href="/user/products" class="clear-btn">
+                Clear
+            </a>
+
+            <select name="sort" onchange="this.form.submit()">
+
+                <option value="">Sort By</option>
+
+                <option value="low-high"
+                    <%= sort === "low-high" ? "selected" : "" %>>
+                    Price Low To High
+                </option>
+
+                <option value="high-low"
+                    <%= sort === "high-low" ? "selected" : "" %>>
+                    Price High To Low
+                </option>
+
+                <option value="a-z"
+                    <%= sort === "a-z" ? "selected" : "" %>>
+                    A-Z
+                </option>
+
+                <option value="z-a"
+                    <%= sort === "z-a" ? "selected" : "" %>>
+                    Z-A
+                </option>
+
+            </select>
+
+        </form>
+
+        <!-- GRID -->
+
+        <div class="product-grid">
+
+            <% products.forEach(product => { %>
+
+                <a
+                    href="/user/product-details/<%= product._id %>"
+                    class="product-link"
+                >
+
+                    <div class="product-card">
+
+                        <img
+                            src="<%= product.productImage[0] %>"
+                            alt="<%= product.productName %>"
+                        >
+
+                        <h4><%= product.productName %></h4>
+
+                        <p>₹<%= product.salePrice %></p>
+
+                    </div>
+
+                </a>
+
+            <% }) %>
+
+        </div>
+
+        <div class="pagination">
+
+            <% if(currentPage > 1){ %>
+
+                <a href="?page=<%= currentPage-1 %>&search=<%= search %>&category=<%= category %>&brand=<%= brand %>&price=<%= price %>&sort=<%= sort %>">
+                    Prev
+                </a>
+
+            <% } %>
+
+            <% for(let i=1;i<=totalPages;i++){ %>
+
+                <a
+                    href="?page=<%= i %>&search=<%= search %>&category=<%= category %>&brand=<%= brand %>&price=<%= price %>&sort=<%= sort %>"
+                    class="<%= currentPage===i ? 'active' : '' %>"
+                >
+                    <%= i %>
+                </a>
+
+            <% } %>
+
+            <% if(currentPage < totalPages){ %>
+
+                <a href="?page=<%= currentPage+1 %>&search=<%= search %>&category=<%= category %>&brand=<%= brand %>&price=<%= price %>&sort=<%= sort %>">
+                    Next
+                </a>
+
+            <% } %>
+
+        </div>
+
+    </main>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+    <div class="footer-grid">
+
+        <div>
+            <h3>CARRY NEST</h3>
+            <p>Premium Bags & Travel Accessories</p>
+        </div>
+
+        <div>
+            <h4>Service</h4>
+            <p>Shipping</p>
+            <p>Returns</p>
+            <p>Support</p>
+        </div>
+
+        <div>
+            <h4>Company</h4>
+            <p>About Us</p>
+            <p>Contact</p>
+            <p>Blog</p>
+        </div>
+
+        <div>
+            <h4>Newsletter</h4>
+
+            <input type="email"
+                placeholder="Enter Email">
+
+            <button>Subscribe</button>
+        </div>
+
+    </div>
+
+</footer>
+
+<script>
+
+const filterBtn =
+document.getElementById("filterBtn");
+
+const sidebar =
+document.getElementById("sidebar");
+
+filterBtn.addEventListener("click", () => {
+    sidebar.classList.toggle("show");
+});
+
+const headers =
+document.querySelectorAll(".filter-header");
+
+headers.forEach(header => {
+
+    header.addEventListener("click", () => {
+
+        const content =
+        header.nextElementSibling;
+
+        content.classList.toggle("active");
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,59 +1,195 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home - Carry Nest</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="/Styles/user/home.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarryNest</title>
+    <link rel="stylesheet" href="/styles/user/home.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-    <h2>CARRY NEST</h2>
-    <input type="text" placeholder="Search for products...">
-    <div class="icons">
-        <span><a href="#"><i class="fa-solid fa-cart-shopping"></i></a></span>
-        <span><a href="#"><i class="fa-solid fa-heart"></i></a></span>
-        <span><a href="/user/profile"><i class="fa-regular fa-user"></i></a></span>
-    </div>
-</header>
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">CARRYNEST</div>
 
-<!-- Banner -->
-<section class="banner">
-    <h1>Welcome to Carry Nest</h1>
-    <p>Explore the best bags, accessories & more</p>
-</section>
+            <div class="nav-icons">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <i class="fa-regular fa-heart"></i>
+                <a href="/user/profile" style="color: black;"><i class="fa-regular fa-user"></i></a>
+            </div>
+        </nav>
+    </header>
 
-<!-- Products -->
-<section class="products">
-    <h2>Featured Products</h2>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <p>GET YOUR</p>
+            <h1>BACKPACK</h1>
+            <p>Explore premium collections for every journey.</p>
+            <button>BUY NOW</button>
+        </div>
+    </section>
 
-    <div class="product-grid">
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1581605405669-fcdf81165afa?w=500&h=500&fit=crop">
-            <h3>Backpack</h3>
-            <p>₹999</p>
-            <button>Add to Cart</button>
+    <!-- Brands -->
+    <section class="brands">
+        <span>Nike</span>
+        <span>Hush</span>
+        <span>Puma</span>
+        <span>Shoe</span>
+        <span>Marc</span>
+        <span>Supreme</span>
+    </section>
+
+    <!-- New Arrivals -->
+    <section class="products">
+        <h2>OUR PRODUCTS</h2>
+
+            <div class="product-grid">
+
+                <% products.forEach(product => { %>
+
+                    <a href="/product/<%= product._id %>" style="text-decoration: none;">
+
+                        <div class="card">
+
+                            <img
+                                src="<%= product.productImage[0] %>"
+                                alt="<%= product.productName %>"
+                            >
+
+                            <h4><%= product.productName %></h4>
+
+                            <p>₹<%= product.salePrice %></p>
+
+                        </div>
+
+                    </a>
+
+                <% }) %>
+
+            </div>
+
+        <a href="/user/products" class="view-btn">View All</a>
+    </section>
+
+    <!-- Top Selling -->
+    <section class="products">
+        <h2>TOP SELLING</h2>
+
+        <div class="product-grid">
+            <div class="card">
+                <img src="https://via.placeholder.com/200">
+                <h4>Leather Bag</h4>
+                <p>$210</p>
+            </div>
+
+            <div class="card">
+                <img src="https://via.placeholder.com/200">
+                <h4>Travel Pack</h4>
+                <p>$145</p>
+            </div>
+
+            <div class="card">
+                <img src="https://via.placeholder.com/200">
+                <h4>Minimal Backpack</h4>
+                <p>$90</p>
+            </div>
+
+            <div class="card">
+                <img src="https://via.placeholder.com/200">
+                <h4>Office Bag</h4>
+                <p>$210</p>
+            </div>
         </div>
 
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=500&fit=crop">
-            <h3>Travel Bag</h3>
-            <p>₹1999</p>
-            <button>Add to Cart</button>
-        </div>
+        <button class="view-btn">View All</button>
+    </section>
 
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&h=500&fit=crop">
-            <h3>Handbag</h3>
-            <p>₹799</p>
-            <button>Add to Cart</button>
+    <!-- Browse Style -->
+    <section class="style-section">
+        <h2>BROWSE BY STYLE</h2>
+
+        <div class="style-grid">
+            <div class="style-card">
+                <img src="https://via.placeholder.com/400x250">
+            </div>
+
+            <div class="style-card">
+                <img src="https://via.placeholder.com/400x250">
+            </div>
+
+            <div class="style-card">
+                <img src="https://via.placeholder.com/400x250">
+            </div>
+
+            <div class="style-card">
+                <img src="https://via.placeholder.com/400x250">
+            </div>
         </div>
-    </div>
-</section>
-```
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonial-section">
+        <h2>OUR HAPPY CUSTOMERS</h2>
+
+        <div class="testimonial-grid">
+            <div class="testimonial">
+                <h4>Sarah</h4>
+                <p>Excellent quality and premium design.</p>
+            </div>
+
+            <div class="testimonial">
+                <h4>Nick</h4>
+                <p>Very comfortable and durable products.</p>
+            </div>
+
+            <div class="testimonial">
+                <h4>Anna</h4>
+                <p>Fast delivery and amazing customer support.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+
+            <div>
+                <h3>CARRYNEST</h3>
+                <p>Premium bags and travel accessories.</p>
+            </div>
+
+            <div>
+                <h4>Services</h4>
+                <ul>
+                    <li>Shipping</li>
+                    <li>Returns</li>
+                    <li>Support</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4>Company</h4>
+                <ul>
+                    <li>About</li>
+                    <li>Blog</li>
+                    <li>Contact</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4>Subscribe</h4>
+                <div class="subscribe">
+                    <input type="email" placeholder="Email">
+                    <button>Send</button>
+                </div>
+            </div>
+
+        </div>
+    </footer>
 
 </body>
 </html>

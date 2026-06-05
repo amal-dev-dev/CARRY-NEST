@@ -84,8 +84,9 @@ const loadAddProduct = async(req,res)=>{
 const addProduct = async(req,res)=>{
 
     try{
-
+        
         const images = req.files ? req.files.map(file => file.path) : [];
+
 
         const newProduct = new Product({
 
@@ -156,14 +157,13 @@ const loadEditProduct = async(req,res)=>{
 
 
 
-const editProduct = async(req,res)=>{
+const editProduct = async (req, res) => {
 
-    try{
+    try {
 
         const id = req.params.id;
 
         const {
-
             productName,
             description,
             category,
@@ -171,11 +171,9 @@ const editProduct = async(req,res)=>{
             regularPrice,
             salePrice,
             stock
-
         } = req.body;
 
-        await Product.findByIdAndUpdate(id,{
-
+        const updateData = {
             productName,
             description,
             category,
@@ -183,15 +181,23 @@ const editProduct = async(req,res)=>{
             regularPrice,
             salePrice,
             stock
+        };
 
-        });
+        if (req.files && req.files.length > 0) {
+
+            updateData.productImage = req.files.map(
+                file => file.path
+            );
+
+        }
+
+        await Product.findByIdAndUpdate(id, updateData);
 
         res.redirect("/admin/products");
 
-    }catch(error){
+    } catch (error) {
 
-        console.log("EDIT PRODUCT ERROR:",error);
-
+        console.log("EDIT PRODUCT ERROR:", error);
         res.redirect("/admin/pageerror");
 
     }

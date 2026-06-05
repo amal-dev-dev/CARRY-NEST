@@ -5,6 +5,7 @@ import profileController from '../../Controller/user/profile.js';
 import addressController from '../../Controller/user/address.js';
 import { requireAuth, isLoggedIn } from '../../Middleware/userAuth.js';
 import upload from '../../Middleware/multer.js';
+import productController from '../../Controller/user/products.js';
 
 router.get('/login', isLoggedIn, userAuth.loadLogin);
 router.post('/login', userAuth.login);
@@ -53,6 +54,11 @@ router.post("/address/edit/:id", requireAuth, addressController.updateAddress);
 // DELETE ADDRESS
 router.get("/address/delete/:id", requireAuth, addressController.deleteAddress);
 router.post("/address/delete/:id", requireAuth, addressController.deleteAddress);
+
+//PRODUCT PAGE
+router.get('/products', requireAuth, productController.loadProducts)
+// PRODUCT DETAILS
+router.get("/product-details/:id",requireAuth, productController.loadProductDetails);
 
 
 export default router;
