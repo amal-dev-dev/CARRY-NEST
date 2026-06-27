@@ -4,7 +4,6 @@ import Review from "../../Model/reviewModel.js";
 
 
 const loadProducts = async (req, res) => {
-
     try {
 
         const page = Number(req.query.page) || 1;
@@ -22,57 +21,50 @@ const loadProducts = async (req, res) => {
         };
 
         // Search
-
         if (search) {
-
             query.productName = {
                 $regex: search,
                 $options: "i"
             };
-
         }
 
         // Category
-
         if (category) {
-
             query.category = category;
-
         }
 
         // Brand
-
         if (brand) {
-
             query.brand = brand;
-
         }
 
-        // Price
-
+        // Price Filter
         if (price) {
 
             const [min, max] = price.split("-");
 
-            query.salePrice = {
-                $gte: Number(min),
-                $lte: Number(max)
-            };
+            query["variants.0.salePrice"] = {};
 
+            if (min) {
+                query["variants.0.salePrice"].$gte = Number(min);
+            }
+
+            if (max) {
+                query["variants.0.salePrice"].$lte = Number(max);
+            }
         }
 
         // Sorting
-
         let sortOption = {};
 
         switch (sort) {
 
             case "low-high":
-                sortOption.salePrice = 1;
+                sortOption["variants.0.salePrice"] = 1;
                 break;
 
             case "high-low":
-                sortOption.salePrice = -1;
+                sortOption["variants.0.salePrice"] = -1;
                 break;
 
             case "a-z":
@@ -82,6 +74,9 @@ const loadProducts = async (req, res) => {
             case "z-a":
                 sortOption.productName = -1;
                 break;
+
+            default:
+                sortOption.createdAt = -1;
         }
 
         const totalProducts = await Product.countDocuments(query);
@@ -94,30 +89,26 @@ const loadProducts = async (req, res) => {
 
         const totalPages = Math.ceil(totalProducts / limit);
 
-        const categories = await Category.find();
+        const categories = await Category.find({
+            isListed: true
+        });
 
         res.render("user/products", {
-
             products,
             categories,
-
             currentPage: page,
             totalPages,
-
             search,
             category,
             brand,
             price,
-            sort
-
+            sort,
+            user: req.session.user || null
         });
 
     } catch (error) {
-
-        console.log(error);
-
+        console.log("LOAD PRODUCTS ERROR:", error);
     }
-
 };
 
 const loadProductDetails = async(req,res)=>{
@@ -169,7 +160,8 @@ const loadProductDetails = async(req,res)=>{
                 relatedProducts,
                 reviews,
                 averageRating,
-                discountPercentage
+                discountPercentage,
+                user: req.session.user || null
             }
         );
 

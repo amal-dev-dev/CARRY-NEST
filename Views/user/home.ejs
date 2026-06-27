@@ -16,9 +16,33 @@
             <div class="logo">CARRYNEST</div>
 
             <div class="nav-icons">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <i class="fa-regular fa-heart"></i>
-                <a href="/user/profile" style="color: black;"><i class="fa-regular fa-user"></i></a>
+
+                <% if(user){ %>
+
+                    <a href="/user/cart" style="color:black;">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </a>
+
+                    <a href="/user/wishlist" style="color:black;">
+                        <i class="fa-regular fa-heart"></i>
+                    </a>
+
+                    <a href="/user/profile" style="color:black;">
+                        <i class="fa-regular fa-user"></i>
+                    </a>
+
+                <% } else { %>
+
+                    <a href="/user/login" class="login-btn">
+                        Login
+                    </a>
+
+                    <a href="/user/signup" class="signup-btn">
+                        Sign Up
+                    </a>
+
+                <% } %>
+
             </div>
         </nav>
     </header>
@@ -26,10 +50,18 @@
     <!-- Hero -->
     <section class="hero">
         <div class="hero-content">
-            <p>GET YOUR</p>
-            <h1>BACKPACK</h1>
-            <p>Explore premium collections for every journey.</p>
-            <button>BUY NOW</button>
+            <span class="offer-tag">Limited Time Offer</span>
+
+            <h1>UP TO 50% OFF</h1>
+
+            <p>
+                Discover premium backpacks, travel bags, and accessories
+                at unbeatable prices.
+            </p>
+
+            <a href="/user/products" class="shop-btn">
+                Shop Now
+            </a>
         </div>
     </section>
 
@@ -51,7 +83,7 @@
 
                 <% products.forEach(product => { %>
 
-                    <a href="/product/<%= product._id %>" style="text-decoration: none;">
+                    <a href="/user/product-details/<%= product._id %>" style="text-decoration: none;">
 
                         <div class="card">
 
@@ -62,7 +94,7 @@
 
                             <h4><%= product.productName %></h4>
 
-                            <p>₹<%= product.salePrice %></p>
+                            <p>₹<%= product.variants[0]?.salePrice %></p>
 
                         </div>
 
@@ -72,7 +104,7 @@
 
             </div>
 
-        <a href="/user/products" class="view-btn">View All</a>
+        <a href="/user/products" class="view-btn" style="text-decoration: none; color: #000;">View All</a>
     </section>
 
     <!-- Top Selling -->

@@ -20,11 +20,35 @@
         CARRY NEST
     </a>
 
-    <div class="nav-icons">
-        <i class="fa-solid fa-cart-shopping"></i>
-        <i class="fa-regular fa-heart"></i>
-        <a href="/user/profile" style="color: black;"><i class="fa-regular fa-user"></i></a>
-    </div>
+            <div class="nav-icons">
+
+                <% if(user){ %>
+
+                    <a href="/user/cart" style="color:black;">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </a>
+
+                    <a href="/user/wishlist" style="color:black;">
+                        <i class="fa-regular fa-heart"></i>
+                    </a>
+
+                    <a href="/user/profile" style="color:black;">
+                        <i class="fa-regular fa-user"></i>
+                    </a>
+
+                <% } else { %>
+
+                    <a href="/user/login" class="login-btn">
+                        Login
+                    </a>
+
+                    <a href="/user/signup" class="signup-btn">
+                        Sign Up
+                    </a>
+
+                <% } %>
+
+            </div>
 
 </nav>
 
@@ -32,7 +56,7 @@
 
 <div class="breadcrumb">
 
-    <a href="/">Home</a>
+    <a href="/user/home">Home</a>
 
     <span>/</span>
 
@@ -102,14 +126,14 @@
 
             <div class="price-box">
 
-                <span class="sale-price">
-                    ₹<%= product.salePrice %>
+                <span class="sale-price" id="price">
+                    ₹<%= product.variants[0]?.salePrice %>
                 </span>
 
-                <% if(product.regularPrice){ %>
+                <% if(product.variants[0]?.regularPrice){ %>
 
-                    <span class="regular-price">
-                        ₹<%= product.regularPrice %>
+                    <span class="regular-price" id="regularPrice">
+                        ₹<%= product.variants[0]?.regularPrice %>
                     </span>
 
                 <% } %>
@@ -131,15 +155,53 @@
                     <%= product.category?.name || 'N/A' %>
                 </p>
 
-                <p>
-                    <strong>Color:</strong>
-                    <%= product.color %>
-                </p>
+                <div class="product-colors">
 
-                <p>
-                    <strong>Stock:</strong>
-                    <%= product.stock %>
-                </p>
+                    <strong>Colors:</strong>
+
+                    <% product.colors.forEach(color => { %>
+
+                        <span
+                            class="color-circle"
+                            data-color="<%= color %>">
+                        </span>
+
+                    <% }) %>
+
+                </div>
+
+                    <p>
+                        <strong>Stock:</strong>
+                        <span id="stock">
+                            <%= product.variants[0]?.stock %>
+                        </span>
+                    </p>
+
+            </div>
+
+            <div class="variant-section">
+
+                <h4>Variants</h4>
+
+                <% product.variants.forEach((variant,index)=>{ %>
+
+                    <% if(variant.stock > 0){ %>
+
+                        <label>
+
+                            <input
+                                type="radio"
+                                name="variant"
+                                value="<%= index %>"
+                            >
+
+                            <%= variant.size %>
+
+                        </label>
+
+                    <% } %>
+
+                <% }) %>
 
             </div>
 
@@ -151,16 +213,40 @@
                     type="number"
                     value="1"
                     min="1"
-                    max="<%= product.stock %>"
+                    max="<%= product.variants.reduce((sum,v)=>sum+v.stock,0) %>"
                 >
 
                 <button>+</button>
 
             </div>
 
-            <button class="cart-btn">
-                Add To Cart
-            </button>
+            <form
+                action="/user/add-to-cart/<%= product._id %>"
+                method="POST"
+            >
+
+                <% if(product.variants[0]?.stock > 0){ %>
+
+                    <button
+                        type="submit"
+                        class="add-cart-btn"
+                    >
+                        Add To Cart
+                    </button>
+
+                <% } else { %>
+
+                    <button
+                        type="button"
+                        class="add-cart-btn"
+                        disabled
+                    >
+                        Out Of Stock
+                    </button>
+
+                <% } %>
+
+            </form>
 
         </div>
 
@@ -193,7 +279,7 @@
                 </h4>
 
                 <p>
-                    ₹<%= item.salePrice %>
+                    ₹<%= item.variants[0]?.salePrice %>
                 </p>
 
             </a>
@@ -325,6 +411,10 @@
 
 <script>
 
+document.querySelectorAll(".color-circle").forEach(circle => {
+    circle.style.backgroundColor = circle.dataset.color;
+});
+
 function changeImage(img){
 
     document
@@ -332,6 +422,42 @@ function changeImage(img){
     .src = img.src;
 
 }
+
+
+const variants = JSON.parse(
+    '<%- JSON.stringify(product.variants) %>'
+);
+
+const radios =
+document.querySelectorAll(
+    'input[name="variant"]'
+);
+
+const price =
+document.getElementById("price");
+
+const stock =
+document.getElementById("stock");
+
+radios.forEach(radio => {
+
+    radio.addEventListener("change", () => {
+
+        const selected =
+        variants[radio.value];
+
+        price.textContent =
+        `₹${selected.salePrice}`;
+
+        regularPrice.textContent =
+        `₹${selected.regularPrice}`;
+
+        stock.textContent =
+        selected.stock;
+
+    });
+
+});
 
 </script>
 

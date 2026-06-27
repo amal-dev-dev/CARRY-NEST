@@ -7,11 +7,11 @@
 
     <link rel="stylesheet" href="/Styles/admin/add-product.css">
 
-    <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-    rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.css">
+    <script src="https://unpkg.com/cropperjs@1.6.2/dist/cropper.min.js"></script>
 </head>
 
 <body>
@@ -291,9 +291,9 @@
 
                     <button type="button"
                     class="cancel-btn">
-
+                    <a href="/admin/products" style="text-decoration: none;color: #000;">
                         Cancel
-
+                    </a>
                     </button>
 
                     <button type="submit"
@@ -435,32 +435,28 @@
 
                     </div>
 
-                    <div class="variant-card">
+                        <div id="variantsContainer">
 
-                        <div class="variant-header">
+                            <div class="variant-card">
 
-                            <div class="color-info">
+                                <div class="variant-header">
 
-                                <div
-                                    class="color-circle"
-                                    id="colorCircle">
+                                    <div class="color-info">
+
+                                        <div class="color-circle"></div>
+
+                                        <input
+                                            type="text"
+                                            name="colors[]"
+                                            class="colorInput"
+                                            value="<%= product.colors[0] %>"
+                                        />
+
+                                    </div>
+
                                 </div>
 
-                               <input
-                                type="text"
-                                name="color"
-                                id="colorInput"
-                                value="<%= product.color %>">
-
                             </div>
-
-                            <label class="switch">
-
-                                <input type="checkbox" checked>
-
-                                <span class="slider"></span>
-
-                            </label>
 
                         </div>
 
@@ -485,12 +481,18 @@
 
                                 <tbody>
 
+                                    <%
+                                    const standard = product.variants.find(v => v.size === "Standard");
+                                    const professional = product.variants.find(v => v.size === "Professional");
+                                    const travel = product.variants.find(v => v.size === "Travel");
+                                    %>
+
                                     <tr>
 
                                         <td>
 
                                             <input type="text"
-                                            name="size"
+                                            name="size[]"
                                             value="Standard">
 
                                         </td>
@@ -499,8 +501,8 @@
 
                                             <input
                                                 type="number"
-                                                name="stock"
-                                                value="<%= product.stock %>">
+                                                name="stock[]"
+                                                value="<%= standard?.stock || '' %>">
 
                                         </td>
 
@@ -508,8 +510,8 @@
 
                                             <input
                                             type="number"
-                                            name="regularPrice"
-                                            value="<%= product.regularPrice %>">
+                                            name="regularPrice[]"
+                                            value="<%= standard?.regularPrice || '' %>">
 
 
                                         </td>
@@ -518,8 +520,8 @@
 
                                             <input
                                                 type="number"
-                                                name="salePrice"
-                                                value="<%= product.salePrice %>">
+                                                name="salePrice[]"
+                                                value="<%= standard?.salePrice || '' %>">
 
                                         </td>
 
@@ -530,6 +532,7 @@
                                         <td>
 
                                             <input type="text"
+                                            name="size[]"
                                             value="Professional">
 
                                         </td>
@@ -537,21 +540,24 @@
                                         <td>
 
                                             <input type="number"
-                                            placeholder="Stock">
+                                            name="stock[]"
+                                            value="<%= professional?.stock || '' %>">
 
                                         </td>
 
                                         <td>
 
                                             <input type="number"
-                                            placeholder="₹ Original Price">
+                                            name="regularPrice[]"
+                                            value="<%= professional?.regularPrice || '' %>">
 
                                         </td>
 
                                         <td>
 
                                             <input type="number"
-                                            placeholder="₹ Sale Price">
+                                            name="salePrice[]"
+                                            value="<%= professional?.salePrice || '' %>">
 
                                         </td>
 
@@ -562,6 +568,7 @@
                                         <td>
 
                                             <input type="text"
+                                            name="size[]"
                                             value="Travel">
 
                                         </td>
@@ -569,21 +576,24 @@
                                         <td>
 
                                             <input type="number"
-                                            placeholder="Stock">
+                                            name="stock[]"
+                                            value="<%= travel?.stock || '' %>">
 
                                         </td>
 
                                         <td>
 
                                             <input type="number"
-                                            placeholder="₹ Original Price">
+                                            name="regularPrice[]"
+                                            value="<%= travel?.regularPrice || '' %>">
 
                                         </td>
 
                                         <td>
 
                                             <input type="number"
-                                            placeholder="₹ Sale Price">
+                                            name="salePrice[]"
+                                            value="<%= travel?.salePrice || '' %>">
 
                                         </td>
 
@@ -601,16 +611,36 @@
 
                             <!-- Existing Images -->
 
-                                <div class="existing-images">
-                                    <% product.productImage.forEach(image => { %>
-                                        <div class="image-preview">
-                                            <img
+                            <div class="existing-images">
+
+                                <% product.productImage.forEach((image,index) => { %>
+
+                                    <div class="image-preview">
+
+                                        <img
                                             src="<%= image %>"
                                             alt="Product Image"
                                             style="width:80px;height:80px;object-fit:cover;border-radius:8px;">
-                                        </div>
-                                    <% }) %>
-                                </div>
+
+                                        <button
+                                            type="button"
+                                            class="remove-image-btn"
+                                            data-index="<%= index %>">
+
+                                            ✖
+
+                                        </button>
+
+                                    </div>
+
+                                <% }) %>
+
+                            </div>
+
+                            <input
+                                type="hidden"
+                                id="removedImages"
+                                name="removedImages">
 
                             <!-- Upload New Images -->
 
@@ -638,6 +668,28 @@
                             <!-- New Selected Image Preview -->
 
                             <div id="previewContainer"></div>
+
+                        </div>
+
+                        <div id="cropModal" class="crop-modal">
+
+                            <div class="crop-content">
+
+                                <img id="cropImage">
+
+                                <div class="crop-buttons">
+
+                                    <button
+                                        type="button"
+                                        id="cropBtn">
+
+                                        Crop Image
+
+                                    </button>
+
+                                </div>
+
+                            </div>
 
                         </div>
 
@@ -674,47 +726,235 @@ dropdowns.forEach((dropdown)=>{
 
 });
 
-const imageInput = document.getElementById("images");
+const variantBtn = document.querySelector(".variant-btn");
+const variantsContainer = document.getElementById("variantsContainer");
 
-const previewContainer = document.getElementById("previewContainer");
+variantBtn.addEventListener("click", () => {
 
-imageInput.addEventListener("change", () => {
+    const variantCard = document.createElement("div");
 
-    previewContainer.innerHTML = "";
+    variantCard.classList.add("variant-card");
 
-    Array.from(imageInput.files).forEach(file => {
+    variantCard.innerHTML = `
 
-        const reader = new FileReader();
+        <div class="variant-header">
 
-        reader.onload = function(e){
+            <div class="color-info">
 
-            const img =
-            document.createElement("img");
+                <div class="color-circle"></div>
 
-            img.src = e.target.result;
+                <input
+                    type="text"
+                    name="colors[]"
+                    class="colorInput"
+                    placeholder="Enter Color"
+                />
 
-            previewContainer.appendChild(img);
+            </div>
 
-        };
+            <button
+                type="button"
+                class="removeVariant">
 
-        reader.readAsDataURL(file);
+                <i class="ri-delete-bin-line"></i>
+
+                Remove
+
+            </button>
+
+        </div>
+
+    `;
+
+    variantsContainer.appendChild(variantCard);
+
+});
+
+document.addEventListener("click", (e) => {
+
+    const removeBtn = e.target.closest(".removeVariant");
+
+    if(removeBtn){
+
+        const allVariants =
+        document.querySelectorAll(".variant-card");
+
+        if(allVariants.length > 1){
+
+            removeBtn
+            .closest(".variant-card")
+            .remove();
+
+        }
+
+    }
+
+});
+
+
+document.addEventListener("input", (e) => {
+
+    if(e.target.classList.contains("colorInput")){
+
+        const circle =
+        e.target
+        .closest(".color-info")
+        .querySelector(".color-circle");
+
+        circle.style.backgroundColor = e.target.value;
+
+    }
+
+});
+
+let removedImages = [];
+
+document.querySelectorAll(".remove-image-btn")
+.forEach(btn=>{
+
+    btn.addEventListener("click",()=>{
+
+        const index = btn.dataset.index;
+
+        removedImages.push(index);
+
+        document.getElementById("removedImages")
+        .value = removedImages.join(",");
+
+        btn.parentElement.remove();
 
     });
 
 });
 
+const imageInput = document.getElementById("images");
+const previewContainer = document.getElementById("previewContainer");
 
-const colorInput = document.getElementById("colorInput");
-const colorCircle = document.getElementById("colorCircle");
+let cropper;
+let croppedFiles = [];
 
-colorInput.addEventListener("input", () => {
+imageInput.addEventListener("change", async (e) => {
 
-    colorCircle.style.backgroundColor =
-        colorInput.value;
+    const files = Array.from(e.target.files);
+
+    croppedFiles = [];
+
+    let currentIndex = 0;
+
+    function cropNextImage() {
+
+        if(currentIndex >= files.length){
+
+            const dataTransfer = new DataTransfer();
+
+            croppedFiles.forEach(file => {
+
+                dataTransfer.items.add(file);
+
+            });
+
+            imageInput.files = dataTransfer.files;
+
+            return;
+
+        }
+
+        const file = files[currentIndex];
+
+        const reader = new FileReader();
+
+        reader.onload = function(event){
+
+            document.getElementById( "cropModal" ).style.display = "flex";
+
+            const cropImage = document.getElementById("cropImage" );
+
+            cropImage.src = event.target.result;
+
+            if(cropper){
+                cropper.destroy();
+            }
+
+            cropper = new Cropper(
+                cropImage,
+                {
+                    aspectRatio:NaN,
+                    viewMode:1
+                }
+            );
+
+            document.getElementById( "cropBtn" ).onclick = () => {
+
+                const canvas = cropper.getCroppedCanvas({
+                    width:800,
+                    height:800
+                });
+
+                canvas.toBlob(blob => {
+
+                    const croppedFile =  new File(
+                        [blob],
+                        file.name,
+                        {
+                            type:"image/jpeg"
+                        }
+                    );
+
+                    croppedFiles.push(
+                        croppedFile
+                    );
+
+                    const img = document.createElement( "img" );
+
+                    img.src =  URL.createObjectURL(blob);
+
+                    img.classList.add(
+                        "preview-image"
+                    );
+
+                    previewContainer.appendChild(
+                        img
+                    );
+
+                    cropper.destroy();
+
+                    document.getElementById(
+                        "cropModal"
+                    ).style.display =
+                    "none";
+
+                    currentIndex++;
+
+                    cropNextImage();
+
+                },"image/jpeg");
+
+            };
+        };
+        reader.readAsDataURL(file);
+    }
+    cropNextImage();
 
 });
 
+
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<% if(typeof message !== "undefined" && message){ %>
+
+<script>
+
+Swal.fire({
+    icon: "error",
+    title: "Validation Error",
+    text: "<%= message %>"
+});
+
+</script>
+
+<% } %>
 
 </body>
 </html>

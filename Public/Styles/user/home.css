@@ -16,37 +16,23 @@ body{
 
 /* Navbar */
 
-.navbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:20px 5%;
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 10px;
+    position: sticky;
+    top: 0px;
+    z-index: 100;
+    background: rgb(255, 255, 255);
+    padding: 15px 5%;
 }
 
-.logo{
-    font-size:22px;
-    font-weight:bold;
-}
-
-.search-box{
-    flex:1;
-    max-width:500px;
-    margin:0 20px;
-    position:relative;
-}
-
-.search-box input{
-    width:100%;
-    padding:12px 40px;
-    border:none;
-    background:#f3f3f3;
-    border-radius:25px;
-}
-
-.search-box i{
-    position:absolute;
-    left:15px;
-    top:13px;
+.logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #000;
+    text-decoration: none;
 }
 
 .nav-icons{
@@ -54,40 +40,86 @@ body{
     gap:20px;
 }
 
+/* Guest Buttons */
+
+.guest-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.login-btn,
+.signup-btn{
+    text-decoration:none;
+    padding:10px 22px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:600;
+    transition:0.3s ease;
+}
+
+/* Login */
+
+.login-btn{
+    background:#fff;
+    color:#111827;
+    border:2px solid #111827;
+}
+
+.login-btn:hover{
+    background:#111827;
+    color:#fff;
+}
+
+/* Sign Up */
+
+.signup-btn{
+    background:#fff;
+    color:#111827;
+    border:2px solid #111827;
+}
+
+.signup-btn:hover{
+    background:#111827;
+    color:#fff;
+}
+
 /* Hero */
 
 .hero{
-    height:550px;
-    background:url("hero.jpg") center/cover;
+    height: 500px;
+    background: linear-gradient(rgba(0,0,0,0.4),
+                rgba(0,0,0,0.4)),
+                url('/images/banner.jpg');
+    background-size: cover;
+    background-position: center;
     display:flex;
     align-items:center;
-    padding:5%;
+    justify-content:center;
+    text-align:center;
     color:white;
 }
 
 .hero-content h1{
-    font-size:5rem;
+    font-size:4rem;
     margin:10px 0;
-    letter-spacing:10px;
 }
 
-.hero button{
+.offer-tag{
+    background:#ff4d4d;
+    padding:8px 15px;
+    border-radius:20px;
+    font-size:14px;
+}
+
+.shop-btn{
+    display:inline-block;
     margin-top:20px;
-    padding:12px 30px;
-    border:none;
+    padding:12px 25px;
     background:black;
     color:white;
-    border-radius:30px;
-}
-
-.view-btn{
-    display:inline-block;
-    padding:10px 20px;
-    background:#000;
-    color:#000000;
     text-decoration:none;
-    border-radius:6px;
-    cursor:pointer;
+    border-radius:5px;
 }
 
 /* Brands */

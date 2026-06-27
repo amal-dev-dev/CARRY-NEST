@@ -11,16 +11,39 @@ router.get('/google',
 // Step 2 → Callback
 router.get(
     "/google/callback",
+    (req, res, next) => {
 
-    passport.authenticate("google", {
-        failureRedirect: "/user/login"
-    }),
+        passport.authenticate(
+            "google",
+            (err, user, info) => {
 
-    (req, res) => {
+                if (err) {
+                    return next(err);
+                }
 
-        req.session.user = req.user._id;
+                if (!user) {
 
-        res.redirect("/user/home");
+                    req.session.message =
+                        info?.message || "Login failed";
+
+                    return res.redirect("/user/login");
+                }
+
+                req.logIn(user, (err) => {
+
+                    if (err) {
+                        return next(err);
+                    }
+
+                    // IMPORTANT
+                    req.session.user = user._id;
+
+                    return res.redirect("/user/home");
+
+                });
+
+            }
+        )(req, res, next);
 
     }
 );

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Carry Nest Cart</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="/Styles/user/cart.css">
+
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        CARRY NEST
+    </div>
+
+    <div class="nav-icons">
+
+        <a href="/user/cart" style="color: black;"><i class="fa-solid fa-cart-shopping"></i></a>
+
+        <i class="fa-regular fa-heart"></i>
+
+        <a href="/user/profile" style="color: black;"><i class="fa-regular fa-user"></i></a>
+
+    </div>
+
+</nav>
+
+<!-- BREADCRUMB -->
+
+<div class="breadcrumb">
+
+    <a href="/user/home">Home</a>
+
+    <span>/</span>
+
+    <a href="/user/products">Products</a>
+
+    <span>/</span>
+
+    <span>Cart</span>
+
+</div>
+
+<!-- CART -->
+
+<section class="cart-container">
+
+    <!-- LEFT -->
+
+    <div class="cart-items">
+
+        <h1>YOUR CART</h1>
+
+        <% if(cart && cart.items.length > 0){ %>
+
+            <% cart.items.forEach(item => { %>
+
+                <% if(item.productId){ %>
+
+                <div class="cart-card">
+
+                    <img
+                        src="<%= item.productId.productImage?.[0] || '/images/no-image.png' %>"
+                        alt=""
+                    >
+
+                    <div class="cart-info">
+
+                        <h3>
+                            <%= item.productId.productName %>
+                        </h3>
+
+                        <p>
+                            Brand:
+                            <%= item.productId.brand %>
+                        </p>
+
+                        <p>
+                            Color:
+                            <%= item.productId.colors %>
+                        </p>
+
+                        <p>
+                            Stock:
+                            <%= item.productId.variants[0].stock %>
+                        </p>
+
+                        <h4>
+                            ₹<%= item.productId.variants[0]?.salePrice || 0 %>
+                        </h4>
+
+                        <% if(item.productId.variants[0]?.quantity <= 0){ %>
+
+                            <span class="out-stock">
+                                Out Of Stock
+                            </span>
+
+                        <% } %>
+
+                    </div>
+
+                    <div class="cart-actions">
+
+                        <form
+                        action="/user/cart/decrease/<%= item.productId._id %>?_method=PATCH"
+                            method="POST">
+
+                            <button>
+                                -
+                            </button>
+
+                        </form>
+
+                        <span>
+                            <%= item.quantity %>
+                        </span>
+
+                        <form action="/user/cart/increase/<%= item.productId._id %>?_method=PATCH"
+                            method="POST">
+
+                            <button>+</button>
+
+                        </form>
+
+                    </div>
+
+                    <form
+                    action="/user/cart/remove/<%= item.productId._id %>?_method=PATCH"
+                        method="POST">
+
+                        <button
+                        class="delete-btn">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <% } %>
+
+            <% }) %>
+
+        <% } else { %>
+
+            <div class="empty-cart">
+
+                <h2>
+                    Your Cart Is Empty
+                </h2>
+
+                <a href="/user/products">
+
+                    Continue Shopping
+
+                </a>
+
+            </div>
+
+        <% } %>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="summary-box">
+
+        <h2>
+            Order Summary
+        </h2>
+
+        <div class="summary-row">
+
+            <span>Subtotal</span>
+
+            <span>
+                ₹<%= subtotal %>
+            </span>
+
+        </div>
+
+        <div class="summary-row">
+
+            <span>Discount</span>
+
+            <span class="discount">
+
+                -₹<%= discount %>
+
+            </span>
+
+        </div>
+
+        <div class="summary-row">
+
+            <span>Delivery Fee</span>
+
+            <span>
+
+                ₹<%= deliveryFee %>
+
+            </span>
+
+        </div>
+
+        <hr>
+
+        <div class="summary-row total">
+
+            <span>Total</span>
+
+            <span>
+
+                ₹<%= grandTotal %>
+
+            </span>
+
+        </div>
+
+        <a
+        href="/user/checkout"
+        class="checkout-btn">
+
+            Go To Checkout
+
+        </a>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+    <div class="footer-grid">
+
+        <div>
+
+            <h3>CARRY NEST</h3>
+
+            <p>
+                Premium Bags &
+                Travel Accessories
+            </p>
+
+        </div>
+
+        <div>
+
+            <h4>Service</h4>
+
+            <p>Shipping</p>
+
+            <p>Returns</p>
+
+            <p>Support</p>
+
+        </div>
+
+        <div>
+
+            <h4>Company</h4>
+
+            <p>About Us</p>
+
+            <p>Contact</p>
+
+        </div>
+
+        <div>
+
+            <input
+            type="email"
+            placeholder="Email">
+
+            <button>
+                Send
+            </button>
+
+        </div>
+
+    </div>
+
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<% if(typeof message !== "undefined" && message){ %>
+
+<script>
+
+Swal.fire({
+    icon: "warning",
+    title: "<%= message %>",
+    timer: 2000,
+    showConfirmButton: false
+});
+
+</script>
+
+<% } %>
+
+</body>
+</html>

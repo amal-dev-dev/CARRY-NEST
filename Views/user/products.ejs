@@ -20,11 +20,35 @@
         CARRY NEST
     </div>
 
-    <div class="nav-icons">
-        <i class="fa-solid fa-cart-shopping"></i>
-        <i class="fa-regular fa-heart"></i>
-        <a href="/user/profile" style="color: black;"><i class="fa-regular fa-user"></i></a>
-    </div>
+            <div class="nav-icons">
+
+                <% if(user){ %>
+
+                    <a href="/user/cart" style="color:black;">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </a>
+
+                    <a href="/user/wishlist" style="color:black;">
+                        <i class="fa-regular fa-heart"></i>
+                    </a>
+
+                    <a href="/user/profile" style="color:black;">
+                        <i class="fa-regular fa-user"></i>
+                    </a>
+
+                <% } else { %>
+
+                    <a href="/user/login" class="login-btn">
+                        Login
+                    </a>
+
+                    <a href="/user/signup" class="signup-btn">
+                        Sign Up
+                    </a>
+
+                <% } %>
+
+            </div>
 
 </nav>
 
@@ -48,6 +72,10 @@
         <!-- Category -->
 
         <form id="filterForm" method="GET" action="/user/products">
+
+            <input type="hidden" name="sort" value="<%= sort %>">
+            <input type="hidden" name="search" value="<%= search %>">
+            <input type="hidden" name="price" value="<%= price %>">
 
             <div class="filter-content active">
 
@@ -167,6 +195,9 @@
 
         <form action="/user/products" method="GET" class="controls">
 
+            <input type="hidden" name="category" value="<%= category %>">
+            <input type="hidden" name="price" value="<%= price %>">
+
             <input
                 type="text"
                 name="search"
@@ -231,7 +262,7 @@
 
                         <h4><%= product.productName %></h4>
 
-                        <p>₹<%= product.salePrice %></p>
+                        <p>₹<%= product.variants[0]?.salePrice %></p>
 
                     </div>
 
@@ -316,18 +347,15 @@
 
 <script>
 
-const filterBtn =
-document.getElementById("filterBtn");
+const filterBtn = document.getElementById("filterBtn");
 
-const sidebar =
-document.getElementById("sidebar");
+const sidebar = document.getElementById("sidebar");
 
 filterBtn.addEventListener("click", () => {
     sidebar.classList.toggle("show");
 });
 
-const headers =
-document.querySelectorAll(".filter-header");
+const headers = document.querySelectorAll(".filter-header");
 
 headers.forEach(header => {
 

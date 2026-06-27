@@ -6,106 +6,375 @@
   <title>Add Category Modal</title>
 
   <link rel="stylesheet" href="/Styles/admin/add-category.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 </head>
 <body>
 
-  <div class="modal-container">
+<div class="admin-container">
 
-    <div class="modal-header">
+    <!-- Sidebar -->
+      <aside class="sidebar">
 
-      <h2>Add New Category</h2>
+        <div>
 
-      <span class="close-btn">&times;</span>
+            <!-- LOGO -->
 
-    </div>
+            <div class="logo-section">
 
-    <!-- FORM START -->
+                <div class="logo-box">
+                    C
+                </div>
 
-    <form action="/admin/add-category" method="POST">
+                <h2>CARRY NEST</h2>
 
-      <div class="modal-body">
+            </div>
 
-        <!-- CATEGORY NAME -->
+            <!-- MENU -->
 
-        <div class="form-group">
+            <div class="menu-wrapper">
 
-          <label>Category Name *</label>
+                <!-- DASHBOARD -->
 
-          <input
-            type="text"
-            name="name"
-            placeholder="e.g., Apparel"
-            required
-          >
+                <a href="/admin/dashboard" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-dashboard-line"></i>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+                <!-- PRODUCTS -->
+
+                <div class="dropdown-wrapper active">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-bag-line"></i>
+
+                            Products
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                    <div class="dropdown-menu show">
+
+                        <a href="/admin/products">
+                            All Products
+                        </a>
+
+                        <a href="/admin/add-product">
+
+                            Add Product
+
+                        </a>
+
+                        <a href="/admin/category"
+                        class="submenu-active">
+                            Categories
+                        </a>
+
+                        <a href="#">
+                            Brands
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- ORDERS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                            Orders
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                    <div class="dropdown-menu">
+
+                        <a href="#">
+                            All Orders
+                        </a>
+
+                        <a href="#">
+                            Pending
+                        </a>
+
+                        <a href="#">
+                            Processing
+                        </a>
+
+                        <a href="#">
+                            Shipped
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- RETURNS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                    <div class="dropdown-menu">
+
+                        <a href="#">
+                            Requests
+                        </a>
+
+                        <a href="#">
+                            Refunds
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- CUSTOMERS -->
+
+                <a href="/admin/customers"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+                <!-- WALLET -->
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+                <!-- PROMOTIONS -->
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+                <!-- REPORTS -->
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+            </div>
 
         </div>
 
-        <!-- DESCRIPTION -->
+        <!-- LOGOUT -->
 
-        <div class="form-group">
+        <div class="logout-section">
 
-          <label>Description</label>
+            <a href="/admin/logout"
+            class="logout-btn">
 
-          <textarea
-            name="description"
-            placeholder="Brief description of the category"
-          ></textarea>
+                <i class="ri-logout-box-r-line"></i>
 
-        </div>
+                Logout
 
-        <!-- STATUS -->
-
-        <div class="status-section">
-
-          <label>Status</label>
-
-          <div class="toggle-wrapper">
-
-            <span>Category is active</span>
-
-            <label class="switch">
-
-              <input
-                type="checkbox"
-                name="isListed"
-                checked
-              >
-
-              <span class="slider"></span>
-
-            </label>
-
-          </div>
+            </a>
 
         </div>
 
-        <!-- BUTTONS -->
+    </aside>
 
-        <div class="button-group">
+    <!-- Main Content -->
+    <main class="main-content">
 
-          <a href="/admin/category"
-             class="cancel-btn">
+        <div class="page-header">
 
-            Cancel
+            <h2>Add Category</h2>
 
-          </a>
-
-          <button type="submit"
-                  class="add-btn">
-
-            Add Category
-
-          </button>
+            <a href="/admin/category" class="back-btn">
+                Back
+            </a>
 
         </div>
 
-      </div>
+        <div class="form-card">
 
-    </form>
+            <form action="/admin/add-category" method="POST">
 
-    <!-- FORM END -->
+              <div class="form-body">
 
-  </div>
+                <!-- CATEGORY NAME -->
+
+                  <div class="form-group">
+
+                    <% if(typeof message !== 'undefined' && message){ %>
+                        <p class="text-danger" style="color: red;text-align: center;"><%= message %></p>
+                    <% } %>
+
+                    <label>Category Name *</label>
+
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="e.g., Apparel"
+                      minlength="3"
+                    >
+
+                    <span id="nameError" class="text-danger"></span>
+
+                  </div>
+
+                  <!-- DESCRIPTION -->
+
+                  <div class="form-group">
+
+                    <label>Description</label>
+
+                    <textarea
+                      name="description"
+                      placeholder="Brief description of the category"
+                    ></textarea>
+
+                  </div>
+
+                  <!-- STATUS -->
+
+                  <div class="status-section">
+
+                    <label>Status</label>
+
+                    <div class="toggle-wrapper">
+
+                      <span>Category is active</span>
+
+                      <label class="switch">
+
+                        <input
+                          type="checkbox"
+                          name="isListed"
+                          checked
+                        >
+
+                        <span class="slider"></span>
+
+                      </label>
+
+                    </div>
+
+                  </div>
+
+                  <!-- BUTTONS -->
+
+                  <div class="button-group">
+
+                    <a href="/admin/category"
+                      class="cancel-btn">
+
+                      Cancel
+
+                    </a>
+
+                    <button type="submit"
+                            class="add-btn">
+
+                      Add Category
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+const dropdowns = document.querySelectorAll(".dropdown-btn");
+
+dropdowns.forEach((dropdown)=>{
+
+    dropdown.addEventListener("click",()=>{
+
+        const menu = dropdown.nextElementSibling;
+
+        if(menu){
+            menu.classList.toggle("show");
+        }
+
+    });
+
+});
+
+</script>
 
 </body>
 </html>

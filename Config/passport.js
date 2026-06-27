@@ -20,7 +20,7 @@ async (accessToken, refreshToken, profile, done) => {
         const email = profile.emails[0].value;
         let user = await Users.findOne({ email });
 
-        if(user && user.isBlocked) {
+        if(user.isBlocked) {
             return done(null, false, {message: "Your account has been blocked by admin"});
         }
 

@@ -30,21 +30,53 @@ body{
     text-decoration: none;
 }
 
-.search-bar{
-    flex:1;
-    margin:0 30px;
-}
-
-.search-bar input{
-    width:100%;
-    padding:10px;
-    border:none;
-    border-radius:20px;
-}
-
 .nav-icons{
     display:flex;
     gap:15px;
+}
+
+/* Guest Buttons */
+
+.guest-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.login-btn,
+.signup-btn{
+    text-decoration:none;
+    padding:10px 22px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:600;
+    transition:0.3s ease;
+}
+
+/* Login */
+
+.login-btn{
+    background:#fff;
+    color:#111827;
+    border:2px solid #111827;
+}
+
+.login-btn:hover{
+    background:#111827;
+    color:#fff;
+}
+
+/* Sign Up */
+
+.signup-btn{
+    background:#fff;
+    color:#111827;
+    border:2px solid #111827;
+}
+
+.signup-btn:hover{
+    background:#111827;
+    color:#fff;
 }
 
 /* BREADCRUMB */
@@ -76,12 +108,18 @@ body{
 }
 
 .main-image{
+    width:100%;
+    max-width:450px;
+    height:450px;
     overflow:hidden;
     border-radius:10px;
+    border:1px solid #eee;
 }
 
 .main-image img{
     width:100%;
+    height:100%;
+    object-fit:cover;
     transition:0.4s;
     cursor:zoom-in;
 }
@@ -139,6 +177,26 @@ body{
     margin-bottom:20px;
 }
 
+.product-colors{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:10px;
+}
+
+.color-circle{
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    border:2px solid #ddd;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.color-circle:hover{
+    transform:scale(1.15);
+}
+
 .product-meta p{
     margin-bottom:10px;
 }
@@ -159,14 +217,38 @@ body{
     text-align:center;
 }
 
-.cart-btn{
+.add-cart-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
     width:100%;
-    padding:15px;
+    max-width:300px;
+    padding:15px 25px;
+    background:#111;
+    color:#fff;
     border:none;
-    border-radius:30px;
-    background:black;
-    color:white;
+    border-radius:50px;
+    font-size:16px;
+    font-weight:600;
     cursor:pointer;
+    transition:all 0.3s ease;
+    box-shadow:0 4px 15px rgba(0,0,0,0.15);
+}
+
+.add-cart-btn:hover{
+
+    background:#333;
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+.add-cart-btn:active{
+    transform:scale(0.98);
+}
+
+.add-cart-btn i{
+    font-size:18px;
 }
 
 /* RELATED */

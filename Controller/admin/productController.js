@@ -87,10 +87,73 @@ const addProduct = async(req,res)=>{
         
         const images = req.files ? req.files.map(file => file.path) : [];
 
+        const variants = req.body.sizes.map((size, index) => ({
+            size,
+            stock: Number(req.body.stocks[index]),
+            regularPrice: Number(req.body.regularPrices[index]),
+            salePrice: Number(req.body.salePrices[index])
+
+        }));
+
+        const categories = await Category.find({ isListed: true });
+
+        if(!req.body.productName?.trim()){
+
+            return res.render("admin/add-product",{
+                categories,
+                message:"Product name is required"
+            });
+
+        }
+
+        if(!req.body.description?.trim()){
+
+            return res.render("admin/add-product",{
+                categories,
+                message:"Description is required"
+            });
+
+        }
+
+        if(!req.body.colors?.[0]?.trim()){
+
+            return res.render("admin/add-product",{
+                categories,
+                message:"At least one color is required"
+            });
+
+        }
+
+        for(const variant of variants){
+
+            if(variant.stock < 0){
+
+                return res.render("admin/add-product",{
+                    categories,
+                    message:"Stock cannot be negative"
+                });
+
+            }
+
+        }
+
+        for(const variant of variants){
+
+            if(variant.salePrice > variant.regularPrice){
+
+                return res.render("admin/add-product",{
+                    categories,
+                    message:"Sale price cannot be greater than original price"
+                });
+
+            }
+
+        }
+
 
         const newProduct = new Product({
 
-            color:req.body.color,
+            colors:req.body.colors,
 
             productName:req.body.productName,
 
@@ -100,19 +163,20 @@ const addProduct = async(req,res)=>{
 
             description:req.body.description,
 
-            regularPrice:req.body.regularPrice,
+            variants,
 
-            salePrice:req.body.salePrice,
-
-            stock:req.body.stock,
+            offer:req.body.offer,
 
             productImage:images
 
-        })
+        });
 
         await newProduct.save()
 
-        res.redirect("/admin/products")
+        res.redirect("/admin/products",{
+            categories,
+            message:"Product save successfully"
+        });
 
     }catch(error){
 
@@ -163,47 +227,121 @@ const editProduct = async (req, res) => {
 
         const id = req.params.id;
 
+        const product = await Product.findById(id);
+
+        const categories = await Category.find({
+            isListed: true
+        });
+
         const {
+
             productName,
+            offer,
             description,
             category,
             brand,
-            regularPrice,
-            salePrice,
-            stock
+            colors,
+            removedImages
+
         } = req.body;
 
-        const updateData = {
-            productName,
-            description,
-            category,
-            brand,
-            regularPrice,
-            salePrice,
-            stock
-        };
+        let variants = req.body.size.map((size, index) => ({
+            size,
+            stock: Number(req.body.stock[index]),
+            regularPrice: Number(req.body.regularPrice[index]),
+            salePrice: Number(req.body.salePrice[index])
+        }));
 
-        if (req.files && req.files.length > 0) {
+        // Remove empty rows
+        variants = variants.filter(v =>
+            v.stock !== 0 ||
+            v.regularPrice !== 0 ||
+            v.salePrice !== 0
+        );
 
-            updateData.productImage = req.files.map(
-                file => file.path
+        
+    for (const variant of variants) {
+
+    if (variant.stock < 0) {
+
+        const categories = await Category.find({ isListed: true });
+
+        return res.render("admin/edit-product", {
+            product,
+            categories,
+            message: "Stock cannot be less than 0."
+        });
+
+    }
+
+    if (variant.regularPrice <= variant.salePrice) {
+
+            const categories = await Category.find({ isListed: true });
+
+            return res.render("admin/edit-product", {
+                product,
+                categories,
+                message: "Regular price must be greater than sale price."
+            });
+
+        }
+
+    }
+
+        // Existing images
+        let updatedImages = [...product.productImage];
+
+        // Remove selected images
+        if (removedImages) {
+
+            const removedIndexes = removedImages.split(",");
+
+            updatedImages = updatedImages.filter(
+                (_, index) =>
+                !removedIndexes.includes(
+                    index.toString()
+                )
             );
 
         }
 
-        await Product.findByIdAndUpdate(id, updateData);
+        // Add new uploaded images
+        if (req.files && req.files.length > 0) {
+
+            const newImages = req.files.map(file => file.path);
+
+            updatedImages.push(...newImages);
+
+        }
+
+        await Product.findByIdAndUpdate(id, {
+
+            productName,
+            offer,
+            description,
+            category,
+            brand,
+            variants,
+            colors,
+            productImage: updatedImages
+
+        });
+        
 
         res.redirect("/admin/products");
 
     } catch (error) {
 
-        console.log("EDIT PRODUCT ERROR:", error);
+        console.log(
+            "EDIT PRODUCT ERROR:",
+            error
+        );
+
         res.redirect("/admin/pageerror");
 
     }
 
 };
-
 
 
 const blockProduct = async(req,res)=>{

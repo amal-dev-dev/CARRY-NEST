@@ -10,12 +10,13 @@ import passport from './Config/passport.js';
 import authRoutes from './Routes/user/authRoutes.js';
 import adminRoutes from "./Routes/admin/adminRoutes.js";
 import methodOverride from "method-override";
+import { setUser } from "./Middleware/setUser.js";
+import MongoStore from "connect-mongo";
+
 
 dotenv.config();
 
 const app = express();
-
-
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -25,11 +26,15 @@ app.use(methodOverride("_method"));
 const PORT = process.env.PORT || 3000;
 
 app.use(session({
-    secret: "yourSecretKey",
+    secret: process.env.SESSION_SECRET || "yourSecretKey",
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URI
+    }),
     cookie: {
-        secure: false, 
+        secure: false,
+        maxAge: 1000 * 60 * 60 * 24 // 1 day
     }
 }));
 
@@ -51,6 +56,8 @@ app.use((req, res, next) => {
     next();
 
 });
+
+app.use(setUser);
 
 app.use(passport.initialize());
 app.use(passport.session());

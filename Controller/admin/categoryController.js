@@ -70,7 +70,9 @@ const loadCategory = async (req, res) => {
 const loadAddCategory = async (req, res) => {
 
     try {
-        res.render("admin/add-category");
+        res.render("admin/add-category",{
+            message:null
+        });
 
     } catch (error) {
         console.log(error);
@@ -83,13 +85,17 @@ const addCategory = async (req, res) => {
     try {
 
         const { name, description } = req.body;
+
+        if (!name || name.trim() === "") {
+            return res.render("admin/add-category", { message: "Category name required" });
+        }
+
         // CHECK DUPLICATE
         const existingCategory = await Category.findOne({
             name: {
                 $regex: new RegExp("^" + name + "$", "i")
             }
         });
-
 
         if (existingCategory) {
             return res.render("admin/add-category", { message: "Category already exists"});
@@ -126,7 +132,8 @@ const loadEditCategory = async (req, res) => {
 
 
         res.render("admin/edit-category", {
-            category
+            category,
+            message: null
         });
 
     } catch (error) {

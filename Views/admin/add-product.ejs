@@ -12,6 +12,12 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
 </head>
 
 <body>
@@ -115,6 +121,26 @@
 
                     </button>
 
+                    <div class="dropdown-menu">
+
+                        <a href="#">
+                            All Orders
+                        </a>
+
+                        <a href="#">
+                            Pending
+                        </a>
+
+                        <a href="#">
+                            Processing
+                        </a>
+
+                        <a href="#">
+                            Shipped
+                        </a>
+
+                    </div>
+
                 </div>
 
                 <!-- RETURNS -->
@@ -134,6 +160,18 @@
                         <i class="ri-arrow-down-s-line dropdown-arrow"></i>
 
                     </button>
+
+                    <div class="dropdown-menu">
+
+                        <a href="#">
+                            Requests
+                        </a>
+
+                        <a href="#">
+                            Refunds
+                        </a>
+
+                    </div>
 
                 </div>
 
@@ -238,10 +276,6 @@
 
             <div class="top-right">
 
-                <input type="text"
-                placeholder="Search..."
-                class="top-search">
-
                 <span class="notification">
 
                     <i class="ri-notification-3-line"></i>
@@ -273,7 +307,8 @@
         <form action="/admin/add-product"
               method="POST"
               enctype="multipart/form-data"
-              class="product-form">
+              class="product-form"
+              id="productForm">
 
             <!-- PAGE HEADER -->
 
@@ -293,9 +328,9 @@
 
                     <button type="button"
                     class="cancel-btn">
-
+                    <a href="/admin/products" style="text-decoration: none;color: #000;">
                         Cancel
-
+                    </a>
                     </button>
 
                     <button type="submit"
@@ -331,7 +366,8 @@
 
                         <input type="text"
                         name="productName"
-                        placeholder="Product name">
+                        placeholder="Product name"
+                        class="productName">
 
                     </div>
 
@@ -427,33 +463,28 @@
 
                     </div>
 
-                    <div class="variant-card">
+                        <div id="variantsContainer">
 
-                        <div class="variant-header">
+                            <div class="variant-card">
 
-                            <div class="color-info">
+                                <div class="variant-header">
 
-                                <div
-                                    class="color-circle"
-                                    id="colorCircle">
+                                    <div class="color-info">
+
+                                        <div class="color-circle"></div>
+
+                                        <input
+                                            type="text"
+                                            name="colors[]"
+                                            class="colorInput"
+                                            placeholder="Enter Color"
+                                        />
+
+                                    </div>
+
                                 </div>
 
-                                <input
-                                    type="text"
-                                    name="color"
-                                    id="colorInput"
-                                    placeholder="Enter Color"
-                                />
-
                             </div>
-
-                            <label class="switch">
-
-                                <input type="checkbox" checked>
-
-                                <span class="slider"></span>
-
-                            </label>
 
                         </div>
 
@@ -479,103 +510,81 @@
                                 <tbody>
 
                                     <tr>
-
                                         <td>
-
                                             <input type="text"
-                                            name="size"
-                                            value="Standard">
-
+                                                name="sizes[]"
+                                                value="Standard">
                                         </td>
 
                                         <td>
-
                                             <input type="number"
-                                            name="stock"
-                                            placeholder="Stock">
-
+                                                name="stocks[]"
+                                                placeholder="Stock">
                                         </td>
 
                                         <td>
-
                                             <input type="number"
-                                            name="regularPrice"
-                                            placeholder="₹ Original Price">
-
+                                                name="regularPrices[]"
+                                                placeholder="₹ Original Price">
                                         </td>
 
                                         <td>
-
                                             <input type="number"
-                                            name="salePrice"
-                                            placeholder="₹ Sale Price">
-
+                                                name="salePrices[]"
+                                                placeholder="₹ Sale Price">
                                         </td>
-
                                     </tr>
 
                                     <tr>
-
                                         <td>
-
                                             <input type="text"
-                                            value="Professional">
-
+                                                name="sizes[]"
+                                                value="Professional">
                                         </td>
 
                                         <td>
-
                                             <input type="number"
-                                            placeholder="Stock">
-
+                                                name="stocks[]"
+                                                placeholder="Stock">
                                         </td>
 
                                         <td>
-
                                             <input type="number"
-                                            placeholder="₹ Original Price">
-
+                                                name="regularPrices[]"
+                                                placeholder="₹ Original Price">
                                         </td>
 
                                         <td>
-
                                             <input type="number"
-                                            placeholder="₹ Sale Price">
-
+                                                name="salePrices[]"
+                                                placeholder="₹ Sale Price">
                                         </td>
-
                                     </tr>
 
                                     <tr>
-
                                         <td>
-
                                             <input type="text"
-                                            value="Travel">
-
+                                                name="sizes[]"
+                                                value="Travel">
                                         </td>
 
                                         <td>
-
                                             <input type="number"
-                                            placeholder="Stock">
-
+                                                name="stocks[]"
+                                                placeholder="Stock">
                                         </td>
 
                                         <td>
-
                                             <input type="number"
-                                            placeholder="₹ Original Price">
-
+                                                name="regularPrices[]"
+                                                placeholder="₹ Original Price">
                                         </td>
 
                                         <td>
-
                                             <input type="number"
-                                            placeholder="₹ Sale Price">
-
+                                                name="salePrices[]"
+                                                placeholder="₹ Sale Price">
                                         </td>
-
                                     </tr>
 
                                 </tbody>
@@ -601,15 +610,29 @@
                                 </label>
 
                                 <input
-                                    type="file"
-                                    id="images"
-                                    name="images"
-                                    multiple
-                                    accept="image/*">
+                                type="file"
+                                id="images"
+                                name="images"
+                                multiple
+                                accept="image/*">
 
                             </div>
 
                             <div id="previewContainer"></div>
+
+                        </div>
+
+                        <div id="cropModal" class="crop-modal">
+
+                            <div class="crop-content">
+
+                                <img id="cropImage">
+
+                                <div class="crop-buttons">
+                                    <button type="button" id="cropBtn">Crop Image</button>
+                                </div>
+
+                            </div>
 
                         </div>
 
@@ -633,13 +656,10 @@ dropdowns.forEach((dropdown)=>{
 
     dropdown.addEventListener("click",()=>{
 
-        const menu =
-        dropdown.nextElementSibling;
+        const menu = dropdown.nextElementSibling;
 
         if(menu){
-
             menu.classList.toggle("show");
-
         }
 
     });
@@ -647,49 +667,223 @@ dropdowns.forEach((dropdown)=>{
 });
 
 const imageInput = document.getElementById("images");
-
 const previewContainer = document.getElementById("previewContainer");
+const productForm = document.getElementById("productForm");
 
-imageInput.addEventListener("change",()=>{
+let cropper;
+let selectedFiles = [];
+let croppedFiles = [];
+let currentIndex = 0;
 
-    previewContainer.innerHTML = "";
+// Color Picker
 
-    const files = imageInput.files;
+document.addEventListener("input", (e) => {
 
-    for(let i = 0; i < files.length; i++){
+    if(e.target.classList.contains("colorInput")){
 
-        const reader = new FileReader();
+        const circle =
+        e.target
+        .closest(".color-info")
+        .querySelector(".color-circle");
 
-        reader.onload = function(e){
-
-            const img =
-            document.createElement("img");
-
-            img.src = e.target.result;
-
-            img.classList.add("preview-image");
-
-            previewContainer.appendChild(img);
-
-        }
-
-        reader.readAsDataURL(files[i]);
+        circle.style.backgroundColor = e.target.value;
 
     }
 
 });
 
-const colorInput = document.getElementById("colorInput");
-const colorCircle = document.getElementById("colorCircle");
+//color variants
 
-colorInput.addEventListener("input", () => {
+const variantBtn = document.querySelector(".variant-btn");
+const variantsContainer = document.getElementById("variantsContainer");
 
-    colorCircle.style.backgroundColor =
-        colorInput.value;
+variantBtn.addEventListener("click", () => {
+
+    const variantCard = document.createElement("div");
+
+    variantCard.classList.add("variant-card");
+
+    variantCard.innerHTML = `
+
+        <div class="variant-header">
+
+            <div class="color-info">
+
+                <div class="color-circle"></div>
+
+                <input
+                    type="text"
+                    name="colors[]"
+                    class="colorInput"
+                    placeholder="Enter Color"
+                />
+
+            </div>
+
+            <button
+                type="button"
+                class="removeVariant">
+
+                <i class="ri-delete-bin-line"></i>
+
+                Remove
+
+            </button>
+
+        </div>
+
+    `;
+
+    variantsContainer.appendChild(variantCard);
+
+});
+
+document.addEventListener("click", (e) => {
+
+    const removeBtn = e.target.closest(".removeVariant");
+
+    if(removeBtn){
+
+        const allVariants =
+        document.querySelectorAll(".variant-card");
+
+        if(allVariants.length > 1){
+
+            removeBtn
+            .closest(".variant-card")
+            .remove();
+
+        }
+
+    }
+
+});
+
+
+// Image Selection
+imageInput.addEventListener("change", (e) => {
+
+    selectedFiles = Array.from(e.target.files);
+
+    if(selectedFiles.length === 0) return;
+
+    croppedFiles = [];
+    currentIndex = 0;
+
+    previewContainer.innerHTML = "";
+
+    showCropper(currentIndex);
+
+});
+
+// Show Cropper
+function showCropper(index){
+
+    const file = selectedFiles[index];
+
+    const reader = new FileReader();
+
+    reader.onload = function(event){
+
+        const cropModal = document.getElementById("cropModal");
+        const cropImage = document.getElementById("cropImage");
+
+        cropModal.style.display = "flex";
+
+        cropImage.src = event.target.result;
+
+        if(cropper){
+            cropper.destroy();
+        }
+
+        cropper = new Cropper(cropImage,{
+            aspectRatio: NaN,
+            viewMode: 1,
+            autoCropArea: 1
+        });
+
+    };
+
+    reader.readAsDataURL(file);
+
+}
+
+// Crop Button
+document.getElementById("cropBtn")
+.addEventListener("click", () => {
+
+    if(!cropper) return;
+
+    const canvas = cropper.getCroppedCanvas({
+        width: 500,
+        height: 500
+    });
+
+    canvas.toBlob((blob) => {
+
+        const croppedFile = new File(
+            [blob],
+            selectedFiles[currentIndex].name,
+            {
+                type: "image/jpeg"
+            }
+        );
+
+        croppedFiles.push(croppedFile);
+
+        const img = document.createElement("img");
+
+        img.src = URL.createObjectURL(blob);
+
+        img.classList.add("preview-image");
+
+        previewContainer.appendChild(img);
+
+        cropper.destroy();
+
+        currentIndex++;
+
+        // Next image
+        if(currentIndex < selectedFiles.length){
+
+            showCropper(currentIndex);
+
+        }else{
+
+            document.getElementById("cropModal")
+            .style.display = "none";
+
+            const dt = new DataTransfer();
+
+            croppedFiles.forEach(file => {
+                dt.items.add(file);
+            });
+
+            imageInput.files = dt.files;
+
+        }
+
+    }, "image/jpeg");
 
 });
 
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<% if(typeof message !== "undefined" && message){ %>
+
+<script>
+
+Swal.fire({
+    icon: "error",
+    title: "Validation Error",
+    text: "<%= message %>"
+});
+
+</script>
+
+<% } %>
 
 </body>
 </html>

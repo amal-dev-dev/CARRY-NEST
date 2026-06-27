@@ -19,7 +19,19 @@ const login = async (req, res) => {
         }
 
         req.session.admin = true;
-        res.redirect("/admin/dashboard");
+
+        req.session.save((err) => {
+
+            if (err) {
+                console.log(err);
+                return res.render("admin/login", {
+                    message: "Login failed"
+                });
+            }
+
+            res.redirect("/admin/dashboard");
+
+});
 
     } catch (error) {
 
@@ -144,7 +156,7 @@ const loadCustomers = async (req, res) => {
 
             sortOption = { createdAt: 1 };
 
-        }
+        } 
 
         const users = await Users.find({
 
@@ -167,8 +179,9 @@ const loadCustomers = async (req, res) => {
 
         });
 
-        const totalPages =
-        Math.ceil(totalUsers / limit);
+        const totalPages = Math.ceil(totalUsers / limit);
+
+
 
         res.render("admin/customers", {
 

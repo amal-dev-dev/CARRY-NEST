@@ -30,6 +30,7 @@ const login = async (req, res) => {
         }   
 
         req.session.user = user._id;
+        console.log("Login Session:", req.session.user);
 
         res.redirect('/user/home');
 
@@ -38,11 +39,16 @@ const login = async (req, res) => {
     }
 };
 
-const loadLogin = (req, res) => {
-    res.render("user/login", {
-        message: null
+const loadLogin = (req,res)=>{
+
+    const message = req.session.message;
+    req.session.message = null;
+
+    res.render("user/login",{
+        message
     });
-};
+
+}
 
 const loadHome = async (req, res) => {
     try {
@@ -53,7 +59,7 @@ const loadHome = async (req, res) => {
         .limit(4);
 
         res.render("user/home", {
-            products
+            products,
         });
 
     } catch (error) {

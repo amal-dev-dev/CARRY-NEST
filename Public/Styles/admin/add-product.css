@@ -507,6 +507,33 @@ table input{
     display:none;
 }
 
+.color-circle {
+    width: 43px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+}
+
+.colorInput{
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.colorInput:focus{
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+}
+
+.colorInput::placeholder{
+    color: #9ca3af;
+}
+
 #previewContainer{
     display:flex;
     gap:12px;
@@ -520,6 +547,72 @@ table input{
     border-radius:10px;
     object-fit:cover;
     border:1px solid #ddd;
+}
+
+.removeVariant{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #ef4444;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.removeVariant:hover{
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.removeVariant i{
+
+    font-size: 16px;
+
+}
+
+.crop-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.crop-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 700px;
+    max-width: 90%;
+}
+
+#cropImage {
+    display: block;
+    max-width: 100%;
+    max-height: 400px;
+    margin: auto;
+}
+
+.crop-buttons {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#cropBtn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+
+    background: #28a745;
+    color: white;
+    cursor: pointer;
 }
 
 /* RESPONSIVE */

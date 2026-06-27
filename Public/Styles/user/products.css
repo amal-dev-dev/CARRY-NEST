@@ -44,18 +44,6 @@ img{
     font-weight:700;
 }
 
-.search-bar{
-    flex:1;
-    margin:0 30px;
-}
-
-.search-bar input{
-    width:100%;
-    padding:12px 15px;
-    border:1px solid #ddd;
-    border-radius:30px;
-    outline:none;
-}
 
 .nav-icons{
     display:flex;
@@ -65,6 +53,50 @@ img{
 .nav-icons i{
     cursor:pointer;
     font-size:18px;
+}
+
+/* Guest Buttons */
+
+.guest-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.login-btn,
+.signup-btn{
+    text-decoration:none;
+    padding:10px 22px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:600;
+    transition:0.3s ease;
+}
+
+/* Login */
+
+.login-btn{
+    background:#fff;
+    color:#111827;
+    border:2px solid #111827;
+}
+
+.login-btn:hover{
+    background:#111827;
+    color:#fff;
+}
+
+/* Sign Up */
+
+.signup-btn{
+    background:#fff;
+    color:#111827;
+    border:2px solid #111827;
+}
+
+.signup-btn:hover{
+    background:#111827;
+    color:#fff;
 }
 
 /* ======================

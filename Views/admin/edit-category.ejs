@@ -5,71 +5,360 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Category</title>
 
-    <link rel="stylesheet" href="/Styles/admin/edit-category.css">
+    <link rel="stylesheet" href="/Styles/admin/add-category.css">
 
-    <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
+      rel="stylesheet"
+    >
 </head>
 <body>
 
-    <div class="modal-overlay">
+<div class="admin-container">
 
-        <div class="edit-modal">
+    <!-- SIDEBAR -->
 
-            <!-- HEADER -->
+      <aside class="sidebar">
 
-            <div class="modal-header">
+        <div>
 
-                <h2>Edit Category</h2>
+            <!-- LOGO -->
 
-                <a href="/admin/category" class="close-btn">
-                    <i class="ri-close-line"></i>
+            <div class="logo-section">
+
+                <div class="logo-box">
+                    C
+                </div>
+
+                <h2>CARRY NEST</h2>
+
+            </div>
+
+            <!-- MENU -->
+
+            <div class="menu-wrapper">
+
+                <!-- DASHBOARD -->
+
+                <a href="/admin/dashboard" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-dashboard-line"></i>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+                <!-- PRODUCTS -->
+
+                <div class="dropdown-wrapper active">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-bag-line"></i>
+
+                            Products
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                    <div class="dropdown-menu show">
+
+                        <a href="/admin/products">
+                            All Products
+                        </a>
+
+                        <a href="/admin/add-product">
+
+                            Add Product
+
+                        </a>
+
+                        <a href="/admin/category"
+                        class="submenu-active">
+                            Categories
+                        </a>
+
+                        <a href="#">
+                            Brands
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- ORDERS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                            Orders
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                    <div class="dropdown-menu">
+
+                        <a href="#">
+                            All Orders
+                        </a>
+
+                        <a href="#">
+                            Pending
+                        </a>
+
+                        <a href="#">
+                            Processing
+                        </a>
+
+                        <a href="#">
+                            Shipped
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- RETURNS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+                    <div class="dropdown-menu">
+
+                        <a href="#">
+                            Requests
+                        </a>
+
+                        <a href="#">
+                            Refunds
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- CUSTOMERS -->
+
+                <a href="/admin/customers"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+                <!-- WALLET -->
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+                <!-- PROMOTIONS -->
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+                <!-- REPORTS -->
+
+                <a href="#"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
                 </a>
 
             </div>
 
-            <!-- FORM -->
+        </div>
 
-            <form action="/admin/category/<%= category._id %>?_method=PATCH" method="POST">
-                <!-- CATEGORY NAME -->
+        <!-- LOGOUT -->
+
+        <div class="logout-section">
+
+            <a href="/admin/logout"
+            class="logout-btn">
+
+                <i class="ri-logout-box-r-line"></i>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <div class="page-header">
+
+            <h2>Edit Category</h2>
+
+            <a
+            href="/admin/category"
+            class="back-btn">
+
+                Back
+
+            </a>
+
+        </div>
+
+        <div class="form-card">
+
+            <form
+            action="/admin/category/<%= category._id %>?_method=PATCH"
+            method="POST">
 
                 <div class="form-group">
 
+                    <% if(message){ %>
+
+                        <p class="text-danger">
+
+                            <%= message %>
+
+                        </p>
+
+                    <% } %>
+
                     <label>
+
                         Category Name *
+
                     </label>
 
-                    <input type="text"
-                    name="name"
-                    value="<%= category.name %>">
+                    <input
+                        type="text"
+                        name="name"
+                        value="<%= category.name %>"
+                        minlength="3"
+                        required
+                    >
 
                 </div>
-
-                <!-- DESCRIPTION -->
 
                 <div class="form-group">
 
                     <label>
+
                         Description
+
                     </label>
 
-                    <textarea name="description"><%= category.description %></textarea>
+                    <textarea
+                        name="description"
+                        placeholder="Brief description of category"><%= category.description %></textarea>
 
                 </div>
 
-                <!-- BUTTONS -->
+                <div class="status-section">
+
+                    <label>
+
+                        Status
+
+                    </label>
+
+                    <div class="toggle-wrapper">
+
+                        <span>
+
+                            Category is Active
+
+                        </span>
+
+                        <label class="switch">
+
+                            <input
+                                type="checkbox"
+                                name="isListed"
+                                <%= category.isListed ? "checked" : "" %>
+                            >
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                    </div>
+
+                </div>
 
                 <div class="button-group">
 
-                    <a href="/admin/category"
+                    <a
+                    href="/admin/category"
                     class="cancel-btn">
 
                         Cancel
 
                     </a>
 
-                    <button type="submit"
-                    class="update-btn">
+                    <button
+                    type="submit"
+                    class="add-btn">
 
                         Update Category
 
@@ -81,7 +370,27 @@
 
         </div>
 
-    </div>
+    </main>
+
+</div>
+
+<script>
+
+const dropdowns = document.querySelectorAll(".dropdown-btn");
+
+dropdowns.forEach((btn)=>{
+
+    btn.addEventListener("click",()=>{
+
+        btn.parentElement.classList.toggle("active");
+
+        btn.nextElementSibling.classList.toggle("show");
+
+    });
+
+});
+
+</script>
 
 </body>
 </html>

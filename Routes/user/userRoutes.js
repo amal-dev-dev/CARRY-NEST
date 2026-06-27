@@ -6,6 +6,7 @@ import addressController from '../../Controller/user/address.js';
 import { requireAuth, isLoggedIn } from '../../Middleware/userAuth.js';
 import upload from '../../Middleware/multer.js';
 import productController from '../../Controller/user/products.js';
+import cartController from '../../Controller/user/cart.js';
 
 router.get('/login', isLoggedIn, userAuth.loadLogin);
 router.post('/login', userAuth.login);
@@ -14,7 +15,7 @@ router.get('/logout', userAuth.logout);
 router.get('/signup', isLoggedIn, userAuth.loadSignup);
 router.post('/signup', userAuth.signup);
 
-router.get('/home', requireAuth, userAuth.loadHome);
+router.get('/home', userAuth.loadHome);
 
 router.get('/signup-otp', userAuth.loadVerifyOTP);
 router.post('/signup/otp', userAuth.verifyOTP);
@@ -56,9 +57,16 @@ router.get("/address/delete/:id", requireAuth, addressController.deleteAddress);
 router.post("/address/delete/:id", requireAuth, addressController.deleteAddress);
 
 //PRODUCT PAGE
-router.get('/products', requireAuth, productController.loadProducts)
-// PRODUCT DETAILS
-router.get("/product-details/:id",requireAuth, productController.loadProductDetails);
+router.get('/products', productController.loadProducts);
 
+// PRODUCT DETAILS
+router.get("/product-details/:id", productController.loadProductDetails);
+
+//CART
+router.post("/add-to-cart/:id", requireAuth, cartController.addToCart);
+router.get("/cart", requireAuth, cartController.loadCart);
+router.patch("/cart/increase/:id",requireAuth, cartController.increaseQuantity);
+router.patch("/cart/decrease/:id",requireAuth, cartController.decreaseQuantity);
+router.patch("/cart/remove/:id",requireAuth, cartController.removeCartItem);
 
 export default router;

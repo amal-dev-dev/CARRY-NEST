@@ -12,6 +12,10 @@ const productSchema = new mongoose.Schema({
         required:true
     },
 
+    offer:{
+        type:String
+    },
+
     category:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Category"
@@ -21,22 +25,31 @@ const productSchema = new mongoose.Schema({
         type:String
     },
 
-    regularPrice:{
-        type:Number
+    colors:{
+        type:[String],
+        default:[]
     },
 
-    salePrice:{
-        type:Number
-    },
+    variants:[
+        {
+            size:{
+                type:String
+            },
 
-    stock:{
-        type:Number,
-        default: 0 
-    },
+            stock:{
+                type:Number,
+                default:0
+            },
 
-    color:{
-        type:String
-    },
+            regularPrice:{
+                type:Number
+            },
+
+            salePrice:{
+                type:Number
+            }
+        }
+    ],
 
     productImage:{
         type:[String],

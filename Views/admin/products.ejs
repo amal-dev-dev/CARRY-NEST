@@ -248,10 +248,6 @@
 
             <div class="top-right">
 
-                <input type="text"
-                placeholder="Search..."
-                class="top-search">
-
                 <span class="notification">
 
                     <i class="ri-notification-3-line"></i>
@@ -374,6 +370,13 @@
 
                     </form>
 
+                        <a href="/admin/products"
+                        class="clear-search-btn">
+
+                            Clear
+
+                        </a>
+
                 </div>
 
             </div>
@@ -436,16 +439,22 @@
                                 </td>
 
                                 <td>
-                                    ₹ <%= product.salePrice %>
+                                    ₹<%= product.variants[0]?.salePrice || 0 %>
                                 </td>
 
                                 <td>
-                                    <%= product.stock %>
+                                    <%= product.variants[0]?.stock || 0 %>
                                 </td>
 
                                 <td>
 
-                                    <% if(product.stock > 0){ %>
+                                    <% const totalStock = product.variants.reduce(
+                                        (total, variant) => total + variant.stock,
+                                        0
+                                    );
+                                    %>
+
+                                    <% if(totalStock > 0){ %>
 
                                         <span class="status active">
                                             Active
