@@ -1,60 +1,99 @@
 import Product from "../../Model/productModel.js";
 import Cart from "../../Model/cartModel.js";
+import Wishlist from "../../Model/wishlistModel.js";
 
-const addToCart = async(req,res)=>{
+const addToCart = async (req, res) => {
 
-    try{
+    try {
 
         const userId = req.session.user;
-        const productId = req.params.id;
-        const product = await Product.findById(productId);
+        const variantId = req.body.variantId;
 
-        if( !product || product.isBlocked ) {
+        // Find product using variantId
+        const product = await Product.findOne({
+            "variants._id": variantId
+        });
+
+        if (!product || product.isBlocked) {
 
             return res.json({
-                success:false,
-                message:"Product unavailable"
+                success: false,
+                message: "Product unavailable"
             });
 
         }
 
-        const stock = product.variants[0]?.stock || 0;
+        // Selected Variant
+        const variant = product.variants.id(variantId);
 
-        if(stock <= 0){
-            return res.send("Product is out of stock");
+        if (!variant) {
+
+            return res.json({
+                success: false,
+                message: "Variant not found"
+            });
+
         }
 
+        // Stock Check
+        if (variant.stock <= 0) {
+
+            return res.json({
+                success: false,
+                message: "Product is out of stock"
+            });
+
+        }
+
+        // Find Cart
         let cart = await Cart.findOne({ userId });
 
-        if(!cart){
+        // Create Cart
+        if (!cart) {
 
             cart = new Cart({
 
                 userId,
 
-                items:[{
-                    productId,
-                    quantity:1
-                }]
+                items: [
+
+                    {
+                        productId: product._id,
+                        variantId,
+                        quantity: 1
+                    }
+
+                ]
 
             });
 
-        }else{
+        } else {
 
+            // Find same variant
             const item = cart.items.find(item =>
-                item.productId.toString()
-                === productId
+                item.variantId &&
+                item.variantId.toString() === variantId
             );
 
-            if(item){
+            if (item) {
 
-                item.quantity += 1;
+                // Stock validation
+                if (item.quantity >= variant.stock) {
 
-            }else{
+                    req.session.message = "Stock limit reached";
+
+                    return res.redirect("/user/cart");
+
+                }
+
+                item.quantity++;
+
+            } else {
 
                 cart.items.push({
-                    productId,
-                    quantity:1
+                    productId: product._id,
+                    variantId: variantId,
+                    quantity: Number(req.body.quantity) || 1
                 });
 
             }
@@ -63,111 +102,154 @@ const addToCart = async(req,res)=>{
 
         await cart.save();
 
+        // Remove product from wishlist
+        const wishlist = await Wishlist.findOne({ userId });
+
+        if (wishlist) {
+
+            wishlist.items = wishlist.items.filter(item =>
+                item.productId.toString() !== product._id.toString()
+            );
+
+            await wishlist.save();
+
+        }
+
         res.redirect("/user/cart");
 
-    }catch(error){
+    } catch (error) {
 
-        console.log(error);
+        console.log("ADD CART ERROR:", error);
 
     }
 
 };
 
-const loadCart = async(req,res)=>{
+const loadCart = async (req, res) => {
 
-    const cart = await Cart.findOne({
-        userId:req.session.user
-    }).populate("items.productId");
-
-    if(!cart){
-
-        return res.render("user/cart",{
-            cart:{
-                items:[]
-            },
-            subtotal:0,
-            discount:0,
-            deliveryFee:0,
-            grandTotal:0
-        });
-
-    }
-
-
-    const validItems = cart.items.filter(
-        item => item.productId
-    );
-
-    const subtotal = validItems.reduce(
-        (sum, item) =>
-            sum +
-            item.productId.variants[0].salePrice * item.quantity,
-        0
-    );
-
-    const discount = 0;
-
-    const deliveryFee = 15;
-
-    const grandTotal = subtotal - discount + deliveryFee;
-
-    const message = req.session.message;
-    req.session.message = null;
-
-    res.render("user/cart",{
-        cart,
-        subtotal,
-        discount,
-        deliveryFee,
-        grandTotal,
-        message
-    });
-
-};
-
-const increaseQuantity = async(req,res)=>{
-
-    try{
-
-        const userId = req.session.user;
-
-        const productId = req.params.id;
+    try {
 
         const cart = await Cart.findOne({
-            userId
+            userId: req.session.user
+        }).populate("items.productId");
+
+        if (!cart) {
+
+            return res.render("user/cart", {
+                cart: { items: [] },
+                subtotal: 0,
+                discount: 0,
+                deliveryFee: 15,
+                grandTotal: 15,
+                message: null
+            });
+
+        }
+
+        const cartItems = cart.items.map(item => {
+
+            const variant = item.productId.variants.find(
+                v => v._id.toString() === item.variantId.toString()
+            );
+
+            return {
+                ...item.toObject(),
+                variant
+            };
+
         });
 
-        const item = cart.items.find(
-            item => item.productId.toString() === productId
-        );
+        // Remove deleted products
+        const validItems = cartItems.filter(item => item.productId);
 
-        const product = await Product.findById(productId);
+        let subtotal = 0;
 
-        if(!item){
+        validItems.forEach(item => {
+
+            subtotal += item.variant.salePrice * item.quantity;
+
+        });
+
+        const discount = 0;
+        const deliveryFee = 0;
+        const grandTotal = subtotal - discount + deliveryFee;
+
+        const message = req.session.message;
+        req.session.message = null;
+
+        res.render("user/cart", {
+
+            cart: {
+                ...cart.toObject(),
+                items: validItems
+            },
+
+            subtotal,
+            discount,
+            deliveryFee,
+            grandTotal,
+            message
+
+        });
+
+    } catch (error) {
+
+        console.log("LOAD CART ERROR:", error);
+
+    }
+
+};
+
+const increaseQuantity = async (req, res) => {
+
+    try {
+
+        const userId = req.session.user;
+        const variantId = req.params.id;
+
+        const cart = await Cart.findOne({ userId });
+
+        if (!cart) {
 
             return res.redirect("/user/cart");
 
         }
 
-        // Maximum Limit
+        const item = cart.items.find(
 
-        const stock = product.variants[0]?.stock || 0;
+            item => item.variantId.toString() === variantId
 
-        if(item.quantity >= stock){
+        );
+
+        if (!item) {
+
+            return res.redirect("/user/cart");
+
+        }
+
+        const product = await Product.findOne({
+            "variants._id": variantId
+        });
+
+        if (!product) {
+
+            return res.redirect("/user/cart");
+
+        }
+
+        const variant = product.variants.id(variantId);
+
+        if (!variant) {
+
+            return res.redirect("/user/cart");
+
+        }
+
+        if (item.quantity >= variant.stock) {
 
             req.session.message = "Stock limit reached";
 
             return res.redirect("/user/cart");
-
-        }
-
-        // Stock Validation
-
-        if(item.quantity >= product.stock){
-
-            return res.send(
-                "Stock limit reached"
-            );
 
         }
 
@@ -177,51 +259,50 @@ const increaseQuantity = async(req,res)=>{
 
         res.redirect("/user/cart");
 
-    }catch(error){
+    } catch (error) {
 
-        console.log(
-            "INCREASE ERROR:",
-            error
-        );
+        console.log("INCREASE ERROR:", error);
 
     }
 
 };
 
-const decreaseQuantity = async(req,res)=>{
+const decreaseQuantity = async (req, res) => {
 
-    try{
+    try {
 
         const userId = req.session.user;
+        const variantId = req.params.id;
 
-        const productId = req.params.id;
+        const cart = await Cart.findOne({ userId });
 
-        const cart = await Cart.findOne({
-            userId
-        });
-
-        const item = cart.items.find(
-            item =>
-            item.productId.toString() === productId
-        );
-
-        if(!item){
+        if (!cart) {
 
             return res.redirect("/user/cart");
 
         }
 
-        // Remove item if quantity = 1
+        const item = cart.items.find(
 
-        if(item.quantity === 1){
+            item => item.variantId.toString() === variantId
+
+        );
+
+        if (!item) {
+
+            return res.redirect("/user/cart");
+
+        }
+
+        if (item.quantity === 1) {
 
             cart.items = cart.items.filter(
-                item =>
-                item.productId.toString()
-                !== productId
+
+                item => item.variantId.toString() !== variantId
+
             );
 
-        }else{
+        } else {
 
             item.quantity--;
 
@@ -231,51 +312,41 @@ const decreaseQuantity = async(req,res)=>{
 
         res.redirect("/user/cart");
 
-    }catch(error){
+    } catch (error) {
 
-        console.log(
-            "DECREASE ERROR:",
-            error
-        );
+        console.log("DECREASE ERROR:", error);
 
     }
 
 };
 
-const removeCartItem = async(req,res)=>{
+const removeCartItem = async (req, res) => {
 
-    try{
+    try {
 
         const userId = req.session.user;
+        const variantId = req.params.id;
 
-        const productId = req.params.id;
+        const cart = await Cart.findOne({ userId });
 
-        const cart = await Cart.findOne({
-            userId
-        });
-
-        if(!cart){
+        if (!cart) {
 
             return res.redirect("/user/cart");
 
         }
 
-        cart.items = cart.items.filter(
-            item =>
-            item.productId.toString()
-            !== productId
+        // Remove the selected variant
+        cart.items = cart.items.filter(item =>
+            item.variantId.toString() !== variantId
         );
 
         await cart.save();
 
         res.redirect("/user/cart");
 
-    }catch(error){
+    } catch (error) {
 
-        console.log(
-            "REMOVE CART ERROR:",
-            error
-        );
+        console.log("REMOVE CART ERROR:", error);
 
     }
 

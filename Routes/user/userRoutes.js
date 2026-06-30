@@ -7,6 +7,7 @@ import { requireAuth, isLoggedIn } from '../../Middleware/userAuth.js';
 import upload from '../../Middleware/multer.js';
 import productController from '../../Controller/user/products.js';
 import cartController from '../../Controller/user/cart.js';
+import wishlistController from '../../Controller/user/wishlist.js';
 
 router.get('/login', isLoggedIn, userAuth.loadLogin);
 router.post('/login', userAuth.login);
@@ -63,10 +64,16 @@ router.get('/products', productController.loadProducts);
 router.get("/product-details/:id", productController.loadProductDetails);
 
 //CART
-router.post("/add-to-cart/:id", requireAuth, cartController.addToCart);
+router.post("/add-to-cart", requireAuth, cartController.addToCart);
 router.get("/cart", requireAuth, cartController.loadCart);
 router.patch("/cart/increase/:id",requireAuth, cartController.increaseQuantity);
 router.patch("/cart/decrease/:id",requireAuth, cartController.decreaseQuantity);
 router.patch("/cart/remove/:id",requireAuth, cartController.removeCartItem);
+
+//WISHLIST
+router.get('/wishlist', requireAuth, wishlistController.loadWishlist);
+router.post('/wishlist/add/:id',requireAuth, wishlistController.addToWishlist);
+router.patch("/wishlist/remove/:id", requireAuth, wishlistController.removeWishlist);
+router.post( "/wishlist/move-all", requireAuth, wishlistController.moveAllToCart);
 
 export default router;

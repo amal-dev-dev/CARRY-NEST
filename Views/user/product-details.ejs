@@ -9,6 +9,8 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <link rel="stylesheet" href="/Styles/user/product-details.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -181,9 +183,11 @@
 
             <div class="variant-section">
 
+            <form action="/user/add-to-cart" method="POST">
+
                 <h4>Variants</h4>
 
-                <% product.variants.forEach((variant,index)=>{ %>
+                <% product.variants.forEach((variant) => { %>
 
                     <% if(variant.stock > 0){ %>
 
@@ -191,8 +195,9 @@
 
                             <input
                                 type="radio"
-                                name="variant"
-                                value="<%= index %>"
+                                name="variantId"
+                                value="<%= variant._id %>"
+                                required
                             >
 
                             <%= variant.size %>
@@ -203,50 +208,55 @@
 
                 <% }) %>
 
-            </div>
+                <div class="quantity-box">
 
-            <div class="quantity-box">
+                    <button type="button">-</button>
 
-                <button>-</button>
-
-                <input
-                    type="number"
-                    value="1"
-                    min="1"
-                    max="<%= product.variants.reduce((sum,v)=>sum+v.stock,0) %>"
-                >
-
-                <button>+</button>
-
-            </div>
-
-            <form
-                action="/user/add-to-cart/<%= product._id %>"
-                method="POST"
-            >
-
-                <% if(product.variants[0]?.stock > 0){ %>
-
-                    <button
-                        type="submit"
-                        class="add-cart-btn"
+                    <input
+                        type="number"
+                        name="quantity"
+                        value="1"
+                        min="1"
                     >
-                        Add To Cart
+
+                    <button type="button">+</button>
+
+                </div>
+
+                <div class="action-buttons">
+
+                    <% if(product.variants.some(v => v.stock > 0)){ %>
+
+                        <button
+                            type="submit"
+                            class="add-cart-btn">
+
+                            Add To Cart
+
+                        </button>
+
+                    <% } else { %>
+
+                        <button
+                            type="button"
+                            class="add-cart-btn"
+                            disabled>
+
+                            Out Of Stock
+
+                        </button>
+
+                    <% } %>
+
+                    <button type="button" id="wishlistBtn" class="wishlist-btn">
+                        <i class="fa-regular fa-heart"></i>
                     </button>
 
-                <% } else { %>
-
-                    <button
-                        type="button"
-                        class="add-cart-btn"
-                        disabled
-                    >
-                        Out Of Stock
-                    </button>
-
-                <% } %>
-
+                </div>
+                
             </form>
+
+            </div>
 
         </div>
 
@@ -428,34 +438,61 @@ const variants = JSON.parse(
     '<%- JSON.stringify(product.variants) %>'
 );
 
-const radios =
-document.querySelectorAll(
-    'input[name="variant"]'
+const radios = document.querySelectorAll(
+    'input[name="variantId"]'
 );
 
-const price =
-document.getElementById("price");
+const price = document.getElementById("price");
 
-const stock =
-document.getElementById("stock");
+const stock = document.getElementById("stock");
 
 radios.forEach(radio => {
 
     radio.addEventListener("change", () => {
 
-        const selected =
-        variants[radio.value];
+        const selected = variants[radio.value];
 
-        price.textContent =
-        `₹${selected.salePrice}`;
+        price.textContent = `₹${selected.salePrice}`;
 
-        regularPrice.textContent =
-        `₹${selected.regularPrice}`;
+        regularPrice.textContent = `₹${selected.regularPrice}`;
 
-        stock.textContent =
-        selected.stock;
+        stock.textContent = selected.stock;
 
     });
+
+});
+
+document.getElementById("wishlistBtn").addEventListener("click", async () => {
+
+    const productId = "<%= product._id %>";
+
+    console.log(productId);
+
+    const response = await fetch(`/user/wishlist/add/${productId}`, {
+        method: "POST"
+    });
+
+    const data = await response.json();
+
+    if(data.success){
+
+        Swal.fire({
+            icon: "success",
+            title: "Added!",
+            text: data.message,
+            timer: 1500,
+            showConfirmButton: false
+        });
+
+    }else{
+
+        Swal.fire({
+            icon: "info",
+            title: "Wishlist",
+            text: data.message
+        });
+
+    }
 
 });
 

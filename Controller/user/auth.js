@@ -60,6 +60,7 @@ const loadHome = async (req, res) => {
 
         res.render("user/home", {
             products,
+        //     user: req.session.user || null 
         });
 
     } catch (error) {

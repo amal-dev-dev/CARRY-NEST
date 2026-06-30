@@ -1,0 +1,446 @@
+/* ==========================
+   GOOGLE FONT
+========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f8f8f8;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+ul{
+    list-style:none;
+}
+
+/* ==========================
+   SECTION
+========================== */
+
+.wishlist-section{
+    padding:60px 0;
+}
+
+.container{
+    max-width:1350px;
+    width:92%;
+    margin:auto;
+}
+
+/* NAVBAR */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 10px;
+    position: sticky;
+    top: 0px;
+    z-index: 100;
+    background: rgb(255, 255, 255);
+    padding: 15px 5%;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #000;
+    text-decoration: none;
+    margin-left: 85px;
+}
+
+.nav-icons{
+    display:flex;
+    gap:15px;
+    margin-right: 70px;
+}
+
+.fa-regular, .far {
+    font-weight: 400;
+    margin-top: 4px;
+}
+
+/* ==========================
+   BREADCRUMB
+========================== */
+
+.breadcrumb-box{
+    display:flex;
+    gap:8px;
+    font-size:14px;
+    color:#777;
+    margin-bottom:30px;
+}
+
+.breadcrumb-box a{
+    font-weight:500;
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+.wishlist-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:40px;
+    flex-wrap:wrap;
+    gap:20px;
+}
+
+.wishlist-header h2{
+    font-size:42px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.wishlist-info{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.wishlist-info p{
+    font-weight:600;
+    margin:0;
+}
+
+.move-all-btn{
+
+    border:none;
+    background:#000;
+    color:#fff;
+    padding:13px 28px;
+    border-radius:50px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.move-all-btn:hover{
+    background:#333;
+}
+
+/* ==========================
+   GRID
+========================== */
+
+.wishlist-grid{
+
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(310px,1fr));
+
+    gap:30px;
+}
+
+/* ==========================
+   CARD
+========================== */
+
+.wishlist-card{
+
+    background:#fff;
+    border-radius:18px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.wishlist-card:hover{
+
+    transform:translateY(-8px);
+}
+
+.remove-btn{
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 38px;
+
+    height: 38px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f3cccc;
+
+    color: #e53935;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+
+}
+
+.remove-btn:hover{
+
+    background: #e53935;
+
+    color: #fff;
+
+}
+
+.remove-btn i{
+
+    font-size: 16px;
+
+}
+
+.product-link{
+    text-decoration: none;
+    color: #000;
+}
+
+.product-link:hover{
+    color: #000;
+}
+
+.wishlist-image{
+
+    height:320px;
+    background:#f5f5f5;
+}
+
+.wishlist-image img{
+
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.wishlist-content{
+
+    padding:22px;
+}
+
+.wishlist-content h5{
+
+    font-size:22px;
+    font-weight:700;
+}
+
+.brand{
+
+    color:#777;
+    margin:12px 0;
+}
+
+.price-box{
+
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.sale-price{
+
+    font-size:22px;
+    font-weight:700;
+}
+
+.regular-price{
+
+    color:#999;
+    text-decoration:line-through;
+}
+
+.size{
+
+    margin-bottom:18px;
+}
+
+
+
+/* ==========================
+   BUTTON
+========================== */
+
+.cart-btn{
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: #000 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.cart-btn:hover{
+    background: #222 !important;
+}
+
+/* ==========================
+   CONTINUE CARD
+========================== */
+
+.continue-card{
+
+    border:2px dashed #ddd;
+    border-radius:18px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    background:#fff;
+    min-height:520px;
+}
+
+.continue-card i{
+
+    font-size:70px;
+    color:#999;
+}
+
+.continue-card h5{
+
+    margin:20px 0 10px;
+    font-weight:700;
+}
+
+.continue-card p{
+
+    color:#777;
+}
+
+.continue-card a{
+
+    display:inline-block;
+    margin-top:18px;
+
+    color:#000;
+    font-weight:600;
+    border-bottom:2px solid #000;
+}
+
+/* ==========================
+   EMPTY
+========================== */
+
+.empty-wishlist{
+
+    width:100%;
+    text-align:center;
+    padding:100px 20px;
+}
+
+.empty-wishlist i{
+
+    font-size:90px;
+    color:#bbb;
+}
+
+.empty-wishlist h3{
+
+    margin:25px 0 10px;
+    font-size:35px;
+    font-weight:700;
+}
+
+.empty-wishlist p{
+
+    color:#777;
+    margin-bottom:30px;
+}
+
+.shop-btn{
+
+    background:#000;
+    color:#fff;
+    padding:15px 40px;
+    border-radius:50px;
+    display:inline-block;
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media(max-width:992px){
+
+    .wishlist-header{
+
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .wishlist-header h2{
+
+        font-size:34px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .wishlist-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .wishlist-image{
+
+        height:270px;
+    }
+
+    .continue-card{
+
+        min-height:320px;
+    }
+
+}
+
+@media(max-width:576px){
+
+    .wishlist-section{
+
+        padding:40px 0;
+    }
+
+    .wishlist-header h2{
+
+        font-size:28px;
+    }
+
+    .wishlist-info{
+
+        width:100%;
+        justify-content:space-between;
+    }
+
+    .wishlist-content h5{
+
+        font-size:20px;
+    }
+
+    .sale-price{
+
+        font-size:20px;
+    }
+
+}
