@@ -70,7 +70,8 @@ const addAddress = async (req, res) => {
             city,
             state,
             pincode,
-            country
+            detailAddress,
+            landmark
         } = req.body;
 
         const newAddress = new Address({
@@ -83,7 +84,8 @@ const addAddress = async (req, res) => {
             city,
             state,
             pincode,
-            country
+            detailAddress,
+            landmark
 
         });
 
@@ -131,7 +133,8 @@ const updateAddress = async (req, res) => {
             city,
             state,
             pincode,
-            country
+            detailAddress,
+            landmark
         } = req.body;
 
         await Address.findByIdAndUpdate(req.params.id, {
@@ -143,7 +146,8 @@ const updateAddress = async (req, res) => {
             city,
             state,
             pincode,
-            country
+            detailAddress,
+            landmark
 
         });
 

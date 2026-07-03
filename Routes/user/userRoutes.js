@@ -8,6 +8,8 @@ import upload from '../../Middleware/multer.js';
 import productController from '../../Controller/user/products.js';
 import cartController from '../../Controller/user/cart.js';
 import wishlistController from '../../Controller/user/wishlist.js';
+import checkoutController from '../../Controller/user/checkout.js';
+
 
 router.get('/login', isLoggedIn, userAuth.loadLogin);
 router.post('/login', userAuth.login);
@@ -75,5 +77,13 @@ router.get('/wishlist', requireAuth, wishlistController.loadWishlist);
 router.post('/wishlist/add/:id',requireAuth, wishlistController.addToWishlist);
 router.patch("/wishlist/remove/:id", requireAuth, wishlistController.removeWishlist);
 router.post( "/wishlist/move-all", requireAuth, wishlistController.moveAllToCart);
+
+//CHECKOUT
+router.get('/checkout', requireAuth, checkoutController.loadCheckout);
+
+router.post("/placeOrder", requireAuth, checkoutController.orderPlaced);
+
+
+
 
 export default router;

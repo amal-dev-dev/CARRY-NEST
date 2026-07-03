@@ -1,0 +1,819 @@
+/* ===================================
+   GOOGLE FONT
+=================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+
+    background:#f7f7f7;
+    color:#222;
+}
+
+a{
+
+    text-decoration:none;
+    color:inherit;
+}
+
+button{
+
+    cursor:pointer;
+}
+
+img{
+
+    display:block;
+    width:100%;
+}
+
+/* ===================================
+   NAVBAR
+=================================== */
+
+.navbar{
+
+    width:100%;
+    background:#fff;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:17px 5%;
+
+    box-shadow:0 2px 12px rgba(0,0,0,.05);
+
+    position:sticky;
+    top:0;
+
+    z-index:999;
+}
+
+.logo{
+
+    font-size:22px;
+    font-weight:700;
+
+    letter-spacing:1px;
+}
+
+
+.nav-icons{
+
+    display:flex;
+    align-items:center;
+
+    gap:22px;
+}
+
+.nav-icons a{
+
+    font-size:18px;
+
+    transition:.3s;
+}
+
+.nav-icons a:hover{
+
+    color:#666;
+}
+
+/* ===================================
+   CHECKOUT SECTION
+=================================== */
+
+.checkout-section{
+
+    width:100%;
+
+    padding:45px 0 70px;
+}
+
+.checkout-container{
+
+    width:92%;
+    max-width:1400px;
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:35px;
+}
+
+/* ===================================
+   LEFT
+=================================== */
+
+.checkout-left{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:25px;
+}
+
+.checkout-left h2{
+
+    font-size:36px;
+
+    font-weight:700;
+}
+
+/* ===================================
+   RIGHT
+=================================== */
+
+.checkout-right{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    height:fit-content;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+}
+
+.checkout-right h3{
+
+    font-size:22px;
+
+    margin-bottom:25px;
+}
+
+/* ===================================
+   CARD
+=================================== */
+
+.checkout-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    box-shadow:0 8px 22px rgba(0,0,0,.05);
+}
+
+.checkout-card h3{
+
+    display:flex;
+    align-items:center;
+
+    gap:10px;
+
+    font-size:18px;
+
+    margin-bottom:25px;
+}
+
+/* ===================================
+   SHIPPING ADDRESS
+=================================== */
+
+.address-card{
+
+    border:1px solid #e5e5e5;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    margin-bottom:18px;
+
+    transition:.3s;
+
+    background:#fff;
+}
+
+.address-card:hover{
+
+    border-color:#000;
+}
+
+.address-card.active{
+
+    border:2px solid #000;
+
+    background:#f4f7fb;
+}
+
+.address-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:15px;
+}
+
+.address-top label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+}
+
+.address-top input{
+
+    width:18px;
+
+    height:18px;
+
+    accent-color:#000;
+}
+
+.address-top a{
+
+    font-size:14px;
+
+    color:#555;
+
+    transition:.3s;
+}
+
+.address-top a:hover{
+
+    color:#000;
+}
+
+.address-card p{
+
+    font-size:14px;
+
+    color:#666;
+
+    line-height:1.7;
+}
+
+.add-address{
+
+    display:inline-block;
+
+    margin-top:10px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#000;
+
+    transition:.3s;
+}
+
+.add-address:hover{
+
+    color:#555;
+}
+
+/* ===================================
+   PAYMENT METHOD
+=================================== */
+
+.payment-card{
+
+    border:1px solid #e5e5e5;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    margin-bottom:18px;
+
+    transition:.3s;
+
+    cursor:pointer;
+
+    background:#fff;
+}
+
+.payment-card:hover{
+
+    border-color:#000;
+}
+
+.payment-card label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    cursor:pointer;
+}
+
+.payment-card input{
+
+    width:18px;
+
+    height:18px;
+
+    accent-color:#000;
+}
+
+.payment-card p{
+
+    margin-top:10px;
+
+    color:#777;
+
+    font-size:14px;
+}
+
+/* ===================================
+   PLACE ORDER BUTTON
+=================================== */
+
+.place-order{
+
+    width:100%;
+
+    border:none;
+
+    background:#000;
+
+    color:#fff;
+
+    padding:16px;
+
+    border-radius:50px;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    margin-top:10px;
+
+    transition:.3s;
+}
+
+.place-order:hover{
+
+    background:#222;
+}
+
+/* ===================================
+   ORDER SUMMARY PRODUCTS
+=================================== */
+
+.summary-product{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    margin-bottom:25px;
+}
+
+.summary-product img{
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:12px;
+
+    object-fit:cover;
+
+    background:#f5f5f5;
+}
+
+.summary-product h4{
+
+    font-size:16px;
+
+    margin-bottom:6px;
+}
+
+.summary-product p{
+
+    font-size:14px;
+
+    color:#666;
+
+    margin-bottom:4px;
+}
+
+.summary-product strong{
+
+    font-size:16px;
+}
+
+/* ===================================
+   PRICE DETAILS
+=================================== */
+
+.price-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin:16px 0;
+
+    font-size:15px;
+}
+
+.price-row.total{
+
+    font-size:20px;
+
+    font-weight:700;
+}
+
+.checkout-right hr{
+
+    border:none;
+
+    border-top:1px solid #ddd;
+
+    margin:20px 0;
+}
+
+/* ===================================
+   COUPON
+=================================== */
+
+.coupon-box{
+
+    display:flex;
+
+    gap:10px;
+
+    margin:30px 0;
+}
+
+.coupon-box input{
+
+    flex:1;
+
+    border:1px solid #ddd;
+
+    outline:none;
+
+    border-radius:10px;
+
+    padding:12px 15px;
+
+    font-size:14px;
+}
+
+.coupon-box button{
+
+    border:none;
+
+    background:#000;
+
+    color:#fff;
+
+    padding:0 22px;
+
+    border-radius:10px;
+
+    transition:.3s;
+}
+
+.coupon-box button:hover{
+
+    background:#222;
+}
+
+/* ===================================
+   SMALL PLACE ORDER
+=================================== */
+
+.place-order-small{
+
+    width:100%;
+
+    border:none;
+
+    background:#000;
+
+    color:#fff;
+
+    padding:15px;
+
+    border-radius:50px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    margin-top:25px;
+
+    transition:.3s;
+}
+
+.place-order-small:hover{
+
+    background:#222;
+}
+
+/* ===================================
+   DELIVERY BOX
+=================================== */
+
+.delivery-box{
+
+    margin-top:25px;
+
+    padding:18px;
+
+    border-radius:12px;
+
+    background:#f6f6f6;
+}
+
+.delivery-box p{
+
+    color:#777;
+
+    font-size:14px;
+
+    margin-bottom:8px;
+}
+
+.delivery-box strong{
+
+    font-size:16px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+  background: #111;
+  color: #fff;
+  padding: 50px 20px;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.footer-container div {
+  flex: 1;
+  min-width: 200px;
+}
+
+footer h3,
+footer h4 {
+  margin-bottom: 15px;
+}
+
+footer p {
+  margin: 6px 0;
+  color: #ccc;
+  cursor: pointer;
+}
+
+footer p:hover {
+  color: #fff;
+}
+
+footer input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+}
+
+footer button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: #ff6b00;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+footer button:hover {
+  background: #e85f00;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+=================================== */
+
+/* ---------- Tablet (992px) ---------- */
+@media (max-width:992px){
+
+    .checkout-container{
+
+        grid-template-columns:1fr;
+        gap:25px;
+    }
+
+    .checkout-left,
+    .checkout-right{
+
+        width:100%;
+    }
+
+    .search-box{
+
+        width:55%;
+    }
+
+    .footer-container{
+
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:30px;
+    }
+}
+
+
+/* ---------- Mobile (768px) ---------- */
+@media (max-width:768px){
+
+    .navbar{
+
+        flex-wrap:wrap;
+        gap:15px;
+        padding:15px;
+    }
+
+    .logo{
+
+        width:100%;
+        text-align:center;
+    }
+
+    .search-box{
+
+        width:100%;
+        order:3;
+    }
+
+    .nav-icons{
+
+        width:100%;
+        justify-content:center;
+    }
+
+    .checkout-section{
+
+        padding:25px 15px 50px;
+    }
+
+    .checkout-container{
+
+        width:100%;
+        grid-template-columns:1fr;
+    }
+
+    .checkout-left h2{
+
+        font-size:28px;
+    }
+
+    .checkout-card{
+
+        padding:18px;
+    }
+
+    .checkout-right{
+
+        padding:18px;
+    }
+
+    .summary-product{
+
+        align-items:flex-start;
+    }
+
+    .summary-product img{
+
+        width:70px;
+        height:70px;
+    }
+
+    .coupon-box{
+
+        flex-direction:column;
+    }
+
+    .coupon-box button{
+
+        width:100%;
+        padding:12px;
+    }
+
+    .footer-container{
+
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    footer input,
+    footer button{
+
+        width:100%;
+    }
+}
+
+
+/* ---------- Small Mobile (576px) ---------- */
+@media (max-width:576px){
+
+    .navbar{
+
+        padding:12px;
+    }
+
+    .logo{
+
+        font-size:20px;
+    }
+
+    .checkout-left h2{
+
+        font-size:24px;
+    }
+
+    .address-top{
+
+        flex-direction:column;
+        align-items:flex-start;
+        gap:10px;
+    }
+
+    .summary-product{
+
+        flex-direction:column;
+    }
+
+    .summary-product img{
+
+        width:100%;
+        height:220px;
+        object-fit:contain;
+    }
+
+    .price-row{
+
+        font-size:14px;
+    }
+
+    .price-row.total{
+
+        font-size:18px;
+    }
+
+    .place-order,
+    .place-order-small{
+
+        padding:14px;
+        font-size:15px;
+    }
+
+    .footer-container{
+
+        gap:25px;
+    }
+}

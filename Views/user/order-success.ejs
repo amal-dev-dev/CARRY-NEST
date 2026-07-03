@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success</title>
+
+    <link rel="stylesheet" href="/Styles/user/order-success.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <!-- =========================
+            NAVBAR
+    ========================== -->
+    <nav class="navbar">
+
+        <div class="logo">
+            CARRY NEST
+        </div>
+
+        <div class="nav-icons">
+            <a href="/user/cart">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+
+            <a href="/user/wishlist">
+                <i class="fa-regular fa-heart"></i>
+            </a>
+
+            <a href="/user/profile">
+                <i class="fa-regular fa-user"></i>
+            </a>
+        </div>
+
+    </nav>
+
+    <!-- =========================
+            SUCCESS SECTION
+    ========================== -->
+<section class="success-section">
+    <div class="success-card">
+
+        <div class="success-icon">
+            <i class="fa-solid fa-check"></i>
+        </div>
+
+        <h1>Order Placed Successfully!</h1>
+        <p class="success-text">
+            Thank you for shopping with Carry Nest. Your order has been placed successfully.
+        </p>
+
+        <div class="order-info">
+            <div class="info-row">
+                <span>Order Number</span>
+                <strong>#<%= order._id.toString().slice(-8).toUpperCase() %></strong>
+            </div>
+
+            <div class="info-row">
+                <span>Order Total</span>
+                <strong>₹<%= order.totalAmount %></strong>
+            </div>
+
+            <div class="info-row">
+                <span>Payment Method</span>
+                <strong><%= order.paymentMethod %></strong>
+            </div>
+
+            <div class="info-row">
+                <span>Estimated Delivery</span>
+                <strong>
+                    <%= new Date(order.deliveryDate).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric"
+                    }) %>
+                </strong>
+            </div>
+        </div>
+
+        <div class="success-actions">
+            <a href="/user/orders" class="btn-dark">View Orders</a>
+            <a href="/user/products" class="btn-light">Continue Shopping</a>
+        </div>
+
+    </div>
+</section>
+
+    <!-- =========================
+            FOOTER
+    ========================== -->
+    <footer>
+
+        <div class="footer-container">
+
+            <div class="footer-col">
+                <h3>CARRY NEST</h3>
+                <p>Lorem ipsum dolor sit amet consectetur. Purus in etiam risus ut sem eu urna. Massa feugiat consequat nec libero.</p>
+                <p>Lorem ipsum dolor sit</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Service</h4>
+                <p>Laptop Bags</p>
+                <p>Trekking Bags</p>
+                <p>School Bags</p>
+                <p>Office Bags</p>
+                <p>Travelling Bags</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Company</h4>
+                <p>Service</p>
+                <p>Features</p>
+                <p>Our Team</p>
+                <p>Portfolio</p>
+                <p>Blog</p>
+                <p>Contact Us</p>
+            </div>
+
+            <div class="footer-col footer-contact">
+                <h4>Contact Us</h4>
+
+                <div class="footer-input-box">
+                    <input type="text" placeholder="Your Email / Phone no.">
+                    <button>Send</button>
+                </div>
+
+                <div class="social-icons">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+
+            <p>Copyright Tanah Air Studio</p>
+
+            <div class="footer-bottom-info">
+                <span><i class="fa-solid fa-location-dot"></i> 8819 Ohio St. South Gate, CA 90280</span>
+                <span><i class="fa-regular fa-envelope"></i> CrossLine@hello.com</span>
+                <span><i class="fa-solid fa-phone"></i> +91 386-688-3295</span>
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
+</html>

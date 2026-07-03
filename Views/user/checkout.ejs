@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+
+    <link rel="stylesheet" href="/Styles/user/checkout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<!-- ===========================
+        NAVBAR
+=========================== -->
+<nav class="navbar">
+    <div class="logo">CARRY NEST</div>
+
+    <div class="nav-icons">
+        <a href="/user/cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+        </a>
+
+        <a href="/user/wishlist">
+            <i class="fa-regular fa-heart"></i>
+        </a>
+
+        <a href="/user/profile">
+            <i class="fa-regular fa-user"></i>
+        </a>
+    </div>
+</nav>
+
+<!-- ===========================
+        CHECKOUT
+=========================== -->
+<section class="checkout-section">
+    <form action="/user/placeOrder" method="POST">
+        <div class="checkout-container">
+
+            <!-- LEFT -->
+            <div class="checkout-left">
+
+                <h2>Checkout</h2>
+
+                <!-- Shipping -->
+                <div class="checkout-card">
+                    <h3>
+                        <i class="fa-solid fa-location-dot"></i>
+                        Shipping Details
+                    </h3>
+
+                    <% if(addresses && addresses.length > 0){ %>
+                        <% addresses.forEach((address)=>{ %>
+                            <div class="address-card <%= address.isDefault ? 'active' : '' %>">
+                                <div class="address-top">
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="selectedAddress"
+                                            value="<%= address._id %>"
+                                            <%= address.isDefault ? "checked" : "" %>
+                                        >
+                                        <%= address.type %>
+                                    </label>
+
+                                    <a href="/user/Address/edit/<%= address._id %>">Edit</a>
+                                </div>
+
+                                <p><strong><%= address.fullName %></strong></p>
+                                <p><%= address.address || "" %></p>
+                                <p><%= address.detailAddress || "" %></p>
+                                <p><%= address.city %>, <%= address.state %> - <%= address.pincode %></p>
+                                <p><%= address.mobile %></p>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p>No address found.</p>
+                    <% } %>
+
+                    <a href="/user/address/add" class="add-address">+ Add New Address</a>
+                </div>
+
+                <!-- Payment -->
+                <div class="checkout-card">
+                    <h3>
+                        <i class="fa-regular fa-credit-card"></i>
+                        Payment Method
+                    </h3>
+
+                    <div class="payment-card">
+                        <label>
+                            <input type="radio" name="paymentMethod" value="COD" checked>
+                            Cash On Delivery
+                        </label>
+                        <p>Pay when your order arrives</p>
+                    </div>
+                </div>
+
+                <!-- LEFT place order optional -->
+                <!-- <button type="submit" class="place-order">Place Order</button> -->
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="checkout-right">
+
+                <h3>Order Summary</h3>
+
+                <% if(cart && cart.items.length > 0){ %>
+                    <% cart.items.forEach(item=>{ %>
+                        <div class="summary-product">
+                            <img
+                                src="<%= item.productId.productImage[0] %>"
+                                alt="<%= item.productId.productName %>"
+                            >
+
+                            <div>
+                                <h4><%= item.productId.productName %></h4>
+                                <p>Qty : <%= item.quantity %></p>
+                                <p>Size : <%= item.variant ? item.variant.size : "-" %></p>
+                                <strong>₹<%= item.variant ? item.variant.salePrice : 0 %></strong>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p>Your cart is empty.</p>
+                <% } %>
+
+                <hr>
+
+                <div class="price-row">
+                    <span>Subtotal</span>
+                    <span>₹<%= subtotal %></span>
+                </div>
+
+                <div class="price-row">
+                    <span>Discount</span>
+                    <span>₹<%= discount %></span>
+                </div>
+
+                <div class="price-row">
+                    <span>Delivery</span>
+                    <span><%= deliveryFee === 0 ? "Free" : "₹" + deliveryFee %></span>
+                </div>
+
+                <hr>
+
+                <div class="price-row total">
+                    <span>Total</span>
+                    <span>₹<%= grandTotal %></span>
+                </div>
+
+                <div class="coupon-box">
+                    <input type="text" placeholder="Add promo code">
+                    <button type="button">Apply</button>
+                </div>
+
+                <h4>View Available Coupons</h4>
+
+                <!-- THIS is the real place order button -->
+                <button type="submit" class="place-order-small">
+                    Place Order
+                </button>
+
+                <div class="delivery-box">
+                    <p>Estimated Delivery</p>
+                    <strong>Oct 15 - Oct 18</strong>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+</section>
+
+<!-- ===========================
+        FOOTER
+=========================== -->
+<footer>
+    <div class="footer-container">
+
+        <div>
+            <h3>CARRY NEST</h3>
+            <p>Premium Bags & Travel Accessories.</p>
+        </div>
+
+        <div>
+            <h4>Service</h4>
+            <p>Shipping</p>
+            <p>Returns</p>
+            <p>Support</p>
+        </div>
+
+        <div>
+            <h4>Company</h4>
+            <p>About</p>
+            <p>Contact</p>
+            <p>Blog</p>
+        </div>
+
+        <div>
+            <h4>Contact Us</h4>
+            <input type="email" placeholder="Your Email">
+            <button>Send</button>
+        </div>
+
+    </div>
+</footer>
+
+</body>
+</html>
