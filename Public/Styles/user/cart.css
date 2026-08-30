@@ -34,6 +34,55 @@ body{
     gap:15px;
 }
 
+.cart-link {
+    position: relative;
+    display: inline-block;
+    color: #000;
+    text-decoration: none;
+}
+
+.cart-link i {
+    color: #000;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    padding: 2px;
+}
+
+.wishlist-link{
+    position: relative;
+    color: black;
+}
+
+.wishlist-badge{
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    min-width: 18px;
+    height: 18px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+}
+
 .breadcrumb{
     padding:20px 5%;
     font-size:14px;
@@ -55,6 +104,43 @@ body{
 
 .cart-items h1{
     margin-bottom:25px;
+}
+
+.cart-warning {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    background: #fff3cd;
+    color: #664d03;
+    border: 1px solid #ffecb5;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.blocked-warning {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    padding: 8px 12px;
+    background: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.blocked-warning i {
+    margin-right: 5px;
+}
+
+.blocked-cart-item {
+    position: relative;
+    border: 1px solid #f5c2c7;
 }
 
 .cart-card{
@@ -102,6 +188,15 @@ body{
     cursor:pointer;
 }
 
+.qty-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.blocked-cart-item {
+    opacity: 0.75;
+}
+
 .delete-btn{
     border:none;
     background:none;
@@ -145,6 +240,11 @@ body{
     padding:14px;
     border-radius:30px;
     margin-top:20px;
+}
+
+.checkout-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .out-stock{

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/Styles/admin/customer.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -101,7 +102,7 @@
 
                     <div class="submenu">
 
-                        <a href="#">All Orders</a>
+                        <a href="/admin/orders">All Orders</a>
 
                         <a href="#">Pending</a>
 
@@ -265,7 +266,6 @@
             </p>
 
         </section>
-
         <!-- CUSTOMER TABLE -->
         <section class="table-card">
 
@@ -273,6 +273,7 @@
             <div class="table-top">
 
                 <h3>All Customers</h3>
+
 
                <div class="table-actions">
 
@@ -424,19 +425,17 @@
                                 <% if(user.isBlocked){ %>
 
                                     <a href="/admin/unblock-user/<%= user._id %>"
-                                    class="action-btn unblock-btn">
-
-                                    Unblock
-
+                                    class="action-btn unblock-btn"
+                                    onclick="confirmAction(event, this.href, 'Unblock')">
+                                        Unblock
                                     </a>
 
                                 <% } else { %>
 
                                     <a href="/admin/block-user/<%= user._id %>"
-                                    class="action-btn block-btn">
-
-                                    Block
-
+                                    class="action-btn block-btn"
+                                    onclick="confirmAction(event, this.href, 'Block')">
+                                        Block
                                     </a>
 
                                 <% } %>
@@ -509,6 +508,25 @@ dropdowns.forEach((dropdown)=>{
     });
 
 });
+
+function confirmAction(event, url, action) {
+    event.preventDefault();
+
+    Swal.fire({
+        title: `${action} Customer?`,
+        text: `Are you sure you want to ${action.toLowerCase()} this customer?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: action === "Block" ? "#d33" : "#198754",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: `Yes, ${action}`,
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
 
 </script>
 

@@ -17,8 +17,12 @@
     <div class="logo">CARRY NEST</div>
 
     <div class="nav-icons">
-        <a href="/user/cart">
+        <a href="/user/cart" class="cart-link">
             <i class="fa-solid fa-cart-shopping"></i>
+
+            <% if (cartCount > 0) { %>
+                <span class="cart-badge"><%= cartCount %></span>
+            <% } %>
         </a>
 
         <a href="/user/wishlist">
@@ -51,7 +55,7 @@
                     </h3>
 
                     <% if(addresses && addresses.length > 0){ %>
-                        <% addresses.forEach((address)=>{ %>
+                        <% addresses.forEach((address, index)=>{ %>
                             <div class="address-card <%= address.isDefault ? 'active' : '' %>">
                                 <div class="address-top">
                                     <label>
@@ -59,7 +63,7 @@
                                             type="radio"
                                             name="selectedAddress"
                                             value="<%= address._id %>"
-                                            <%= address.isDefault ? "checked" : "" %>
+                                            <%= (address.isDefault || index === 0) ? "checked" : "" %>
                                         >
                                         <%= address.type %>
                                     </label>
@@ -78,7 +82,9 @@
                         <p>No address found.</p>
                     <% } %>
 
-                    <a href="/user/address/add" class="add-address">+ Add New Address</a>
+                    <a href="/user/checkout/add-address" class="add-address">
+                        + Add New Address
+                    </a>
                 </div>
 
                 <!-- Payment -->

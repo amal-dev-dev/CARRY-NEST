@@ -106,6 +106,37 @@ body {
     font-size: 0.85rem;
     font-weight: 600;
 }
+.resend-btn {
+    width: 40%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50px;
+    background-color: #000000;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
+}
+
+.resend-btn:hover:not(:disabled) {
+    background-color: #0a1f3f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.35);
+}
+
+.resend-btn:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.resend-btn:disabled {
+    background-color: #d6d6d6;
+    color: #777;
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: 0.8;
+}
 
 /* Footer Section */
 .footer {

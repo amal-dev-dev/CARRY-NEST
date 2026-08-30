@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details - Carry Nest</title>
+
+    <link rel="stylesheet" href="/Styles/admin/order-details.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="admin-layout">
+
+    <!-- =========================
+            SIDEBAR
+    ========================== -->
+    <aside class="sidebar">
+
+        <div>
+            <div class="logo-section">
+                <div class="logo-box">C</div>
+                <h2>CARRY NEST</h2>
+            </div>
+
+            <div class="menu-wrapper">
+
+                <a href="/admin/dashboard" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-dashboard-line"></i>
+                        Dashboard
+                    </span>
+                </a>
+
+                <div class="menu-dropdown">
+                    <div class="menu-item dropdown-toggle">
+                        <span class="menu-left">
+                            <i class="ri-shopping-bag-line"></i>
+                            Products
+                        </span>
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+                    </div>
+
+                    <div class="submenu">
+                        <a href="/admin/products">All Products</a>
+                        <a href="/admin/add-product">Add Product</a>
+                        <a href="/admin/category">Categories</a>
+                        <a href="#">Brands</a>
+                    </div>
+                </div>
+
+                <div class="menu-dropdown">
+                    <div class="menu-item active dropdown-toggle">
+                        <span class="menu-left">
+                            <i class="ri-shopping-cart-line"></i>
+                            Orders
+                        </span>
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+                    </div>
+
+                    <div class="submenu show">
+                        <a href="/admin/orders" class="active-submenu">All Orders</a>
+                        <a href="#">Pending</a>
+                        <a href="#">Processing</a>
+                        <a href="#">Shipped</a>
+                    </div>
+                </div>
+
+                <div class="menu-dropdown">
+                    <div class="menu-item dropdown-toggle">
+                        <span class="menu-left">
+                            <i class="ri-arrow-go-back-line"></i>
+                            Returns
+                        </span>
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+                    </div>
+
+                    <div class="submenu">
+                        <a href="#">Requests</a>
+                        <a href="#">Refunds</a>
+                    </div>
+                </div>
+
+                <a href="/admin/customers" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-group-line"></i>
+                        Customers
+                    </span>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-wallet-3-line"></i>
+                        Wallet & Payments
+                    </span>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-price-tag-3-line"></i>
+                        Promotions
+                    </span>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-bar-chart-box-line"></i>
+                        Reports
+                    </span>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-settings-3-line"></i>
+                        Settings
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="logout-section">
+            <a href="/admin/logout" class="logout-btn">Logout</a>
+        </div>
+    </aside>
+
+    <!-- =========================
+            MAIN CONTENT
+    ========================== -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <p class="breadcrumb">
+                    Admin <span>/</span> Orders <span>/</span> Order Details
+                </p>
+            </div>
+
+            <div class="topbar-right">
+                <div class="top-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+
+                <button class="icon-btn">
+                    <i class="fa-regular fa-bell"></i>
+                </button>
+
+                <div class="admin-profile">
+                    <div class="avatar">AD</div>
+                    <div class="admin-info">
+                        <h4>Admin User</h4>
+                        <p>Super Admin</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- =========================
+                ORDER HEADER
+        ========================== -->
+        <section class="order-header">
+            <div class="order-header-left">
+                <a href="/admin/orders" class="back-btn">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+
+                <div>
+                    <h1>
+                        Order <span><%= order.orderId %></span>
+                    </h1>
+                    <p>
+                        Placed on 
+                        <%= new Date(order.createdAt).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric"
+                        }) %>
+                        by 
+                        <strong><%= order.userId?.name || "Customer" %></strong>
+                    </p>
+                </div>
+            </div>
+
+            <div class="header-status">
+                <span class="big-status <%= order.orderStatus %>">
+                    <%= order.orderStatus.replaceAll("_", " ") %>
+                </span>
+            </div>
+        </section>
+
+        <!-- =========================
+                ORDER DETAILS GRID
+        ========================== -->
+        <section class="order-details-grid">
+
+            <!-- LEFT -->
+            <div class="order-left">
+
+                <!-- ORDER ITEMS -->
+                <div class="details-card">
+
+                    <h2>Order Items</h2>
+
+                    <div class="order-items-list">
+
+                        <% order.products.forEach(item => { %>
+
+                        <%
+                            const validTransitions = {
+                                pending: ["pending", "shipped", "cancelled"],
+                                shipped: ["shipped", "out_for_delivery"],
+                                out_for_delivery: ["out_for_delivery", "delivered"],
+                                delivered: ["delivered"],
+                                cancelled: ["cancelled"],
+                                returned: ["returned"]
+                            };
+
+                            const allowedStatuses = validTransitions[item.status] || [item.status];
+                        %>
+
+                        <div class="order-item">
+
+                            <div class="item-left">
+
+                                <div class="item-image">
+
+                                    <img
+                                        src="<%= item.productId?.productImage?.[0] || '/images/no-image.png' %>"
+                                        alt="<%= item.productId?.productName || 'Product' %>">
+
+                                </div>
+
+                                <div class="item-info">
+
+                                    <h4>
+                                        <%= item.productId?.productName || "Product" %>
+                                    </h4>
+
+                                    <p>
+                                        Quantity :
+                                        <%= item.quantity %>
+                                    </p>
+
+                                    <p>
+                                        Current Status :
+                                        <span class="item-status <%= item.status %>">
+                                            <%= item.status.replaceAll("_"," ") %>
+                                        </span>
+                                    </p>
+
+                                    <% if(!["delivered","cancelled","returned"].includes(item.status)){ %>
+
+                                    <form
+                                        action="/admin/order/<%= order._id %>/product/<%= item._id %>"
+                                        method="POST"
+                                        class="status-update-form">
+
+                                        <select name="status">
+
+                                            <% allowedStatuses.forEach(status => { %>
+
+                                            <option
+                                                value="<%= status %>"
+                                                <%= item.status === status ? "selected" : "" %>>
+
+                                                <%= status.replaceAll("_"," ").replace(/\b\w/g,c=>c.toUpperCase()) %>
+
+                                            </option>
+
+                                            <% }) %>
+
+                                        </select>
+
+                                        <button
+                                            type="submit"
+                                            class="update-btn">
+
+                                            Update
+
+                                        </button>
+
+                                    </form>
+
+                                    <% } else { %>
+
+                                    <div class="locked-status">
+
+                                        <strong>
+                                            This product is
+                                            <%= item.status.replaceAll("_"," ") %>.
+                                        </strong>
+
+                                    </div>
+
+                                    <% } %>
+
+                                </div>
+
+                            </div>
+
+                            <div class="item-price">
+
+                                ₹<%= item.price * item.quantity %>
+
+                            </div>
+
+                        </div>
+
+                        <% }) %>
+
+                    </div>
+
+                    <div class="price-summary">
+
+                        <div class="summary-row">
+
+                            <span>Subtotal</span>
+
+                            <span>
+                                ₹<%= order.totalAmount + (order.discountApplied || 0) %>
+                            </span>
+
+                        </div>
+
+                        <div class="summary-row">
+
+                            <span>Discount</span>
+
+                            <span>
+                                - ₹<%= order.discountApplied || 0 %>
+                            </span>
+
+                        </div>
+
+                        <div class="summary-row">
+
+                            <span>Shipping</span>
+
+                            <span>Free</span>
+
+                        </div>
+
+                        <div class="summary-row total">
+
+                            <span>Total</span>
+
+                            <span>
+                                ₹<%= order.totalAmount %>
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="order-right">
+
+                <!-- CUSTOMER DETAILS -->
+                <div class="details-card side-card">
+                    <h2>Customer Details</h2>
+
+                    <div class="info-block">
+                        <p><span>Name:</span> <%= order.userId?.name || "-" %></p>
+                        <p><span>Email:</span> <%= order.userId?.email || "-" %></p>
+                        <p><span>Phone:</span> <%= order.deliveryAddress?.phone || "-" %></p>
+                    </div>
+
+                    <h3>Shipping Address</h3>
+                    <div class="info-block">
+                        <p><%= order.deliveryAddress?.name || "-" %></p>
+                        <p><%= order.deliveryAddress?.addressLine1 || "" %></p>
+                        <% if(order.deliveryAddress?.addressLine2){ %>
+                            <p><%= order.deliveryAddress.addressLine2 %></p>
+                        <% } %>
+                        <p>
+                            <%= order.deliveryAddress?.city || "" %>, 
+                            <%= order.deliveryAddress?.state || "" %> - 
+                            <%= order.deliveryAddress?.pincode || "" %>
+                        </p>
+                    </div>
+
+                    <h3>Payment Details</h3>
+                    <div class="info-block">
+                        <p><span>Method:</span> <%= order.paymentMethod %></p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+const dropdowns = document.querySelectorAll(".dropdown-toggle");
+dropdowns.forEach((dropdown) => {
+    dropdown.addEventListener("click", () => {
+        const submenu = dropdown.nextElementSibling;
+        submenu.classList.toggle("show");
+    });
+});
+
+const menuToggle = document.getElementById("menuToggle");
+const sidebar = document.querySelector(".sidebar");
+
+if (menuToggle) {
+    menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("show");
+    });
+}
+</script>
+
+<% if(successMessage){ %>
+<script>
+Swal.fire({
+    icon: "success",
+    title: "Success",
+    text: "<%= successMessage %>",
+    confirmButtonColor: "#16a34a"
+});
+</script>
+<% } %>
+
+<% if(errorMessage){ %>
+<script>
+Swal.fire({
+    icon: "error",
+    title: "Error",
+    text: "<%= errorMessage %>",
+    confirmButtonColor: "#dc2626"
+});
+</script>
+<% } %>
+
+</body>
+</html>

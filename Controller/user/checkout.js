@@ -1,44 +1,111 @@
 import Address from "../../Model/addressModel.js";
 import Cart from "../../Model/cartModel.js";
-import Order from "../../Model/orderSchema.js";
+import Order from "../../Model/orderModel.js";
+import Product from "../../Model/productModel.js";
+import User from '../../Model/userModel.js';
 
 const loadCheckout = async (req, res) => {
     try {
-        const userId = req.session.user._id || req.session.user;
+        const userId = req.session.user;
 
-        const addresses = await Address.find({ userId });
-
-        const cart = await Cart.findOne({ userId }).populate("items.productId");
-
-        let cartItems = [];
-        let subtotal = 0;
-        const deliveryFee = 0;
-        const discount = 0;
-
-        if (cart && cart.items.length > 0) {
-            cartItems = cart.items
-                .filter(item => item.productId) // remove deleted products
-                .map(item => {
-                    const variant = item.productId.variants.find(
-                        v => v._id.toString() === item.variantId.toString()
-                    );
-
-                    if (variant) {
-                        subtotal += variant.salePrice * item.quantity;
-                    }
-
-                    return {
-                        ...item.toObject(),
-                        variant
-                    };
-                });
+        if (!userId) {
+            return res.redirect("/user/login");
         }
 
+        const cart = await Cart.findOne({ userId })
+            .populate("items.productId");
+
+        // Cart does not exist
+        if (!cart || cart.items.length === 0) {
+            req.session.message = "Your cart is empty";
+            return res.redirect("/user/cart");
+        }
+
+        // Check blocked products BEFORE modifying the cart
+        const blockedProduct = cart.items.find(
+            item => item.productId && item.productId.isBlocked
+        );
+
+        if (blockedProduct) {
+            req.session.message =
+                "A product in your cart is currently unavailable. Please remove it before checkout.";
+
+            return res.redirect("/user/cart");
+        }
+
+        const validItems = [];
+
+        for (const item of cart.items) {
+
+            const product = item.productId;
+
+            // Remove deleted product
+            if (!product) {
+                continue;
+            }
+
+            const variant = product.variants.find(
+                v => v._id.toString() === item.variantId.toString()
+            );
+
+            // Remove invalid variant
+            if (!variant) {
+                continue;
+            }
+
+            // Remove out of stock / insufficient stock
+            if (variant.stock <= 0 || variant.stock < item.quantity) {
+                continue;
+            }
+
+            validItems.push({
+                ...item.toObject(),
+                productId: product,
+                variant
+            });
+        }
+
+        // If all items are invalid
+        if (validItems.length === 0) {
+            cart.items = [];
+            await cart.save();
+
+            req.session.message =
+                "Unavailable items were removed from your cart.";
+
+            return res.redirect("/user/cart");
+        }
+
+        // Save only valid items
+        cart.items = validItems.map(item => ({
+            productId: item.productId._id,
+            variantId: item.variantId,
+            quantity: item.quantity
+        }));
+
+        await cart.save();
+
+        // Calculate subtotal
+        let subtotal = 0;
+
+        validItems.forEach(item => {
+            subtotal += item.variant.salePrice * item.quantity;
+        });
+
+        const discount = 0;
+        const deliveryFee = 0;
         const grandTotal = subtotal - discount + deliveryFee;
 
-        res.render("user/checkout", {
+        // Get addresses
+        const addresses = await Address.find({ userId })
+            .sort({ createdAt: -1 });
+
+        return res.render("user/checkout", {
+            cart: {
+                ...cart.toObject(),
+                items: validItems
+            },
             addresses,
-            cart: { items: cartItems },
             subtotal,
             discount,
             deliveryFee,
@@ -55,14 +122,10 @@ const loadCheckout = async (req, res) => {
 const orderPlaced = async (req, res) => {
     try {
         const userId = req.session.user;
-
-        // -----------------------------
-        // 1) Get form data
-        // -----------------------------
         const { selectedAddress, paymentMethod } = req.body;
 
         if (!userId) {
-            return res.redirect("/login");
+            return res.redirect("/user/login");
         }
 
         if (!selectedAddress) {
@@ -75,12 +138,10 @@ const orderPlaced = async (req, res) => {
             return res.redirect("/user/checkout");
         }
 
-        // -----------------------------
-        // 2) Find selected address
-        // -----------------------------
+        // FIX: use single address variable
         const address = await Address.findOne({
             _id: selectedAddress,
-            userId: userId
+            userId
         });
 
         if (!address) {
@@ -88,9 +149,6 @@ const orderPlaced = async (req, res) => {
             return res.redirect("/user/checkout");
         }
 
-        // -----------------------------
-        // 3) Find user cart with products
-        // -----------------------------
         const cart = await Cart.findOne({ userId }).populate("items.productId");
 
         if (!cart || cart.items.length === 0) {
@@ -98,32 +156,33 @@ const orderPlaced = async (req, res) => {
             return res.redirect("/user/cart");
         }
 
-        // -----------------------------
-        // 4) Prepare ordered products + calculate total
-        // -----------------------------
         let orderedProducts = [];
         let totalAmount = 0;
 
         for (const item of cart.items) {
             const product = item.productId;
 
-            if (!product) continue;
+            // skip deleted/blocked product
+            if (!product || product.isBlocked) {
+                continue;
+            }
 
-            // find selected variant from product variants
             const variant = product.variants.find(
                 v => v._id.toString() === item.variantId.toString()
             );
 
-            if (!variant) continue;
+            // skip invalid variant
+            if (!variant) {
+                continue;
+            }
 
             // stock check
-            if (variant.stock < item.quantity) {
+            if (variant.stock < item.quantity || variant.stock <= 0) {
                 req.session.message = `${product.productName} is out of stock`;
                 return res.redirect("/user/cart");
             }
 
             const price = variant.salePrice || variant.regularPrice || 0;
-            const itemTotal = price * item.quantity;
 
             orderedProducts.push({
                 productId: product._id,
@@ -132,7 +191,7 @@ const orderPlaced = async (req, res) => {
                 price: price
             });
 
-            totalAmount += itemTotal;
+            totalAmount += price * item.quantity;
         }
 
         if (orderedProducts.length === 0) {
@@ -140,38 +199,27 @@ const orderPlaced = async (req, res) => {
             return res.redirect("/user/cart");
         }
 
-        // -----------------------------
-        // 5) Create custom order ID
-        // Example: CN-1720456789012
-        // -----------------------------
         const orderId = "CN-" + Date.now();
 
-        // -----------------------------
-        // 6) Delivery date (5 days from now)
-        // -----------------------------
         const deliveryDate = new Date();
         deliveryDate.setDate(deliveryDate.getDate() + 5);
 
-        // -----------------------------
-        // 7) Create order
-        // -----------------------------
         const order = new Order({
-            orderId: orderId,
-            userId: userId,
+            orderId,
+            userId,
             products: orderedProducts,
             couponId: null,
             discountApplied: 0,
-            totalAmount: totalAmount,
-            paymentMethod: paymentMethod, // COD
-            paymentStatus: "pending",     // COD => pending until delivered/confirmed
+            totalAmount,
+            paymentMethod,
+            paymentStatus: paymentMethod === "COD" ? "pending" : "completed",
             orderStatus: "pending",
-            deliveryDate: deliveryDate,
-
+            deliveryDate,
             deliveryAddress: {
                 name: address.fullName,
                 phone: address.mobile,
                 addressLine1: address.address,
-                addressLine2: "",
+                addressLine2: address.detailAddress || "",
                 city: address.city,
                 state: address.state,
                 pincode: address.pincode
@@ -180,36 +228,26 @@ const orderPlaced = async (req, res) => {
 
         await order.save();
 
-        // -----------------------------
-        // 8) Reduce stock from product variants
-        // -----------------------------
-        for (const item of cart.items) {
-            const product = item.productId;
+        // reduce stock
+        for (const item of orderedProducts) {
+            const product = await Product.findById(item.productId);
+
             if (!product) continue;
 
-            const variant = product.variants.find(
-                v => v._id.toString() === item.variantId.toString()
-            );
+            const variant = product.variants.id(item.variantId);
 
             if (variant) {
                 variant.stock -= item.quantity;
-                if (variant.stock < 0) {
-                    variant.stock = 0;
-                }
+                if (variant.stock < 0) variant.stock = 0;
                 await product.save();
             }
         }
 
-        // -----------------------------
-        // 9) Clear cart after successful order
-        // -----------------------------
+        // clear cart
         cart.items = [];
         await cart.save();
 
-        // -----------------------------
-        // 10) Render success page
-        // -----------------------------
-        res.render("user/order-success", { order });
+        return res.render("user/order-success", { order });
 
     } catch (error) {
         console.log("ORDER PLACE ERROR:", error);
@@ -217,7 +255,85 @@ const orderPlaced = async (req, res) => {
     }
 };
 
-export default { 
+const loadAddAddressFromCheckout = async (req, res) => {
+    try {
+        const userId = req.session.user;
+
+        if (!userId) {
+            return res.redirect("/user/login");
+        }
+
+        const user = await User.findById(userId);
+
+        console.log("🔥 CHECKOUT ADD ADDRESS GET HIT");
+
+        return res.render("user/add-address", {
+            user,
+            fromCheckout: true
+        });
+
+    } catch (error) {
+        console.log("❌ LOAD CHECKOUT ADD ADDRESS ERROR:", error);
+        return res.redirect("/user/checkout");
+    }
+};
+
+const addAddressFromCheckout = async (req, res) => {
+    try {
+        console.log("🔥🔥 CHECKOUT ADD ADDRESS POST HIT");
+
+        const userId = req.session.user;
+
+        if (!userId) {
+            return res.redirect("/user/login");
+        }
+
+        const {
+            type,
+            fullName,
+            mobile,
+            address,
+            city,
+            state,
+            pincode,
+            detailAddress,
+            landmark
+        } = req.body;
+
+        console.log("BODY:", req.body);
+
+        const newAddress = new Address({
+            userId,
+            type,
+            fullName,
+            mobile,
+            address,
+            city,
+            state,
+            pincode,
+            detailAddress,
+            landmark
+        });
+
+        await newAddress.save();
+
+        console.log("✅ ADDRESS SAVED FROM CHECKOUT");
+
+        return res.redirect("/user/checkout");
+
+    } catch (error) {
+        console.log("❌ CHECKOUT ADD ADDRESS ERROR:", error);
+
+        req.session.message = "Unable to add address";
+
+        return res.redirect("/user/checkout");
+    }
+};
+
+export default {
     loadCheckout,
-    orderPlaced
+    orderPlaced,
+    loadAddAddressFromCheckout,
+    addAddressFromCheckout
+
 };

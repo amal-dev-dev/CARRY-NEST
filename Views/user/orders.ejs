@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARRY NEST - Personal Information</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/Styles/user/orders.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">CARRY NEST</div>
+
+        <div class="nav-icons">
+            <a href="/user/cart" class="cart-link">
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <% if (cartCount > 0) { %>
+                    <span class="cart-badge"><%= cartCount %></span>
+                <% } %>
+            </a>
+            
+            <a href="/user/wishlist" class="wishlist-link">
+                <i class="fa-regular fa-heart"></i>
+
+                <% if (wishlistCount > 0) { %>
+                    <span class="wishlist-badge">
+                        <%= wishlistCount %>
+                    </span>
+                <% } %>
+            </a>
+
+            <a href="/user/profile">
+                <i class="fa-regular fa-user"></i>
+            </a>
+        </div>
+    </nav>
+
+    <div class="profile-page-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar-container">
+            <div class="user-id-card">
+                <div class="avatar-box">
+                    <img src="<%= user.profileImage || 'https://ui-avatars.com/api/?name=' + user.name %>">
+                </div>
+                <h3><%= user.name %></h3>
+                <p class="user-email"><%= user.email %></p>
+                <p class="user-phone"><%= user.phone %></p>
+            </div>
+
+            <nav class="nav-menu">
+                <!-- Personal Information is now the ACTIVE item -->
+                 <a href="/user/home" class="nav-item">
+                    <span class="nav-icon"> <i class="fa-solid fa-house"></i></span> Home
+                </a>
+                <a href="/user/profile" class="nav-item">
+                    <span class="nav-icon"><i class="fa-regular fa-user"></i></span> Personal Information
+                </a>
+                <a href="/user/address" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span> Addresses
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-gift"></i></span> Referrals
+                </a>
+                <a href="/user/orders" class="nav-item active">
+                    <span class="nav-icon"><i class="fa-solid fa-box"></i></span> Order History
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-wallet"></i></span> Wallet
+                </a>
+                <a href="/user/change-password" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-key"></i></span> Change Password
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/user/logout" class="nav-item logout-btn">
+                    <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span> Logout
+                </a>
+            </nav>
+        </aside>
+
+        <section class="order-history-section">
+
+            <!-- TOP BAR -->
+            <div class="orders-topbar">
+                <h2 class="order-history-title">Order History</h2>
+
+                <form action="/user/orders" method="GET" class="orders-search-box">
+                    <input
+                        type="text"
+                        name="search"
+                        placeholder="Search by Order ID or Product Name"
+                        value="<%= search || '' %>"
+                    >
+
+                    <button type="submit">
+                        Search
+                    </button>
+
+                    <% if (search) { %>
+                        <a href="/user/orders" class="clear-search-btn">Clear</a>
+                    <% } %>
+                </form>
+            </div>
+
+            <% if (orders && orders.length > 0) { %>
+                <% orders.forEach(order => { %>
+
+                    <div class="order-history-card">
+                        <div class="order-top">
+                            <div>
+                                <h3>
+                                    Order #<%= order.orderId || order._id.toString().slice(-8).toUpperCase() %>
+                                </h3>
+                                <p>
+                                    <%= new Date(order.createdAt).toLocaleDateString("en-IN", {
+                                        day: "numeric",
+                                        month: "long",
+                                        year: "numeric"
+                                    }) %>
+                                </p>
+                            </div>
+
+                            <span class="order-status <%= order.orderStatus %>">
+                                <%= order.orderStatus.replaceAll("_", " ") %>
+                            </span>
+                        </div>
+
+                        <% if (order.products && order.products.length > 0) { %>
+
+                        <div class="order-middle">
+
+                            <div class="order-preview">
+
+                                <div class="product-image-stack">
+
+                                    <% order.products.slice(0, 3).forEach(product => { %>
+
+                                        <div class="preview-image">
+
+                                            <img
+                                                src="<%= product.productId?.productImage?.[0] || '/images/default-product.png' %>"
+                                                alt="<%= product.productId?.productName || 'Product' %>"
+                                            >
+
+                                        </div>
+
+                                    <% }) %>
+
+                                    <% if(order.products.length > 3){ %>
+
+                                        <div class="more-items">
+                                            +<%= order.products.length - 3 %>
+                                        </div>
+
+                                    <% } %>
+
+                                </div>
+
+                                <div class="order-item-summary">
+
+                                    <strong>
+                                        <%= order.products.length %>
+                                        <%= order.products.length === 1 ? 'Item' : 'Items' %>
+                                    </strong>
+
+                                    <p>
+                                        View order details to see all products
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="order-price">
+
+                                <span>Total</span>
+
+                                <strong>
+                                    ₹<%= order.totalAmount %>
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        <% } %>
+
+                        <div class="order-bottom">
+                            <a
+                                href="/user/order-details/<%= order._id %>"
+                                class="track-btn">
+
+                                <i class="fa-solid fa-eye"></i>
+                                View Order Details
+
+                            </a>
+                        </div>
+                    </div>
+
+                <% }) %>
+
+                <% if (totalPages > 1) { %>
+
+                    <div class="pagination">
+
+                        <% if (currentPage > 1) { %>
+
+                            <a
+                                href="/user/orders?page=<%= currentPage - 1 %>&search=<%= encodeURIComponent(search || '') %>"
+                                class="pagination-btn">
+                                Previous
+                            </a>
+
+                        <% } %>
+
+
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+
+                            <a
+                                href="/user/orders?page=<%= i %>&search=<%= encodeURIComponent(search || '') %>"
+                                class="pagination-number <%= currentPage === i ? 'active' : '' %>">
+
+                                <%= i %>
+
+                            </a>
+
+                        <% } %>
+
+
+                        <% if (currentPage < totalPages) { %>
+
+                            <a
+                                href="/user/orders?page=<%= currentPage + 1 %>&search=<%= encodeURIComponent(search || '') %>"
+                                class="pagination-btn">
+
+                                Next
+
+                            </a>
+
+                        <% } %>
+
+                    </div>
+
+                <% } %>
+
+            <% } else { %>
+                <div class="no-orders">
+                    <p>No orders found.</p>
+                </div>
+            <% } %>
+
+        </section>
+  
+    </div>
+
+    <!-- Dark Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-col about">
+                <h3 class="footer-logo">CARRY NEST</h3>
+                <p>Lorem ipsum dolor sit amet consectetur. Purus in etiam risus ut sem eu urna. Massa feugiat consequat nec libero.</p>
+                <p>Lorem ipsum dolor sit</p>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Service</h3>
+                <ul>
+                    <li><a href="#">Laptop Bags</a></li>
+                    <li><a href="#">Trekking Bags</a></li>
+                    <li><a href="#">School Bags</a></li>
+                    <li><a href="#">Office Bags</a></li>
+                    <li><a href="#">Travelling Bags</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">Service</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Our Team</a></li>
+                    <li><a href="#">Portfolio</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col contact-form">
+                <h3>Contact Us</h3>
+                <p>Your Email/Phone no.</p>
+                <div class="subscribe-box">
+                    <input type="text" placeholder="Enter Your Email or Phone no.">
+                    <button class="send-btn">Send</button>
+                </div>
+                <div class="social-icons">
+                    <div class="social-icon fb"></div>
+                    <div class="social-icon ig"></div>
+                    <div class="social-icon wa"></div>
+                    <div class="social-icon li"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>Copyright Tanah Air Studio</p>
+            <div class="info-links">
+                <span>📍 8819 Ohio St. South Gate, CA 90280</span>
+                <span>✉️ CrossLine@hello.com</span>
+                <span>📞 +91 386-688-3295</span>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

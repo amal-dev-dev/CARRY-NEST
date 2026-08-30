@@ -18,6 +18,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body>
@@ -119,7 +121,7 @@
 
                     <div class="submenu">
 
-                        <a href="#">All Orders</a>
+                        <a href="/admin/orders">All Orders</a>
 
                         <a href="#">Pending</a>
 
@@ -215,7 +217,7 @@
 
         <div class="logout-section">
 
-            <a href="#"
+            <a href="/admin/logout"
             class="logout-btn">
 
                 <i class="ri-logout-box-r-line"></i>
@@ -443,7 +445,7 @@
                                 </td>
 
                                 <td>
-                                    <%= product.variants[0]?.stock || 0 %>
+                                    <%= product.totalStock %>
                                 </td>
 
                                 <td>
@@ -494,35 +496,54 @@
 
                                     <td class="action-buttons">
 
-                                        <a href="/admin/edit-product/<%= product._id %>"
-                                        class="edit-btn">
-
+                                        <a href="/admin/edit-product/<%= product._id %>" class="edit-btn">
                                             <i class="ri-pencil-line"></i>
-
                                         </a>
 
                                         <% if(product.isBlocked){ %>
 
-                                        <form action="/admin/products/<%= product._id %>/unblock?_method=PATCH"
-                                            method="POST"
-                                            style="display:inline;">
-                                            <button type="submit" style="border:none;background:none;cursor:pointer;">
-                                                <i class="ri-eye-line"></i>
-                                            </button>
-                                        </form>
+                                            <!-- Product is blocked -> Show Unblock -->
+
+                                            <form id="unblockForm-<%= product._id %>"
+                                                action="/admin/products/<%= product._id %>/unblock?_method=PATCH"
+                                                method="POST"
+                                                style="display:inline;">
+
+                                                <button
+                                                    type="button"
+                                                    onclick="confirmUnblock('<%= product._id %>', '<%= product.productName %>')"
+                                                    style="border:none;background:none;cursor:pointer;">
+
+                                                    <i class="ri-eye-line"></i>
+
+                                                </button>
+
+                                            </form>
 
                                         <% } else { %>
 
-                                        <form action="/admin/products/<%= product._id %>/block?_method=PATCH"
-                                            method="POST"
-                                            style="display:inline;">
-                                            <button type="submit" style="border:none;background:none;cursor:pointer;">
-                                                <i class="ri-eye-off-line"></i>
-                                            </button>
-                                        </form>
+                                            <!-- Product is visible -> Show Block -->
+
+                                            <form id="blockForm-<%= product._id %>"
+                                                action="/admin/products/<%= product._id %>/block?_method=PATCH"
+                                                method="POST"
+                                                style="display:inline;">
+
+                                                <button
+                                                    type="button"
+                                                    onclick="confirmBlock('<%= product._id %>', '<%= product.productName %>')"
+                                                    style="border:none;background:none;cursor:pointer;">
+
+                                                    <i class="ri-eye-off-line"></i>
+
+                                                </button>
+
+                                            </form>
 
                                         <% } %>
+
                                     </td>
+                                    
                             </tr>
 
                             <% }) %>
@@ -579,8 +600,7 @@
 
 <script>
 
-const dropdowns =
-document.querySelectorAll(".dropdown-toggle");
+const dropdowns = document.querySelectorAll(".dropdown-toggle");
 
 dropdowns.forEach((dropdown)=>{
 
@@ -595,7 +615,46 @@ dropdowns.forEach((dropdown)=>{
 
 });
 
+function confirmBlock(id, productName) {
+
+    Swal.fire({
+        title: "Block Product?",
+        text: `Are you sure you want to block "${productName}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, Block",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+            document.getElementById(`blockForm-${id}`).submit();
+        }
+
+    });
+
+}
+
+function confirmUnblock(id, productName) {
+
+    Swal.fire({
+        title: "Unblock Product?",
+        text: `Are you sure you want to unblock "${productName}"?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, Unblock",
+        cancelButtonText: "Cancel"
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+            document.getElementById(`unblockForm-${id}`).submit();
+        }
+
+    });
+
+}
+
 </script>
+
 
 </body>
 </html>

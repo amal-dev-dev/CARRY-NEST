@@ -10,6 +10,7 @@ dotenv.config();
 
 const login = async (req, res) => {
     try {
+
         const email = req.body.email.trim().toLowerCase();
         const password = req.body.password;
 
@@ -30,7 +31,6 @@ const login = async (req, res) => {
         }   
 
         req.session.user = user._id;
-        console.log("Login Session:", req.session.user);
 
         res.redirect('/user/home');
 
@@ -70,14 +70,20 @@ const loadHome = async (req, res) => {
 
 const logout = (req, res) => {
 
-    req.session.destroy((err) => {
-        if(err){
+    delete req.session.user;
+
+    req.logout(function (err) {
+
+        if (err) {
             console.log(err);
         }
 
-        res.clearCookie("connect.sid");
-        return res.redirect("/user/login");
+        req.session.save(() => {
+            res.redirect("/user/login");
+        });
+
     });
+
 };
 
 const loadSignup = (req, res) => {

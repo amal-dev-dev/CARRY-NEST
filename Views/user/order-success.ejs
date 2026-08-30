@@ -54,7 +54,7 @@
         <div class="order-info">
             <div class="info-row">
                 <span>Order Number</span>
-                <strong>#<%= order._id.toString().slice(-8).toUpperCase() %></strong>
+                <strong>#<%= order.orderId || order._id.toString().slice(-8).toUpperCase() %></strong>
             </div>
 
             <div class="info-row">

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Address - CARRY NEST</title>
+    <link rel="stylesheet" href="/Styles/user/add-address.css">
+</head>
+<body>
+
+    <div class="address-container">
+        <header class="address-header">
+            <div class="header-title">
+                <h1>Add New Address</h1>
+            </div>
+            <p>Please provide accurate delivery details for your order.</p>
+        </header>
+
+            <form
+    class="address-form"
+    action="/user/checkout/add-address"
+    method="POST"
+>
+
+            <div class="section-label">
+                Contact Details
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Full Name <span class="required">*</span></label>
+
+                    <input
+                        type="text"
+                        name="fullName"
+                        placeholder="<%= user ? user.name : '' %>"
+                        
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Phone Number <span class="required">*</span></label>
+
+                    <input
+                        type="tel"
+                        name="mobile"
+                        placeholder="<%= user ? user.phone : '' %>"
+                        
+                    >
+                </div>
+
+
+                <div class="form-group full-width">
+                    <label>Address</label>
+
+                    <input
+                        type="text"
+                        name="address"
+                        placeholder=""
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Pincode <span class="required">*</span></label>
+
+                    <input
+                        type="text"
+                        name="pincode"
+                        placeholder=""
+                        
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>City <span class="required">*</span></label>
+
+                    <input
+                        type="text"
+                        name="city"
+                        placeholder=""
+                        
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>State <span class="required">*</span></label>
+
+                    <input
+                        type="text"
+                        name="state"
+                        placeholder=""
+                        
+                    >
+                </div>
+
+
+                <div class="form-group full-width">
+                    <label>Detailed Address <span class="required">*</span></label>
+
+                    <textarea
+                        name="detailAddress"
+                        placeholder="House No., Building Name, Street, Area"
+                        rows="4"
+                        
+                    ></textarea>
+                </div>
+
+
+                <div class="form-group full-width">
+                    <label>Landmark <span class="optional">(Optional)</span></label>
+
+                    <input
+                        type="text"
+                        name="landmark"
+                        placeholder="Near City Park"
+                    >
+                </div>
+
+            </div>
+
+
+            <div class="address-type-section">
+
+                <label>Address Type</label>
+
+                <div class="type-options">
+
+                    <label class="type-card selected">
+
+                        <input
+                            type="radio"
+                            name="type"
+                            value="Home"
+                            checked
+                        >
+
+                        <span class="type-text">Home</span>
+
+                    </label>
+
+
+                    <label class="type-card">
+
+                        <input
+                            type="radio"
+                            name="type"
+                            value="Office"
+                        >
+
+                        <span class="type-text">Office</span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <button type="submit" class="save-btn">
+                Save Address
+            </button>
+
+        </form>
+    </div>
+
+</body>
+</html>

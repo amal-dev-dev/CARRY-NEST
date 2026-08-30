@@ -26,12 +26,22 @@
 
                 <% if(user){ %>
 
-                    <a href="/user/cart" style="color:black;">
+                    <a href="/user/cart" class="cart-link">
                         <i class="fa-solid fa-cart-shopping"></i>
+
+                        <% if (cartCount > 0) { %>
+                            <span class="cart-badge"><%= cartCount %></span>
+                        <% } %>
                     </a>
 
-                    <a href="/user/wishlist" style="color:black;">
+                    <a href="/user/wishlist" class="wishlist-link">
                         <i class="fa-regular fa-heart"></i>
+
+                        <% if (wishlistCount > 0) { %>
+                            <span class="wishlist-badge">
+                                <%= wishlistCount %>
+                            </span>
+                        <% } %>
                     </a>
 
                     <a href="/user/profile" style="color:black;">
@@ -129,20 +139,16 @@
             <div class="price-box">
 
                 <span class="sale-price" id="price">
-                    ₹<%= product.variants[0]?.salePrice %>
+                    ₹<%= defaultVariant ? defaultVariant.salePrice : 0 %>
                 </span>
 
-                <% if(product.variants[0]?.regularPrice){ %>
+                <span class="regular-price" id="regularPrice">
+                    <%= defaultVariant && defaultVariant.regularPrice ? `₹${defaultVariant.regularPrice}` : '' %>
+                </span>
 
-                    <span class="regular-price" id="regularPrice">
-                        ₹<%= product.variants[0]?.regularPrice %>
-                    </span>
-
-                <% } %>
-
-                    <span class="discount">
-                        <%= discountPercentage %>% OFF
-                    </span>
+                <span class="discount" id="discountText">
+                    <%= discountPercentage %>% OFF
+                </span>
 
             </div>
 
@@ -172,90 +178,86 @@
 
                 </div>
 
-                    <p>
-                        <strong>Stock:</strong>
-                        <span id="stock">
-                            <%= product.variants[0]?.stock %>
-                        </span>
-                    </p>
+                <p>
+                    <strong>Stock:</strong>
+                    <span id="stock">
+                        <%= defaultVariant ? defaultVariant.stock : 0 %>
+                    </span>
+                </p>
 
             </div>
 
             <div class="variant-section">
+                <form id="addToCartForm" action="/user/add-to-cart" method="POST">
 
-            <form action="/user/add-to-cart" method="POST">
+                    <h4>SIZE CONFIGURATION</h4>
 
-                <h4>Variants</h4>
+                    <div class="variant-buttons">
+                        <% if (filteredVariants.length > 0) { %>
+                        <% filteredVariants.forEach((variant, index) => { %>
+                            <label class="variant-option">
+                                <input
+                                    type="radio"
+                                    name="variantId"
+                                    value="<%= variant._id %>"
+                                    <%= index === 0 ? "checked" : "" %>
+                                    hidden
+                                >
+                                <span class="variant-btn"><%= variant.size %></span>
+                            </label>
+                        <% }) %>
+                        <% } else { %>
+                            <p>No variants available</p>
+                        <% } %>
+                    </div>
 
-                <% product.variants.forEach((variant) => { %>
+                    <div class="quantity-box">
+                        <button type="button">-</button>
 
-                    <% if(variant.stock > 0){ %>
+                        <input
+                            type="number"
+                            name="quantity"
+                            value="1"
+                            min="1"
+                        >
 
-                        <label>
+                        <button type="button">+</button>
+                    </div>
 
-                            <input
-                                type="radio"
-                                name="variantId"
-                                value="<%= variant._id %>"
-                                required
-                            >
+                    <div class="action-buttons">
 
-                            <%= variant.size %>
+                        <% if (defaultVariant && defaultVariant.stock > 0) { %>
+                            <button type="submit" id="addToCartBtn" class="add-cart-btn">
+                                Add To Cart
+                            </button>
+                        <% } else { %>
+                            <button type="button" id="addToCartBtn" class="add-cart-btn" disabled>
+                                Out Of Stock
+                            </button>
+                        <% } %>
 
-                        </label>
+                        <% if (!wishlistExists) { %>
+                            <button 
+                                type="button" 
+                                id="wishlistBtn" 
+                                class="wishlist-btn"
+                                data-product-id="<%= product._id %>">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        <% } else { %>
+                            <button 
+                                type="button" 
+                                id="wishlistBtn" 
+                                class="wishlist-btn active-wishlist"
+                                data-product-id="<%= product._id %>">
+                                <i class="fa-solid fa-heart"></i>
+                            </button>
+                        <% } %>
 
-                    <% } %>
+                    </div>
 
-                <% }) %>
-
-                <div class="quantity-box">
-
-                    <button type="button">-</button>
-
-                    <input
-                        type="number"
-                        name="quantity"
-                        value="1"
-                        min="1"
-                    >
-
-                    <button type="button">+</button>
-
-                </div>
-
-                <div class="action-buttons">
-
-                    <% if(product.variants.some(v => v.stock > 0)){ %>
-
-                        <button
-                            type="submit"
-                            class="add-cart-btn">
-
-                            Add To Cart
-
-                        </button>
-
-                    <% } else { %>
-
-                        <button
-                            type="button"
-                            class="add-cart-btn"
-                            disabled>
-
-                            Out Of Stock
-
-                        </button>
-
-                    <% } %>
-
-                    <button type="button" id="wishlistBtn" class="wishlist-btn">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-
-                </div>
+                </form>
                 
-            </form>
-
             </div>
 
         </div>
@@ -419,83 +421,229 @@
 
 </footer>
 
-<script>
+<script id="variantsData" type="application/json">
+    <%- JSON.stringify(filteredVariants) %>
+</script>
 
+<script>
 document.querySelectorAll(".color-circle").forEach(circle => {
     circle.style.backgroundColor = circle.dataset.color;
 });
 
-function changeImage(img){
-
-    document
-    .getElementById("mainProductImage")
-    .src = img.src;
-
+function changeImage(img) {
+    document.getElementById("mainProductImage").src = img.src;
 }
 
-
 const variants = JSON.parse(
-    '<%- JSON.stringify(product.variants) %>'
+    document.getElementById("variantsData").textContent
 );
 
-const radios = document.querySelectorAll(
-    'input[name="variantId"]'
-);
+const radios = document.querySelectorAll('input[name="variantId"]');
+const priceEl = document.getElementById("price");
+const regularPriceEl = document.getElementById("regularPrice");
+const stockEl = document.getElementById("stock");
+const discountEl = document.getElementById("discountText");
 
-const price = document.getElementById("price");
+function updateVariantDetails(variantId) {
+    const selected = variants.find(v => String(v._id) === String(variantId));
 
-const stock = document.getElementById("stock");
+    if (!selected) return;
+
+    priceEl.textContent = `₹${selected.salePrice}`;
+    stockEl.textContent = selected.stock;
+
+    if (selected.regularPrice) {
+        regularPriceEl.textContent = `₹${selected.regularPrice}`;
+
+        const discount = Math.round(
+            ((selected.regularPrice - selected.salePrice) / selected.regularPrice) * 100
+        );
+
+        discountEl.textContent = `${discount}% OFF`;
+    } else {
+        regularPriceEl.textContent = "";
+        discountEl.textContent = "";
+    }
+}
 
 radios.forEach(radio => {
+    radio.addEventListener("change", function () {
+        updateVariantDetails(this.value);
+    });
+});
 
-    radio.addEventListener("change", () => {
+const checkedVariant = document.querySelector('input[name="variantId"]:checked');
+if (checkedVariant) {
+    updateVariantDetails(checkedVariant.value);
+}
 
-        const selected = variants[radio.value];
+document.addEventListener("DOMContentLoaded", () => {
 
-        price.textContent = `₹${selected.salePrice}`;
+    const wishlistBtn = document.getElementById("wishlistBtn");
 
-        regularPrice.textContent = `₹${selected.regularPrice}`;
+    if (!wishlistBtn) return;
 
-        stock.textContent = selected.stock;
+    wishlistBtn.addEventListener("click", async function () {
+
+        const productId = this.dataset.productId;
+
+        // Get currently selected variant
+        const selectedVariant = document.querySelector(
+            'input[name="variantId"]:checked'
+        );
+
+        if (!selectedVariant) {
+
+            return Swal.fire({
+                icon: "warning",
+                title: "Select a size",
+                text: "Please select a size before adding to wishlist"
+            });
+
+        }
+
+        const variantId = selectedVariant.value;
+
+        try {
+
+            const response = await fetch(
+                `/user/wishlist/toggle/${productId}`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        variantId: variantId
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!data.success) {
+
+                return Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: data.message
+                });
+
+            }
+
+            if (data.action === "added") {
+
+                this.classList.add("active-wishlist");
+
+                this.innerHTML =
+                    `<i class="fa-solid fa-heart"></i>`;
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Added",
+                    text: data.message,
+                    timer: 1200,
+                    showConfirmButton: false
+                });
+
+            } else {
+
+                this.classList.remove("active-wishlist");
+
+                this.innerHTML =
+                    `<i class="fa-regular fa-heart"></i>`;
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Removed",
+                    text: data.message,
+                    timer: 1200,
+                    showConfirmButton: false
+                });
+
+            }
+
+        } catch (err) {
+
+            console.log("WISHLIST ERROR:", err);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Something went wrong"
+            });
+
+        }
 
     });
 
 });
 
-document.getElementById("wishlistBtn").addEventListener("click", async () => {
+const addToCartForm = document.getElementById("addToCartForm");
 
-    const productId = "<%= product._id %>";
+if (addToCartForm) {
 
-    console.log(productId);
+    addToCartForm.addEventListener("submit", async function (e) {
 
-    const response = await fetch(`/user/wishlist/add/${productId}`, {
-        method: "POST"
+        e.preventDefault();
+
+        const variantId = document.querySelector('input[name="variantId"]:checked').value;
+        const quantity = document.querySelector('input[name="quantity"]').value;
+
+        try {
+
+            const response = await fetch(this.action, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    variantId,
+                    quantity
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+
+                await Swal.fire({
+                    icon: "success",
+                    title: "Added!",
+                    text: data.message,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                window.location.href = "/user/cart";
+
+            } else {
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Oops!",
+                    text: data.message
+                });
+
+            }
+
+        } catch (err) {
+
+            console.log(err);
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Something went wrong."
+            });
+
+        }
+
     });
 
-    const data = await response.json();
-
-    if(data.success){
-
-        Swal.fire({
-            icon: "success",
-            title: "Added!",
-            text: data.message,
-            timer: 1500,
-            showConfirmButton: false
-        });
-
-    }else{
-
-        Swal.fire({
-            icon: "info",
-            title: "Wishlist",
-            text: data.message
-        });
-
-    }
-
-});
-
+}
 </script>
 
 </body>

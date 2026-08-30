@@ -3,12 +3,15 @@ const router = express.Router();
 import userAuth from '../../Controller/user/auth.js';
 import profileController from '../../Controller/user/profile.js';
 import addressController from '../../Controller/user/address.js';
+import changePasswordController from '../../Controller/user/change-password.js';
 import { requireAuth, isLoggedIn } from '../../Middleware/userAuth.js';
 import upload from '../../Middleware/multer.js';
 import productController from '../../Controller/user/products.js';
 import cartController from '../../Controller/user/cart.js';
 import wishlistController from '../../Controller/user/wishlist.js';
 import checkoutController from '../../Controller/user/checkout.js';
+import orderController from '../../Controller/user/order.js';
+import invoiceController from "../../Controller/user/invoiceController.js";
 
 
 router.get('/login', isLoggedIn, userAuth.loadLogin);
@@ -59,11 +62,15 @@ router.post("/address/edit/:id", requireAuth, addressController.updateAddress);
 router.get("/address/delete/:id", requireAuth, addressController.deleteAddress);
 router.post("/address/delete/:id", requireAuth, addressController.deleteAddress);
 
+// CAHNGE PASSWORD
+router.get("/change-password", requireAuth, changePasswordController.loadChangePassword);
+router.post("/change-password", requireAuth, changePasswordController.changePassword);
+
 //PRODUCT PAGE
 router.get('/products', productController.loadProducts);
 
 // PRODUCT DETAILS
-router.get("/product-details/:id", productController.loadProductDetails);
+router.get("/product-details/:id", requireAuth, productController.loadProductDetails);
 
 //CART
 router.post("/add-to-cart", requireAuth, cartController.addToCart);
@@ -74,15 +81,29 @@ router.patch("/cart/remove/:id",requireAuth, cartController.removeCartItem);
 
 //WISHLIST
 router.get('/wishlist', requireAuth, wishlistController.loadWishlist);
-router.post('/wishlist/add/:id',requireAuth, wishlistController.addToWishlist);
+router.post('/wishlist/toggle/:id',requireAuth, wishlistController.toggleWishlist);
 router.patch("/wishlist/remove/:id", requireAuth, wishlistController.removeWishlist);
 router.post( "/wishlist/move-all", requireAuth, wishlistController.moveAllToCart);
 
 //CHECKOUT
 router.get('/checkout', requireAuth, checkoutController.loadCheckout);
+router.get("/checkout/add-address", requireAuth, checkoutController.loadAddAddressFromCheckout);
+router.post("/checkout/add-address", requireAuth, checkoutController.addAddressFromCheckout);
+
 
 router.post("/placeOrder", requireAuth, checkoutController.orderPlaced);
 
+//ORDER
+router.get('/orders', requireAuth, orderController.loadOrder);
+router.get('/order-details/:id',requireAuth, orderController.loadOrderDetails);
+
+router.post("/orders/:orderId/cancel", requireAuth, orderController.cancelOrder);
+router.post("/orders/:orderId/products/:productId/cancel", requireAuth, orderController.cancelSingleProduct);
+
+router.post("/orders/:orderId/return", requireAuth, orderController.returnOrder);
+router.post("/orders/:orderId/products/:productId/return", requireAuth, orderController.returnSingleProduct);
+
+router.get("/orders/:orderId/invoice", requireAuth, invoiceController.downloadInvoice);
 
 
 

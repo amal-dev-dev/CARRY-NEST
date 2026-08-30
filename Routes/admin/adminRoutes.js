@@ -3,7 +3,8 @@ import adminController from "../../Controller/admin/authController.js";
 import categoryController from "../../Controller/admin/categoryController.js"
 import productController from "../../Controller/admin/productController.js";
 import { adminAuth, adminLoggedIn }  from "../../Middleware/adminAuth.js";
-import upload from "../../Middleware/multer.js"
+import upload from "../../Middleware/multer.js";
+import orderController from "../../Controller/admin/orderController.js";
 
 const router = express.Router();
 
@@ -33,5 +34,16 @@ router.get("/edit-product/:id", adminAuth, productController.loadEditProduct);
 router.patch("/products/:id", adminAuth, upload.array("images", 4), productController.editProduct);
 router.patch("/products/:id/block", adminAuth, productController.blockProduct);
 router.patch("/products/:id/unblock", adminAuth, productController.unblockProduct);
+
+router.get("/orders", adminAuth, orderController.loadOrders);
+router.get("/order-details/:id", adminAuth, orderController.loadOrderDetails);
+router.post("/order/:orderId/product/:itemId", adminAuth, orderController.updateProductStatus);
+
+// Return Approval
+router.get("/return-requests", adminAuth, orderController.loadReturnRequests);
+router.get("/return-request-details/:orderId", adminAuth, orderController.loadReturnRequestDetails);
+router.post("/return-requests/:orderId/approve", adminAuth, orderController.approveReturn);     
+router.post("/return-requests/:orderId/reject", adminAuth, orderController.rejectReturn);
+
 
 export default router;

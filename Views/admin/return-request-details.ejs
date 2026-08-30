@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return Request Details - Carry Nest</title>
+
+    <link rel="stylesheet" href="/Styles/admin/return-request-details.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <!-- =========================
+            SIDEBAR
+    ========================= -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- Logo -->
+
+            <div class="logo-section">
+
+                <div class="logo-box">
+                    C
+                </div>
+
+                <h2>CARRY NEST</h2>
+
+            </div>
+
+            <!-- Menu -->
+
+            <div class="menu-wrapper">
+
+                <a href="/admin/dashboard" class="menu-item">
+
+                    <span class="menu-left">
+                        <i class="ri-dashboard-line"></i>
+                        Dashboard
+                    </span>
+
+                </a>
+
+                <!-- Products -->
+
+                <div class="menu-dropdown">
+
+                    <div class="menu-item dropdown-toggle">
+
+                        <span class="menu-left">
+                            <i class="ri-shopping-bag-line"></i>
+                            Products
+                        </span>
+
+                        <i class="ri-arrow-down-s-line"></i>
+
+                    </div>
+
+                    <div class="submenu">
+
+                        <a href="/admin/products">All Products</a>
+
+                        <a href="/admin/add-product">Add Product</a>
+
+                        <a href="/admin/category">Categories</a>
+
+                        <a href="#">Brands</a>
+
+                    </div>
+
+                </div>
+
+                <!-- Orders -->
+
+                <div class="menu-dropdown">
+
+                    <div class="menu-item dropdown-toggle">
+
+                        <span class="menu-left">
+                            <i class="ri-shopping-cart-line"></i>
+                            Orders
+                        </span>
+
+                        <i class="ri-arrow-down-s-line"></i>
+
+                    </div>
+
+                    <div class="submenu">
+
+                        <a href="/admin/orders">All Orders</a>
+
+                        <a href="/admin/orders?status=pending">Pending</a>
+
+                        <a href="/admin/orders?status=shipped">Shipped</a>
+
+                        <a href="/admin/orders?status=out_for_delivery">
+                            Out For Delivery
+                        </a>
+
+                        <a href="/admin/orders?status=delivered">
+                            Delivered
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- Returns -->
+
+                <div class="menu-dropdown">
+
+                    <div class="menu-item active dropdown-toggle">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line"></i>
+
+                    </div>
+
+                    <div class="submenu show">
+
+                        <a href="/admin/return-requests"
+                           class="active-submenu">
+
+                            Requests
+
+                        </a>
+
+                        <a href="#">
+                            Refunds
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <a href="/admin/customers" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-settings-3-line"></i>
+
+                        Settings
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="logout-section">
+
+            <a href="/admin/logout" class="logout-btn">
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- =========================
+            MAIN CONTENT
+    ========================= -->
+
+    <main class="main-content">
+
+        <!-- Topbar -->
+
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <button class="menu-toggle" id="menuToggle">
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+                <p class="breadcrumb">
+
+                    Admin
+
+                    <span>/</span>
+
+                    Returns
+
+                    <span>/</span>
+
+                    Request Details
+
+                </p>
+
+            </div>
+
+            <div class="topbar-right">
+
+                <button class="icon-btn">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                </button>
+
+                <div class="admin-profile">
+
+                    <div class="avatar">
+
+                        AD
+
+                    </div>
+
+                    <div class="admin-info">
+
+                        <h4>Admin User</h4>
+
+                        <p>Super Admin</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- =========================
+                PAGE HEADER
+        ========================= -->
+
+        <section class="page-header">
+
+            <div class="header-left">
+
+                <a href="/admin/return-requests" class="back-btn">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                </a>
+
+                <div>
+
+                    <h1>
+
+                        Return Request
+
+                        <span>#<%= order.orderId %></span>
+
+                    </h1>
+
+                    <p>
+
+                        Requested on
+
+                        <%= new Date(order.createdAt).toLocaleDateString("en-GB",{
+                            day:"2-digit",
+                            month:"short",
+                            year:"numeric"
+                        }) %>
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="header-right">
+
+                <span class="status-badge <%= returnProduct.status %>">
+
+                    <%= returnProduct.status.replaceAll("_"," ") %>
+
+                </span>
+
+            </div>
+
+        </section>
+
+        <!-- =========================
+                DETAILS GRID
+        ========================= -->
+
+        <section class="details-grid">
+
+            <!-- LEFT SECTION -->
+
+            <div class="left-section">
+
+                <!-- CUSTOMER DETAILS -->
+
+                <div class="details-card">
+
+                    <div class="card-title">
+                        <i class="fa-solid fa-user"></i>
+                        <h3>Customer Details</h3>
+                    </div>
+
+                    <div class="info-group">
+
+                        <div class="info-row">
+                            <span>Name</span>
+                            <strong><%= order.userId?.name || "-" %></strong>
+                        </div>
+
+                        <div class="info-row">
+                            <span>Email</span>
+                            <strong><%= order.userId?.email || "-" %></strong>
+                        </div>
+
+                        <div class="info-row">
+                            <span>Phone</span>
+                            <strong><%= order.deliveryAddress?.phone || "-" %></strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- SHIPPING ADDRESS -->
+
+                <div class="details-card">
+
+                    <div class="card-title">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <h3>Shipping Address</h3>
+                    </div>
+
+                    <div class="address-box">
+
+                        <h4><%= order.deliveryAddress?.name || "-" %></h4>
+
+                        <p>
+                            <%= order.deliveryAddress?.addressLine1 || "" %>
+
+                            <% if(order.deliveryAddress?.addressLine2){ %>
+                                , <%= order.deliveryAddress.addressLine2 %>
+                            <% } %>
+
+                        </p>
+
+                        <p>
+                            <%= order.deliveryAddress?.city || "" %>,
+                            <%= order.deliveryAddress?.state || "" %>
+                        </p>
+
+                        <p>
+                            PIN : <%= order.deliveryAddress?.pincode || "" %>
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- PAYMENT DETAILS -->
+
+                <div class="details-card">
+
+                    <div class="card-title">
+                        <i class="fa-solid fa-credit-card"></i>
+                        <h3>Payment Details</h3>
+                    </div>
+
+                    <div class="info-group">
+
+                        <div class="info-row">
+                            <span>Payment Method</span>
+                            <strong><%= order.paymentMethod %></strong>
+                        </div>
+
+                        <div class="info-row">
+                            <span>Payment Status</span>
+
+                            <span class="payment-status <%= order.paymentStatus %>">
+                                <%= order.paymentStatus %>
+                            </span>
+
+                        </div>
+
+                        <div class="info-row">
+                            <span>Total Paid</span>
+                            <strong>₹<%= order.totalAmount %></strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                </div>
+
+                <!-- RIGHT SECTION -->
+
+                <div class="right-section">
+
+                    <!-- RETURN INFORMATION -->
+
+                    <div class="details-card">
+
+                        <h2>Return Information</h2>
+
+                        <div class="info-grid">
+
+                            <div class="info-item">
+                                <span>Return ID</span>
+                                <strong><%= order.orderId %></strong>
+                            </div>
+
+                            <div class="info-item">
+                                <span>Request Date</span>
+                                <strong>
+                                    <%= new Date(order.createdAt).toLocaleDateString("en-IN") %>
+                                </strong>
+                            </div>
+
+                            <div class="info-item">
+                                <span>Status</span>
+
+                                <span class="status-badge <%= returnProduct.status %>">
+                                    <%= returnProduct.status.replaceAll("_"," ") %>
+                                </span>
+
+                            </div>
+
+                            <div class="info-item">
+                                <span>Refund Amount</span>
+                                <strong>
+                                    ₹ <%= returnProduct.price * returnProduct.quantity %>
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <div class="reason-box">
+
+                            <h3>Reason for Return</h3>
+
+                            <p>
+                                <%= returnProduct.returnReason || "No reason provided" %>
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <% if(returnProduct.status === "return_requested"){ %>
+
+                    <div class="details-card action-card">
+
+                        <h2>Approve / Reject Request</h2>
+
+                        <div class="action-buttons">
+
+                            <form
+                                action="/admin/return-requests/<%= order._id %>/approve"
+                                method="POST"
+                                class="approveForm">
+
+                                <button type="submit" class="approve-btn">
+                                    <i class="fa-solid fa-check"></i>
+                                    Approve Return
+                                </button>
+
+                            </form>
+
+                            <form
+                                action="/admin/return-requests/<%= order._id %>/reject"
+                                method="POST"
+                                class="rejectForm">
+
+                                <button type="submit" class="reject-btn">
+                                    <i class="fa-solid fa-xmark"></i>
+                                    Reject Return
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                    <% } else { %>
+
+                    <div class="details-card">
+
+                        <div class="decision-box">
+
+                            <% if(returnProduct.status === "returned"){ %>
+
+                                <i class="fa-solid fa-circle-check success-icon"></i>
+
+                                <h3>Return Approved</h3>
+
+                                <p>
+                                    This return request has been approved successfully.
+                                </p>
+
+                            <% } else { %>
+
+                                <i class="fa-solid fa-circle-xmark reject-icon"></i>
+
+                                <h3>Return Rejected</h3>
+
+                                <p>
+                                    This return request has been rejected.
+                                </p>
+
+                            <% } %>
+
+                        </div>
+
+                    </div>
+
+                    <% } %>
+
+                    </div>
+            </section>
+
+        </main>
+
+    </div>    
+
+<!-- SweetAlert -->
+ 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+    const dropdowns = document.querySelectorAll(".dropdown-toggle"); 
+    dropdowns.forEach(dropdown => { dropdown.addEventListener("click", () => {
+         dropdown.nextElementSibling.classList.toggle("show"); 
+        }); 
+    }); 
+    const menuToggle = document.getElementById("menuToggle"); 
+    const sidebar = document.querySelector(".sidebar"); 
+
+    menuToggle.addEventListener("click", () => {
+         sidebar.classList.toggle("show");
+    }); 
+
+    // ======================  
+    // APPROVE SWEET ALERT 
+    //  ====================== 
+    
+    document.querySelectorAll(".approveForm").forEach(form => { 
+        form.addEventListener("submit", function(e){ 
+
+            e.preventDefault(); 
+
+            Swal.fire({ 
+                title: "Approve Return?", 
+                text: "Are you sure you want to approve this return request?",
+                icon: "question", 
+                showCancelButton: true, 
+                confirmButtonColor: "#16a34a", 
+                cancelButtonColor: "#6b7280", 
+                confirmButtonText: "Yes, Approve" 
+            }).then((result)=>{ 
+
+                if(result.isConfirmed){
+                    form.submit(); 
+                } 
+            }); 
+        }); 
+    }); 
+    
+    // ====================== 
+    //  REJECT SWEET ALERT 
+    // ====================== 
+    
+    document.querySelectorAll(".rejectForm").forEach(form => { 
+        form.addEventListener("submit", function(e){ 
+
+            e.preventDefault(); 
+            Swal.fire({ 
+                title: "Reject Return?", 
+                text: "Are you sure you want to reject this return request?", 
+                icon: "warning", 
+                showCancelButton: true, 
+                confirmButtonColor: "#dc2626", 
+                cancelButtonColor: "#6b7280", 
+                confirmButtonText: "Yes, Reject" 
+            }).then((result)=>{
+
+                if(result.isConfirmed){ form.submit(); 
+
+            } 
+        }); 
+    }); 
+}); 
+
+</script> 
+
+</body> 
+</html>
+
+
+
+                

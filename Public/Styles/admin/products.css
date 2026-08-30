@@ -19,17 +19,19 @@ body{
 
 /* SIDEBAR */
 
-.sidebar {
-    width: 260px;
-    background: #050b16;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.sidebar{
+    width:260px;
+    background:#050b16;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:20px;
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
+    transition: 0.3s ease;
 }
 
 .logo-section{

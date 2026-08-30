@@ -19,12 +19,22 @@
 
                 <% if(user){ %>
 
-                    <a href="/user/cart" style="color:black;">
+                    <a href="/user/cart" class="cart-link">
                         <i class="fa-solid fa-cart-shopping"></i>
+
+                        <% if (cartCount > 0) { %>
+                            <span class="cart-badge"><%= cartCount %></span>
+                        <% } %>
                     </a>
 
-                    <a href="/user/wishlist" style="color:black;">
+                    <a href="/user/wishlist" class="wishlist-link">
                         <i class="fa-regular fa-heart"></i>
+
+                        <% if (wishlistCount > 0) { %>
+                            <span class="wishlist-badge">
+                                <%= wishlistCount %>
+                            </span>
+                        <% } %>
                     </a>
 
                     <a href="/user/profile" style="color:black;">

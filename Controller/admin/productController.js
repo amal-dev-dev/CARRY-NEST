@@ -1,55 +1,102 @@
 import Product from "../../Model/productModel.js";
 import Category from "../../Model/categoryModel.js";
 
-const loadProducts = async (req ,res) => {
+const loadProducts = async (req, res) => {
 
     try {
 
         const search = req.query.search || "";
         const page = parseInt(req.query.page) || 1;
-        const limit = 5;
+        const limit = 4;
         const skip = (page - 1) * limit;
-        const totalProductsCount = await Product.countDocuments();
 
         const searchQuery = {
-
-            productName:{
-                $regex:search,
-                $options:"i"
+            productName: {
+                $regex: search,
+                $options: "i"
             }
-
         };
 
-        const products = await Product.find(searchQuery)
-        .populate("category")
-        .sort({createdAt:-1})
-        .skip(skip)
-        .limit(limit);
+        // Total products without search
+        const totalProductsCount = await Product.countDocuments();
 
+        // Get products
+        const products = await Product.find(searchQuery)
+            .populate("category")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        // Calculate total stock for each product
+        const productsWithStock = products.map(product => {
+
+            const totalStock = product.variants.reduce(
+                (total, variant) => {
+                    return total + (Number(variant.stock) || 0);
+                },
+                0
+            );
+
+            return {
+                ...product.toObject(),
+                totalStock
+            };
+
+        });
+
+        // Pagination
         const totalProducts = await Product.countDocuments(searchQuery);
         const totalPages = Math.ceil(totalProducts / limit);
-        const lowStockCount = await Product.countDocuments({
-            stock: { $gt: 0, $lt: 10 }
-        });
-        const outOfStockCount = await Product.countDocuments({
-            stock: 0
+
+        // Get all products for stock statistics
+        const allProducts = await Product.find(
+            searchQuery,
+            { variants: 1 }
+        );
+
+        let lowStockCount = 0;
+        let outOfStockCount = 0;
+
+        allProducts.forEach(product => {
+
+            const totalStock = product.variants.reduce(
+                (total, variant) => {
+                    return total + (Number(variant.stock) || 0);
+                },
+                0
+            );
+
+            if (totalStock === 0) {
+                outOfStockCount++;
+            }
+            else if (totalStock > 0 && totalStock < 10) {
+                lowStockCount++;
+            }
+
         });
 
-        res.render("admin/products",{
+        const message = req.session.message;
+        req.session.message = null;
 
-            products,
-            currentPage:page,
+        return res.render("admin/products", {
+
+            products: productsWithStock,
+            currentPage: page,
             totalPages,
             search,
             totalProductsCount,
             lowStockCount,
-            outOfStockCount
+            outOfStockCount,
+            message
 
         });
-        
-    } catch(error) {
-        console.log("PRODUCT PAGE ERROR:",error);
+
+    } catch (error) {
+
+        console.log("PRODUCT PAGE ERROR:", error);
+
         res.redirect("/admin/pageerror");
+
     }
 
 };
@@ -87,13 +134,17 @@ const addProduct = async(req,res)=>{
         
         const images = req.files ? req.files.map(file => file.path) : [];
 
-        const variants = req.body.sizes.map((size, index) => ({
-            size,
+        let variants = req.body.sizes.map((size, index) => ({
+            size: size.trim(),
             stock: Number(req.body.stocks[index]),
             regularPrice: Number(req.body.regularPrices[index]),
-            salePrice: Number(req.body.salePrices[index])
-
+            salePrice: Number(req.body.salePrices[index]),
         }));
+
+        // Remove empty variants
+        variants = variants.filter(variant =>
+            variant.size !== ""
+        );
 
         const categories = await Category.find({ isListed: true });
 
@@ -173,10 +224,7 @@ const addProduct = async(req,res)=>{
 
         await newProduct.save()
 
-        res.redirect("/admin/products",{
-            categories,
-            message:"Product save successfully"
-        });
+        res.redirect("/admin/products");
 
     }catch(error){
 
@@ -344,25 +392,27 @@ const editProduct = async (req, res) => {
 };
 
 
-const blockProduct = async(req,res)=>{
+const blockProduct = async (req, res) => {
 
-    try{
+    try {
 
         const id = req.params.id;
 
         const product = await Product.findById(id);
 
-        await Product.findByIdAndUpdate(id,{
-
+        await Product.findByIdAndUpdate(id, {
             isBlocked: !product.isBlocked
-
         });
+
+        req.session.message = !product.isBlocked
+            ? "Product blocked successfully."
+            : "Product unblocked successfully.";
 
         res.redirect("/admin/products");
 
-    }catch(error){
+    } catch (error) {
 
-        console.log("BLOCK PRODUCT ERROR:",error);
+        console.log("BLOCK PRODUCT ERROR:", error);
 
         res.redirect("/admin/pageerror");
 
@@ -378,6 +428,8 @@ const unblockProduct = async (req,res)=>{
             req.params.id,
             { isBlocked:false }
         );
+
+        req.session.message = "Product unblocked successfully.";
 
         res.redirect("/admin/products");
 

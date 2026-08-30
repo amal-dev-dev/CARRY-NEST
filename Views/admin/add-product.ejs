@@ -50,13 +50,13 @@
 
                 <a href="/admin/dashboard" class="menu-item">
 
-                    <span class="menu-left">
+                <span class="menu-left">
 
-                        <i class="ri-dashboard-line"></i>
+                <i class="ri-dashboard-line"></i>
 
-                        Dashboard
-
-                    </span>
+                <span class="menu-text">Dashboard</span>
+                
+                </span>
 
                 </a>
 
@@ -123,7 +123,7 @@
 
                     <div class="dropdown-menu">
 
-                        <a href="#">
+                        <a href="/admin/orders">
                             All Orders
                         </a>
 
@@ -438,208 +438,146 @@
 
             </section>
 
-                <!-- PRODUCT VARIANTS -->
+            <!-- PRODUCT VARIANTS -->
+            <section class="form-card">
 
-                <section class="form-card">
+                <div class="variant-top">
 
-                    <div class="variant-top">
-
-                        <div class="section-title">
-
-                            <i class="ri-layout-grid-line"></i>
-
-                            <h3>Product Variants</h3>
-
-                        </div>
-
-                        <button type="button"
-                        class="variant-btn">
-
-                            <i class="ri-add-line"></i>
-
-                            Add Color Variant
-
-                        </button>
-
+                    <div class="section-title">
+                        <i class="ri-layout-grid-line"></i>
+                        <h3>Product Variants</h3>
                     </div>
 
-                        <div id="variantsContainer">
+                    <button type="button" class="variant-btn">
+                        <i class="ri-add-line"></i>
+                        Add Color Variant
+                    </button>
 
-                            <div class="variant-card">
+                </div>
 
-                                <div class="variant-header">
+                <!-- VARIANTS CONTAINER -->
+                <div id="variantsContainer">
 
-                                    <div class="color-info">
+                    <div class="variant-card">
 
-                                        <div class="color-circle"></div>
+                        <div class="variant-header">
 
-                                        <input
-                                            type="text"
-                                            name="colors[]"
-                                            class="colorInput"
-                                            placeholder="Enter Color"
-                                        />
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- TABLE -->
-
-                        <div class="variant-table">
-
-                            <table>
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>Size</th>
-                                        <th>Stock</th>
-                                        <th>Original Price</th>
-                                        <th>Sale Price</th>
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody>
-
-                                    <tr>
-                                        <td>
-                                            <input type="text"
-                                                name="sizes[]"
-                                                value="Standard">
-                                        </td>
-
-                                        <td>
-                                            <input type="number"
-                                                name="stocks[]"
-                                                placeholder="Stock">
-                                        </td>
-
-                                        <td>
-                                            <input type="number"
-                                                name="regularPrices[]"
-                                                placeholder="₹ Original Price">
-                                        </td>
-
-                                        <td>
-                                            <input type="number"
-                                                name="salePrices[]"
-                                                placeholder="₹ Sale Price">
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <input type="text"
-                                                name="sizes[]"
-                                                value="Professional">
-                                        </td>
-
-                                        <td>
-                                            <input type="number"
-                                                name="stocks[]"
-                                                placeholder="Stock">
-                                        </td>
-
-                                        <td>
-                                            <input type="number"
-                                                name="regularPrices[]"
-                                                placeholder="₹ Original Price">
-                                        </td>
-
-                                        <td>
-                                            <input type="number"
-                                                name="salePrices[]"
-                                                placeholder="₹ Sale Price">
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            <input type="text"
-                                                name="sizes[]"
-                                                value="Travel">
-                                        </td>
-
-                                        <td>
-                                            <input type="number"
-                                                name="stocks[]"
-                                                placeholder="Stock">
-                                        </td>
-
-                                        <td>
-                                            <input type="number"
-                                                name="regularPrices[]"
-                                                placeholder="₹ Original Price">
-                                        </td>
-
-                                        <td>
-                                            <input type="number"
-                                                name="salePrices[]"
-                                                placeholder="₹ Sale Price">
-                                        </td>
-                                    </tr>
-
-                                </tbody>
-
-                            </table>
-
-                        </div>
-
-                        <!-- IMAGE UPLOAD -->
-
-                        <div class="image-upload">
-
-                            <div class="upload-box">
-
-                                <label for="images">
-
-                                    <i class="ri-upload-cloud-line"></i>
-
-                                    <p>Upload Images</p>
-
-                                    <span>Minimum 3 Images</span>
-
-                                </label>
+                            <div class="color-info">
+                                <div class="color-circle"></div>
 
                                 <input
-                                type="file"
-                                id="images"
-                                name="images"
-                                multiple
-                                accept="image/*">
-
-                            </div>
-
-                            <div id="previewContainer"></div>
-
-                        </div>
-
-                        <div id="cropModal" class="crop-modal">
-
-                            <div class="crop-content">
-
-                                <img id="cropImage">
-
-                                <div class="crop-buttons">
-                                    <button type="button" id="cropBtn">Crop Image</button>
-                                </div>
-
+                                    type="text"
+                                    name="colors[]"
+                                    class="colorInput"
+                                    placeholder="Enter Color"
+                                />
                             </div>
 
                         </div>
 
                     </div>
 
-                </section>
+                </div>
 
+                <!-- TABLE -->
+                <div class="variant-table">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Size</th>
+                                <th>Stock</th>
+                                <th>Original Price</th>
+                                <th>Sale Price</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="text" name="sizes[]" value="Standard">
+                                </td>
+                                <td>
+                                    <input type="number" name="stocks[]" placeholder="Stock">
+                                </td>
+                                <td>
+                                    <input type="number" name="regularPrices[]" placeholder="₹ Original Price">
+                                </td>
+                                <td>
+                                    <input type="number" name="salePrices[]" placeholder="₹ Sale Price">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <input type="text" name="sizes[]" value="Professional">
+                                </td>
+                                <td>
+                                    <input type="number" name="stocks[]" placeholder="Stock">
+                                </td>
+                                <td>
+                                    <input type="number" name="regularPrices[]" placeholder="₹ Original Price">
+                                </td>
+                                <td>
+                                    <input type="number" name="salePrices[]" placeholder="₹ Sale Price">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <input type="text" name="sizes[]" value="Travel">
+                                </td>
+                                <td>
+                                    <input type="number" name="stocks[]" placeholder="Stock">
+                                </td>
+                                <td>
+                                    <input type="number" name="regularPrices[]" placeholder="₹ Original Price">
+                                </td>
+                                <td>
+                                    <input type="number" name="salePrices[]" placeholder="₹ Sale Price">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <!-- IMAGE UPLOAD -->
+                <div class="image-upload">
+
+                    <div class="upload-box">
+                        <label for="images">
+                            <i class="ri-upload-cloud-line"></i>
+                            <p>Upload Images</p>
+                            <span>Minimum 3 Images</span>
+                        </label>
+
+                        <input
+                            type="file"
+                            id="images"
+                            name="images"
+                            multiple
+                            accept="image/*"
+                        >
+                    </div>
+
+                    <div id="previewContainer"></div>
+
+                </div>
+
+            </section>
+
+            <!-- CROP MODAL -->
+            <div id="cropModal" class="crop-modal">
+                <div class="crop-content">
+                    <img id="cropImage" alt="Crop Preview">
+
+                    <div class="crop-buttons">
+                        <button type="button" id="cropBtn">Crop Image</button>
+                        <button type="button" id="closeCropBtn" class="close-crop-btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
         </form>
 
         <!-- FORM END -->
@@ -796,10 +734,12 @@ function showCropper(index){
             cropper.destroy();
         }
 
-        cropper = new Cropper(cropImage,{
-            aspectRatio: NaN,
+       cropper = new Cropper(cropImage, {
+            aspectRatio: 1,
             viewMode: 1,
-            autoCropArea: 1
+            autoCropArea: 1,
+            responsive: true,
+            background: false
         });
 
     };
@@ -865,6 +805,21 @@ document.getElementById("cropBtn")
 
     }, "image/jpeg");
 
+});
+
+document.getElementById("closeCropBtn").addEventListener("click", () => {
+    const cropModal = document.getElementById("cropModal");
+    cropModal.style.display = "none";
+
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+
+    imageInput.value = "";
+    selectedFiles = [];
+    croppedFiles = [];
+    currentIndex = 0;
 });
 
 </script>

@@ -28,9 +28,27 @@
 
     <div class="nav-icons">
 
-        <a href="/user/cart" style="color: black;"><i class="fa-solid fa-cart-shopping"></i></a>
+        <a href="/user/cart" class="cart-link">
+            <i class="fa-solid fa-cart-shopping"></i>
 
-        <a href="/user/wishlist" style="color: black;"><i class="fa-regular fa-heart"></i></a>
+            <% if (cartCount > 0) { %>
+                <span
+                    id="cartCountBadge"
+                    class="cart-badge">
+                    <%= cartCount %>
+                </span>
+            <% } %>
+        </a>
+
+        <a href="/user/wishlist" class="wishlist-link">
+            <i class="fa-regular fa-heart"></i>
+
+            <% if (wishlistCount > 0) { %>
+                <span class="wishlist-badge">
+                    <%= wishlistCount %>
+                </span>
+            <% } %>
+        </a>
 
         <a href="/user/profile" style="color: black;"><i class="fa-regular fa-user"></i></a>
 
@@ -60,124 +78,141 @@
 
     <!-- LEFT -->
 
-    <div class="cart-items">
+        <div class="cart-items">
 
-    <h1>YOUR CART</h1>
+            <h1>YOUR CART</h1>
 
-    <% if(cart && cart.items.length > 0){ %>
+            <% if (cart && cart.items.some(item => item.productId && item.productId.isBlocked)) { %>
 
-        <% cart.items.forEach(item => { %>
-
-            <% if(item.productId && item.variant){ %>
-
-            <div class="cart-card">
-
-                <img
-                    src="<%= item.productId.productImage[0] || '/images/no-image.png' %>"
-                    alt="<%= item.productId.productName %>"
-                >
-
-                <div class="cart-info">
-
-                    <h3>
-                        <%= item.productId.productName %>
-                    </h3>
-
-                    <p>
-                        Brand:
-                        <%= item.productId.brand %>
-                    </p>
-
-                    <p>
-                        Color:
-                        <%= item.productId.colors.join(", ") %>
-                    </p>
-
-                    <p>
-                        Size:
-                        <%= item.variant.size %>
-                    </p>
-
-                    <p>
-                        Stock:
-                        <%= item.variant.stock %>
-                    </p>
-
-                    <h4>
-                        ₹<%= item.variant.salePrice %>
-                    </h4>
-
-                    <% if(item.variant.stock <= 0){ %>
-
-                        <span class="out-stock">
-                            Out Of Stock
-                        </span>
-
-                    <% } %>
-
-                </div>
-
-                <div class="cart-actions">
-
-                    <form
-                        action="/user/cart/decrease/<%= item.variantId %>?_method=PATCH"
-                        method="POST">
-
-                        <button type="submit">-</button>
-
-                    </form>
+                <div class="cart-warning">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
 
                     <span>
-                        <%= item.quantity %>
+                        Some products in your cart are currently unavailable.
+                        Please remove them before proceeding to checkout.
                     </span>
-
-                    <form
-                        action="/user/cart/increase/<%= item.variantId %>?_method=PATCH"
-                        method="POST">
-
-                        <button type="submit">+</button>
-
-                    </form>
-
                 </div>
-
-                <form
-                    action="/user/cart/remove/<%= item.variantId %>?_method=PATCH"
-                    method="POST">
-
-                    <button
-                        type="submit"
-                        class="delete-btn">
-
-                        <i class="fa-solid fa-trash"></i>
-
-                    </button>
-
-                </form>
-
-            </div>
 
             <% } %>
 
-        <% }) %>
+            <% if(cart && cart.items.length > 0){ %>
 
-    <% } else { %>
+            <div id="cartItemsWrapper">
 
-        <div class="empty-cart">
+            <% cart.items.forEach(item => { %>
 
-            <h2>
-                Your Cart Is Empty
-            </h2>
+                <% if(item.productId && item.variant){ %>
 
-            <a href="/user/products">
+                <div
+                    class="cart-card <%= item.productId.isBlocked ? 'blocked-cart-item' : '' %>"
+                    data-variant-id="<%= item.variantId %>"
+                >
 
-                Continue Shopping
+                    <% if(item.productId.isBlocked){ %>
+                        <div class="blocked-warning">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            This product is currently unavailable.
+                        </div>
+                    <% } %>
 
-            </a>
+                        <img
+                            src="<%= item.productId.productImage[0] || '/images/no-image.png' %>"
+                            alt="<%= item.productId.productName %>"
+                        >
 
-        </div>
+                        <div class="cart-info">
 
-    <% } %>
+                            <h3>
+                                <%= item.productId.productName %>
+                            </h3>
+
+                            <p>
+                                Brand:
+                                <%= item.productId.brand %>
+                            </p>
+
+                            <p>
+                                Color:
+                                <%= item.productId.colors.join(", ") %>
+                            </p>
+
+                            <p>
+                                Size:
+                                <%= item.variant.size %>
+                            </p>
+
+                            <p>
+                                Stock:
+                                <%= item.variant.stock %>
+                            </p>
+
+                            <h4 id="itemTotal-<%= item.variantId %>">
+                                ₹<%= item.variant.salePrice * item.quantity %>
+                            </h4>
+
+                            <% if(item.variant.stock <= 0){ %>
+                                <span class="out-stock">
+                                    Out Of Stock
+                                </span>
+                            <% } %>
+
+                        </div>
+
+                        <div class="cart-actions">
+
+                            <button
+                                type="button"
+                                class="qty-btn decrease-btn"
+                                data-id="<%= item.variantId %>"
+                                <%= item.productId.isBlocked ? "disabled" : "" %>>
+                                -
+                            </button>
+
+                            <span id="qty-<%= item.variantId %>">
+                                <%= item.quantity %>
+                            </span>
+
+                            <button
+                                type="button"
+                                class="qty-btn increase-btn"
+                                data-id="<%= item.variantId %>"
+                                <%= item.productId.isBlocked ? "disabled" : "" %>>
+                                +
+                            </button>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="delete-btn remove-btn"
+                            data-id="<%= item.variantId %>">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </div>
+
+                    <% } %>
+
+                <% }) %>
+
+            </div>
+
+            <!-- empty cart placeholder -->
+            <div class="empty-cart" id="emptyCartBox" style="display:none;">
+                <h2>Your Cart Is Empty</h2>
+                <a href="/user/products">Continue Shopping</a>
+            </div>
+
+        <% } else { %>
+
+            <div class="empty-cart" id="emptyCartBox">
+                <h2>Your Cart Is Empty</h2>
+                <a href="/user/products">Continue Shopping</a>
+            </div>
+
+        <% } %>
 
     </div>
 
@@ -185,65 +220,53 @@
 
     <div class="summary-box">
 
-        <h2>
-            Order Summary
-        </h2>
+        <h2>Order Summary</h2>
 
         <div class="summary-row">
-
             <span>Subtotal</span>
-
-            <span>
-                ₹<%= subtotal %>
-            </span>
-
+            <span id="subtotalValue">₹<%= subtotal %></span>
         </div>
 
         <div class="summary-row">
-
             <span>Discount</span>
-
-            <span class="discount">
-
+            <span class="discount" id="discountValue">
                 -₹<%= discount %>
-
             </span>
-
-        </div>
-
-        <div class="summary-row">
-
-            <span>Delivery Fee</span>
-
-            <span>
-
-                ₹<%= deliveryFee %>
-
-            </span>
-
         </div>
 
         <hr>
 
         <div class="summary-row total">
-
             <span>Total</span>
-
-            <span>
-
+            <span id="grandTotalValue">
                 ₹<%= grandTotal %>
-
             </span>
-
         </div>
 
-        <a
-        href="/user/checkout"
-        class="checkout-btn">
+        <% const hasBlockedProduct = cart && cart.items.some(
+            item => item.productId && item.productId.isBlocked
+        ); %>
 
-            Go To Checkout
+        <% if (hasBlockedProduct) { %>
 
-        </a>
+            <button
+                type="button"
+                class="checkout-btn checkout-disabled"
+                id="checkoutBtn"
+                disabled>
+                Go To Checkout
+            </button>
+
+        <% } else { %>
+
+            <a
+                href="/user/checkout"
+                class="checkout-btn"
+                id="checkoutBtn">
+                Go To Checkout
+            </a>
+
+        <% } %>
 
     </div>
 
@@ -251,83 +274,209 @@
 
 <!-- FOOTER -->
 
-    <footer>
+<footer>
 
-        <div class="footer-container">
+    <div class="footer-container">
 
-            <div class="footer-col">
-                <h3>CARRY NEST</h3>
-                <p>Lorem ipsum dolor sit amet consectetur. Purus in etiam risus ut sem eu urna. Massa feugiat consequat nec libero.</p>
-                <p>Lorem ipsum dolor sit</p>
-            </div>
-
-            <div class="footer-col">
-                <h4>Service</h4>
-                <p>Laptop Bags</p>
-                <p>Trekking Bags</p>
-                <p>School Bags</p>
-                <p>Office Bags</p>
-                <p>Travelling Bags</p>
-            </div>
-
-            <div class="footer-col">
-                <h4>Company</h4>
-                <p>Service</p>
-                <p>Features</p>
-                <p>Our Team</p>
-                <p>Portfolio</p>
-                <p>Blog</p>
-                <p>Contact Us</p>
-            </div>
-
-            <div class="footer-col footer-contact">
-                <h4>Contact Us</h4>
-
-                <div class="footer-input-box">
-                    <input type="text" placeholder="Your Email / Phone no.">
-                    <button>Send</button>
-                </div>
-
-                <div class="social-icons">
-                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
-                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
-                </div>
-            </div>
-
+        <div class="footer-col">
+            <h3>CARRY NEST</h3>
+            <p>Lorem ipsum dolor sit amet consectetur. Purus in etiam risus ut sem eu urna. Massa feugiat consequat nec libero.</p>
+            <p>Lorem ipsum dolor sit</p>
         </div>
 
-        <div class="footer-bottom">
-
-            <p>Copyright Tanah Air Studio</p>
-
-            <div class="footer-bottom-info">
-                <span><i class="fa-solid fa-location-dot"></i> 8819 Ohio St. South Gate, CA 90280</span>
-                <span><i class="fa-regular fa-envelope"></i> CrossLine@hello.com</span>
-                <span><i class="fa-solid fa-phone"></i> +91 386-688-3295</span>
-            </div>
-
+        <div class="footer-col">
+            <h4>Service</h4>
+            <p>Laptop Bags</p>
+            <p>Trekking Bags</p>
+            <p>School Bags</p>
+            <p>Office Bags</p>
+            <p>Travelling Bags</p>
         </div>
 
-    </footer>
+        <div class="footer-col">
+            <h4>Company</h4>
+            <p>Service</p>
+            <p>Features</p>
+            <p>Our Team</p>
+            <p>Portfolio</p>
+            <p>Blog</p>
+            <p>Contact Us</p>
+        </div>
+
+        <div class="footer-col footer-contact">
+            <h4>Contact Us</h4>
+
+            <div class="footer-input-box">
+                <input type="text" placeholder="Your Email / Phone no.">
+                <button>Send</button>
+            </div>
+
+            <div class="social-icons">
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        <p>Copyright Tanah Air Studio</p>
+
+        <div class="footer-bottom-info">
+            <span><i class="fa-solid fa-location-dot"></i> 8819 Ohio St. South Gate, CA 90280</span>
+            <span><i class="fa-regular fa-envelope"></i> CrossLine@hello.com</span>
+            <span><i class="fa-solid fa-phone"></i> +91 386-688-3295</span>
+        </div>
+
+    </div>
+
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <% if(typeof message !== "undefined" && message){ %>
-
 <script>
-
 Swal.fire({
     icon: "warning",
     title: "<%= message %>",
     timer: 2000,
     showConfirmButton: false
 });
-
 </script>
-
 <% } %>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const subtotalValue = document.getElementById("subtotalValue");
+    const discountValue = document.getElementById("discountValue");
+    const grandTotalValue = document.getElementById("grandTotalValue");
+    const cartItemsWrapper = document.getElementById("cartItemsWrapper");
+    const emptyCartBox = document.getElementById("emptyCartBox");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    const cartCountBadge = document.getElementById("cartCountBadge");
+
+    async function updateCart(url) {
+        try {
+            const response = await fetch(url, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+                Swal.fire({
+                    icon: "warning",
+                    title: data.message || "Something went wrong",
+                    timer: 1800,
+                    showConfirmButton: false
+                });
+                return;
+            }
+
+            // item removed
+            if (data.removed) {
+                const card = document.querySelector(`[data-variant-id="${data.variantId}"]`);
+                if (card) {
+                    card.remove();
+                }
+            } else {
+                // update qty
+                const qtyEl = document.getElementById(`qty-${data.variantId}`);
+                if (qtyEl) {
+                    qtyEl.textContent = data.quantity;
+                }
+
+                // update item total
+                const itemTotalEl = document.getElementById(`itemTotal-${data.variantId}`);
+                if (itemTotalEl) {
+                    itemTotalEl.textContent = `₹${data.itemTotal}`;
+                }
+            }
+
+            // update summary
+            subtotalValue.textContent = `₹${data.subtotal}`;
+            discountValue.textContent = `-₹${data.discount}`;
+            grandTotalValue.textContent = `₹${data.grandTotal}`;
+
+            // update cart badge
+            if (cartCountBadge) {
+                if (data.cartCount > 0) {
+                    cartCountBadge.textContent = data.cartCount;
+                } else {
+                    cartCountBadge.remove();
+                }
+            }
+
+            // if no items left
+            const remainingCards = document.querySelectorAll(".cart-card");
+            if (remainingCards.length === 0) {
+                if (cartItemsWrapper) {
+                    cartItemsWrapper.style.display = "none";
+                }
+
+                if (emptyCartBox) {
+                    emptyCartBox.style.display = "block";
+                }
+
+                if (checkoutBtn) {
+                    checkoutBtn.style.display = "none";
+                }
+            }
+
+        } catch (error) {
+            console.log("CART AJAX ERROR:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Something went wrong",
+                timer: 1800,
+                showConfirmButton: false
+            });
+        }
+    }
+
+    // increase
+    document.querySelectorAll(".increase-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const variantId = btn.dataset.id;
+            updateCart(`/user/cart/increase/${variantId}`);
+        });
+    });
+
+    // decrease
+    document.querySelectorAll(".decrease-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const variantId = btn.dataset.id;
+            updateCart(`/user/cart/decrease/${variantId}`);
+        });
+    });
+
+    // remove
+    document.querySelectorAll(".remove-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const variantId = btn.dataset.id;
+
+            Swal.fire({
+                title: "Remove this item?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, remove"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    updateCart(`/user/cart/remove/${variantId}`);
+                }
+            });
+        });
+    });
+
+});
+</script>
 
 </body>
 </html>

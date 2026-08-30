@@ -2,13 +2,15 @@ import Product from "../../Model/productModel.js";
 import Wishlist from "../../Model/wishlistModel.js";
 import Cart from "../../Model/cartModel.js";
 
-const addToWishlist = async (req, res) => {
+const toggleWishlist = async (req, res) => {
 
     try {
 
         const userId = req.session.user;
         const productId = req.params.id;
+        const { variantId } = req.body;
 
+        // Validate product
         const product = await Product.findById(productId);
 
         if (!product) {
@@ -20,34 +22,94 @@ const addToWishlist = async (req, res) => {
 
         }
 
+        // Validate variant
+        if (!variantId) {
+
+            return res.json({
+                success: false,
+                message: "Please select a size"
+            });
+
+        }
+
+        // Check whether variant belongs to this product
+        const selectedVariant = product.variants.find(
+            variant => variant._id.toString() === variantId.toString()
+        );
+
+        if (!selectedVariant) {
+
+            return res.json({
+                success: false,
+                message: "Selected variant not found"
+            });
+
+        }
+
+        // Find wishlist
         let wishlist = await Wishlist.findOne({ userId });
 
+        // Create wishlist if it doesn't exist
         if (!wishlist) {
 
             wishlist = new Wishlist({
                 userId,
-                items: [{
-                    productId
-                }]
+                items: [
+                    {
+                        productId: product._id,
+                        variantId: selectedVariant._id
+                    }
+                ]
             });
+
+            await wishlist.save();
+
+            return res.json({
+                success: true,
+                action: "added",
+                message: "Product added to wishlist"
+            });
+        }
+
+        // Check whether SAME product + SAME variant already exists
+        const index = wishlist.items.findIndex(item =>
+
+            item.productId.toString() === productId.toString() &&
+            item.variantId.toString() === variantId.toString()
+
+        );
+
+        // Remove if same product + variant exists
+        if (index !== -1) {
+
+            wishlist.items.splice(index, 1);
+
+            await wishlist.save();
+
+            return res.json({
+                success: true,
+                action: "removed",
+                message: "Product removed from wishlist"
+            });
+        }
+
+        // Check whether same product exists with another variant
+        const existingProductIndex = wishlist.items.findIndex(item =>
+            item.productId.toString() === productId.toString()
+        );
+
+        if (existingProductIndex !== -1) {
+
+            // Update the existing wishlist item's variant
+            wishlist.items[existingProductIndex].variantId =
+                selectedVariant._id;
 
         } else {
 
-            const exists = wishlist.items.find(item =>
-                item.productId.toString() === productId
-            );
-
-            if (exists) {
-
-                return res.json({
-                    success: false,
-                    message: "Already added to wishlist"
-                });
-
-            }
-
+            // Add new product + variant
             wishlist.items.push({
-                productId
+                productId: product._id,
+                variantId: selectedVariant._id
             });
 
         }
@@ -56,20 +118,20 @@ const addToWishlist = async (req, res) => {
 
         return res.json({
             success: true,
-            message: "Added to wishlist"
+            action: "added",
+            message: "Product added to wishlist"
         });
 
     } catch (error) {
 
-        console.log(error);
+        console.log("TOGGLE WISHLIST ERROR:", error);
 
-        res.json({
+        return res.json({
             success: false,
             message: "Internal Server Error"
         });
 
     }
-
 };
 
 const loadWishlist = async (req, res) => {
@@ -93,37 +155,62 @@ const loadWishlist = async (req, res) => {
 
         wishlist.items.forEach(item => {
 
-            if (!item.productId) return;
-
             const product = item.productId;
 
-        const variant = product.variants.find(v => v.stock > 0);
+            if (!product) return;
 
-        wishlistItems.push({
+            // Old wishlist items may not have variantId
+            if (!item.variantId) {
 
-            productId: product._id,
+                console.log(
+                    "Skipping wishlist item because variantId is missing:",
+                    item.productId
+                );
 
-            variantId: variant?._id,
+                return;
+            }
 
-            productName: product.productName,
+            // Find the exact selected variant
+            const variant = product.variants.find(v =>
+                v._id.toString() === item.variantId.toString()
+            );
 
-            brand: product.brand,
+            // Variant no longer exists
+            if (!variant) {
 
-            image: product.productImage[0],
+                console.log(
+                    "Variant not found:",
+                    item.variantId
+                );
 
-            offer: product.offer,
+                return;
+            }
 
-            category: product.category,
+            wishlistItems.push({
 
-            size: variant?.size,
+                productId: product._id,
 
-            stock: variant?.stock,
+                variantId: variant._id,
 
-            regularPrice: variant?.regularPrice,
+                productName: product.productName,
 
-            salePrice: variant?.salePrice
+                brand: product.brand,
 
-        });
+                image: product.productImage?.[0],
+
+                offer: product.offer,
+
+                category: product.category,
+
+                size: variant.size,
+
+                stock: variant.stock,
+
+                regularPrice: variant.regularPrice,
+
+                salePrice: variant.salePrice
+
+            });
 
         });
 
@@ -209,9 +296,11 @@ const moveAllToCart = async (req, res) => {
             if (!product || product.isBlocked) continue;
 
             // First available variant
-            const variant = product.variants.find(v => v.stock > 0);
+            const variant = product.variants.find(v =>
+                v._id.toString() === wishItem.variantId.toString()
+            );
 
-            if (!variant) continue;
+            if (!variant || variant.stock <= 0) continue;
 
             // Already exists in cart?
             const cartItem = cart.items.find(item =>
@@ -262,7 +351,7 @@ const moveAllToCart = async (req, res) => {
 
 
 export default {
-    addToWishlist,
+    toggleWishlist,
     loadWishlist,
     removeWishlist,
     moveAllToCart

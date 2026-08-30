@@ -47,7 +47,8 @@ const productSchema = new mongoose.Schema({
 
             salePrice:{
                 type:Number
-            }
+            },
+
         }
     ],
 

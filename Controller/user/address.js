@@ -60,6 +60,8 @@ const addAddress = async (req, res) => {
 
     try {
 
+         console.log("❌ NORMAL ADD ADDRESS CONTROLLER HIT");
+
         const userId = req.session.user;
 
         const {
@@ -90,6 +92,8 @@ const addAddress = async (req, res) => {
         });
 
         await newAddress.save();
+
+        console.log("❌ REDIRECTING TO NORMAL ADDRESS");
 
         res.redirect("/user/address");
 

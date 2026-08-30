@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Orders - Carry Nest</title>
+
+    <link rel="stylesheet" href="/Styles/admin/orders.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="admin-layout">
+
+    <!-- =========================
+            SIDEBAR
+    ========================== -->
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- LOGO -->
+            <div class="logo-section">
+
+                <div class="logo-box">
+                    C
+                </div>
+
+                <h2>CARRY NEST</h2>
+
+            </div>
+
+            <!-- MENU -->
+            <div class="menu-wrapper">
+
+                <a href="/admin/dashboard"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-dashboard-line"></i>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+                <div class="menu-dropdown">
+
+                    <div class="menu-item dropdown-toggle">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-bag-line"></i>
+
+                            Products
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+
+                    </div>
+
+                    <div class="submenu">
+
+                        <a href="/admin/products">
+                            All Products
+                        </a>
+
+                        <a href="/admin/add-product">
+                            Add Product
+                        </a>
+
+                        <a href="/admin/category">
+                            Categories
+                        </a>
+
+                        <a href="#">
+                            Brands
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="menu-dropdown">
+
+                    <div class="menu-item active dropdown-toggle">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                            Orders
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+
+                    </div>
+
+                    <div class="submenu show">
+
+                        <a href="/admin/orders">
+                            All Orders
+                        </a>
+
+                        <a href="/admin/orders?status=pending&search=<%= search || '' %>">
+                            Pending
+                        </a>
+
+                        <a href="/admin/orders?status=shipped&search=<%= search || '' %>">
+                            Shipped
+                        </a>
+
+                        <a href="/admin/orders?status=out_for_delivery&search=<%= search || '' %>">
+                            Out for Delivery
+                        </a>
+
+                        <a href="/admin/orders?status=delivered&search=<%= search || '' %>">
+                            Delivered
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="menu-dropdown">
+
+                    <div class="menu-item dropdown-toggle">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-icon"></i>
+
+                    </div>
+
+                    <div class="submenu">
+
+                        <a href="/admin/return-requests">Requests</a>
+
+                        <a href="#">Refunds</a>
+
+                    </div>
+
+                </div>
+
+               <a href="/admin/customers"
+                class="menu-item">
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+                <a href="#" class="menu-item">
+
+                    <span class="menu-left">
+
+                       <i class="ri-settings-3-line"></i>
+
+                        Settings
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- LOGOUT -->
+        <div class="logout-section">
+
+            <a href="/admin/logout" class="logout-btn">
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- =========================
+            MAIN
+    ========================== -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div class="topbar-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <p class="breadcrumb">
+                    Admin <span>/</span> Dashboard
+                </p>
+            </div>
+
+            <div class="topbar-right">
+
+                <div class="top-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+
+                <button class="icon-btn">
+                    <i class="fa-regular fa-bell"></i>
+                </button>
+
+                <div class="admin-profile">
+                    <div class="avatar">AD</div>
+                    <div class="admin-info">
+                        <h4>Admin User</h4>
+                        <p>Super Admin</p>
+                    </div>
+                </div>
+
+            </div>
+        </header>
+
+        <!-- PAGE HEADER -->
+        <section class="page-header">
+            <div>
+                <h1>Orders</h1>
+                <p>Manage and track customer orders.</p>
+            </div>
+
+            <button class="export-btn">
+                Export CSV
+            </button>
+        </section>
+
+        <!-- STATUS FILTER TABS -->
+        <div class="order-filter-tabs">
+
+        <a href="/admin/orders?status=all&search=<%= search || '' %>">All</a>
+
+        <a href="/admin/orders?status=pending&search=<%= search || '' %>">Pending</a>
+
+        <a href="/admin/orders?status=shipped&search=<%= search || '' %>">Shipped</a>
+
+        <a href="/admin/orders?status=out_for_delivery&search=<%= search || '' %>">Out For Delivery</a>
+
+        <a href="/admin/orders?status=delivered&search=<%= search || '' %>">Delivered</a>
+
+        <a href="/admin/orders?status=cancelled&search=<%= search || '' %>">Cancelled</a>
+
+        </div>
+
+        <!-- ORDERS CARD -->
+        <section class="orders-card">
+
+            <div class="card-top">
+                <h2>Recent Orders</h2>
+
+                <div class="card-actions">
+                    <form action="/admin/orders" method="GET" class="search-form">
+                        <div class="table-search">
+                            <input 
+                                type="text" 
+                                name="search" 
+                                placeholder="Search by Order ID"
+                                value="<%= search || '' %>"
+                            >
+                        </div>
+
+                        <button type="submit" class="search-btn">
+                            Search
+                        </button>
+
+                        <a href="/admin/orders" class="clear-btn">
+                            Clear
+                        </a>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-wrapper">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% if (orders && orders.length > 0) { %>
+                            <% orders.forEach((order) => { %>
+                                <tr>
+                                    <td data-label="Order ID"> 
+                                        <%= order.orderId %>
+                                    </td>
+
+                                    <td data-label="Customer">
+                                        <%= order.userId ? order.userId.name : "User not found" %>
+                                    </td>
+
+                                    <td data-label="Date">
+                                        <%= new Date(order.createdAt).toLocaleDateString("en-IN") %>
+                                    </td>
+
+                                    <td data-label="Items">
+                                        <%= order.products.length %>
+                                    </td>
+
+                                    <td data-label="Total Amount">
+                                        ₹<%= order.totalAmount %>
+                                    </td>
+
+                                    <td data-label="Status">
+                                        <span class="status-badge <%= order.orderStatus %>">
+                                            <%= order.orderStatus.replaceAll("_", " ") %>
+                                        </span>
+                                    </td>
+
+                                    <td data-label="Actions">
+                                        <a href="/admin/order-details/<%= order._id %>" class="view-btn">
+                                            <i class="fa-regular fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" style="text-align:center; padding:20px;">
+                                    No orders found
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <!-- CARD FOOTER -->
+            <% if (totalPages > 1) { %>
+                <div class="pagination">
+
+                    <% if (currentPage > 1) { %>
+                        <a
+                            href="/admin/orders?page=<%= currentPage - 1 %><%= search ? `&search=${encodeURIComponent(search)}` : '' %><%= status ? `&status=${status}` : '' %>"
+                            class="page-btn">
+                            Prev
+                        </a>
+                    <% } %>
+
+                    <% for(let i = 1; i <= totalPages; i++) { %>
+
+                        <a
+                            href="/admin/orders?page=<%= i %><%= search ? `&search=${encodeURIComponent(search)}` : '' %><%= status ? `&status=${status}` : '' %>"
+                            class="page-btn <%= currentPage === i ? 'active' : '' %>">
+                            <%= i %>
+                        </a>
+
+                    <% } %>
+
+                    <% if (currentPage < totalPages) { %>
+                        <a
+                            href="/admin/orders?page=<%= currentPage + 1 %><%= search ? `&search=${encodeURIComponent(search)}` : '' %><%= status ? `&status=${status}` : '' %>"
+                            class="page-btn">
+                            Next
+                        </a>
+                    <% } %>
+
+                </div>
+            <% } %>
+
+        </section>
+
+    </main>
+</div>
+
+<script>
+const dropdowns = document.querySelectorAll(".dropdown-toggle");
+
+dropdowns.forEach((dropdown)=>{
+
+    dropdown.addEventListener("click",()=>{
+
+        const submenu = dropdown.nextElementSibling;
+
+        submenu.classList.toggle("show");
+
+    });
+
+});
+</script>
+
+</body>
+</html>

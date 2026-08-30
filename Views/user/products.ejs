@@ -24,12 +24,22 @@
 
                 <% if(user){ %>
 
-                    <a href="/user/cart" style="color:black;">
+                    <a href="/user/cart" class="cart-link">
                         <i class="fa-solid fa-cart-shopping"></i>
-                    </a>
 
-                    <a href="/user/wishlist" style="color:black;">
+                        <% if (cartCount > 0) { %>
+                            <span class="cart-badge"><%= cartCount %></span>
+                        <% } %>
+                    </a>
+                    
+                    <a href="/user/wishlist" class="wishlist-link">
                         <i class="fa-regular fa-heart"></i>
+
+                        <% if (wishlistCount > 0) { %>
+                            <span class="wishlist-badge">
+                                <%= wishlistCount %>
+                            </span>
+                        <% } %>
                     </a>
 
                     <a href="/user/profile" style="color:black;">
@@ -77,25 +87,40 @@
             <input type="hidden" name="search" value="<%= search %>">
             <input type="hidden" name="price" value="<%= price %>">
 
-            <div class="filter-content active">
+            <input
+                type="hidden"
+                id="categoryInput"
+                name="category"
+                value="<%= category || '' %>"
+            >
 
-                <% categories.forEach(cat => { %>
+            <div class="filter-box">
 
-                    <label>
+                <div class="filter-header">
+                    <h4>Category</h4>
+                    <span>+</span>
+                </div>
 
-                        <input
-                            type="radio"
-                            name="category"
-                            value="<%= cat._id %>"
-                            onchange="document.getElementById('filterForm').submit()"
-                            <%= category == cat._id ? "checked" : "" %>
-                        >
+                <div class="filter-content active">
 
-                        <%= cat.name %>
+                    <% categories.forEach(cat => { %>
 
-                    </label>
+                        <label>
 
-                <% }) %>
+                            <input
+                                type="checkbox"
+                                class="category-filter"
+                                value="<%= cat._id %>"
+                                <%= category == cat._id ? "checked" : "" %>
+                            >
+
+                            <%= cat.name %>
+
+                        </label>
+
+                    <% }) %>
+
+                </div>
 
             </div>
 
@@ -191,9 +216,15 @@
 
         </div>
 
-        <h2>Our Collection Of Products</h2>
+            <h2>Our Collection Of Products</h2>
 
-        <form action="/user/products" method="GET" class="controls">
+            <% if (message) { %>
+                <div class="unavailable-message">
+                    <%= message %>
+                </div>
+            <% } %>
+
+            <form action="/user/products" method="GET" class="controls">
 
             <input type="hidden" name="category" value="<%= category %>">
             <input type="hidden" name="price" value="<%= price %>">
@@ -217,6 +248,11 @@
             <select name="sort" onchange="this.form.submit()">
 
                 <option value="">Sort By</option>
+
+                <option value="oldest"
+                    <%= sort === "newest" ? "selected" : "" %>>
+                    Oldest First
+                </option>
 
                 <option value="low-high"
                     <%= sort === "low-high" ? "selected" : "" %>>
@@ -361,10 +397,39 @@ headers.forEach(header => {
 
     header.addEventListener("click", () => {
 
-        const content =
-        header.nextElementSibling;
+        const content = header.nextElementSibling;
 
         content.classList.toggle("active");
+
+    });
+
+});
+
+const categoryInput = document.getElementById("categoryInput");
+const categoryCheckboxes = document.querySelectorAll(".category-filter");
+const filterForm = document.getElementById("filterForm");
+
+categoryCheckboxes.forEach(checkbox => {
+
+    checkbox.addEventListener("click", function () {
+
+        if (this.checked) {
+
+            // Uncheck all other categories
+            categoryCheckboxes.forEach(cb => {
+                if (cb !== this) cb.checked = false;
+            });
+
+            categoryInput.value = this.value;
+
+        } else {
+
+            // Category removed
+            categoryInput.value = "";
+
+        }
+
+        filterForm.submit();
 
     });
 

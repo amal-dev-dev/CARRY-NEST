@@ -2,18 +2,17 @@ import User from "../Model/userModel.js";
 
 export const setUser = async (req, res, next) => {
     try {
-        
-        if (req.user) {
-            // Google login
-            res.locals.user = req.user;
 
-        } else if (req.session.user) {
-            // Normal login
+        res.locals.user = null;
+
+        if (req.session.user) {
+
             const user = await User.findById(req.session.user);
-            res.locals.user = user;
 
-        } else {
-            res.locals.user = null;
+            if (user) {
+                res.locals.user = user;
+            }
+
         }
 
         next();

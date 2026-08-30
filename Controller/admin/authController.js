@@ -1,5 +1,7 @@
 import Users from "../../Model/userModel.js";
+import Admin from "../../Model/adminModel.js";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 
 dotenv.config();
 
@@ -10,15 +12,42 @@ const loadLogin = (req, res) => {
 };
 
 const login = async (req, res) => {
-
     try {
+
         const { email, password } = req.body;
 
-        if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
-            return res.render('admin/login', { message: "Invalid admin credentials" });
+        // Find admin by email
+        const admin = await Admin.findOne({ email });
+
+        if(!email && !password) {
+            return res.render("admin/login", {
+                message: "Please ender email and password"
+            });
         }
 
-        req.session.admin = true;
+        if(!password) {
+            return res.render("admin/login", {
+                message: "Please ender password"
+            })
+        }
+
+        if (!admin) {
+            return res.render("admin/login", {
+                message: "Invalid admin credentials"
+            });
+        }
+
+        // Compare entered password with hashed password
+        const isMatch = await bcrypt.compare(password, admin.password);
+
+        if (!isMatch) {
+            return res.render("admin/login", {
+                message: "Invalid admin credentials"
+            });
+        }
+
+        req.session.admin = admin._id;
+
 
         req.session.save((err) => {
 
@@ -31,14 +60,16 @@ const login = async (req, res) => {
 
             res.redirect("/admin/dashboard");
 
-});
+        });
 
     } catch (error) {
+        console.log("ADMIN LOGIN ERROR:", error);
 
-        console.log(error);
+        res.render("admin/login", {
+            message: "Something went wrong"
+        });
     }
 };
-
 const loadDashboard = async (req, res) => {
 
     try {
@@ -182,7 +213,6 @@ const loadCustomers = async (req, res) => {
         const totalPages = Math.ceil(totalUsers / limit);
 
 
-
         res.render("admin/customers", {
 
             users,
@@ -202,21 +232,18 @@ const loadCustomers = async (req, res) => {
 
 };
 
- const logout = (req, res) => {
+const logout = (req, res) => {
 
-    req.session.destroy((err) => {
+    delete req.session.admin;
 
-        if(err){
+    req.session.save((err) => {
 
+        if (err) {
             console.log(err);
-
             return res.redirect("/admin/dashboard");
-
         }
 
-        res.clearCookie("connect.sid");
-
-        return res.redirect("/admin/login");
+        res.redirect("/admin/login");
 
     });
 

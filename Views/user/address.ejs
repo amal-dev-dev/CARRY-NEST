@@ -10,6 +10,35 @@
 </head>
 <body>
 
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">CARRY NEST</div>
+
+        <div class="nav-icons">
+            <a href="/user/cart" class="cart-link">
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <% if (cartCount > 0) { %>
+                    <span class="cart-badge"><%= cartCount %></span>
+                <% } %>
+            </a>
+            
+            <a href="/user/wishlist" class="wishlist-link">
+                <i class="fa-regular fa-heart"></i>
+
+                <% if (wishlistCount > 0) { %>
+                    <span class="wishlist-badge">
+                        <%= wishlistCount %>
+                    </span>
+                <% } %>
+            </a>
+
+            <a href="/user/profile">
+                <i class="fa-regular fa-user"></i>
+            </a>
+        </div>
+    </nav>
+
     <div class="profile-page-layout">
         <!-- Sidebar -->
         <aside class="sidebar-container">
@@ -36,13 +65,13 @@
                 <a href="#" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-gift"></i></span> Referrals
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/user/orders" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-box"></i></span> Order History
                 </a>
                 <a href="#" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-wallet"></i></span> Wallet
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/user/change-password" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-key"></i></span> Change Password
                 </a>
                 <div class="nav-divider"></div>

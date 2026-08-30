@@ -1,6 +1,8 @@
 import  Product from  "../../Model/productModel.js";
 import Category from "../../Model/categoryModel.js";
 import Review from "../../Model/reviewModel.js";
+import Wishlist from "../../Model/wishlistModel.js";
+import Cart from "../../Model/cartModel.js";
 
 
 const loadProducts = async (req, res) => {
@@ -15,6 +17,7 @@ const loadProducts = async (req, res) => {
         const brand = req.query.brand || "";
         const price = req.query.price || "";
         const sort = req.query.sort || "";
+        const message = req.query.message || "";
 
         let query = {
             isBlocked: false
@@ -59,6 +62,10 @@ const loadProducts = async (req, res) => {
 
         switch (sort) {
 
+            case "oldest" :
+                sortOption = { createdAt: 1};
+                break;
+
             case "low-high":
                 sortOption["variants.0.salePrice"] = 1;
                 break;
@@ -95,6 +102,7 @@ const loadProducts = async (req, res) => {
 
         res.render("user/products", {
             products,
+            message,
             categories,
             currentPage: page,
             totalPages,
@@ -111,73 +119,96 @@ const loadProducts = async (req, res) => {
     }
 };
 
-const loadProductDetails = async(req,res)=>{
-
-    try{
-
+const loadProductDetails = async (req, res) => {
+    try {
         const id = req.params.id;
+        const userId = req.session.user;
 
-        const product = await Product
-        .findById(id)
-        .populate("category");
+        const product = await Product.findById(id).populate("category");
 
-        if(!product || product.isBlocked){
 
-            return res.redirect(
-                "/user/products"
-            );
+        if (!product || product.isBlocked) {
+            return res.redirect("/user/products?message=Product%20is%20currently%20unavailable");
+        }
 
+        // only valid variants
+        const filteredVariants = product.variants.filter(variant =>
+            variant &&
+            variant.size &&
+            variant.size.trim() !== "" &&
+            variant.salePrice != null
+        );
+
+        const defaultVariant = filteredVariants.length > 0 ? filteredVariants[0] : null;
+
+        let wishlistExists = false;
+
+        if (userId) {
+            const wishlist = await Wishlist.findOne({ userId });
+
+            if (wishlist && wishlist.items && wishlist.items.length > 0) {
+                wishlistExists = wishlist.items.some(
+                    item => item.productId.toString() === id.toString()
+                );
+            }
+        }
+
+        // cart count
+        let cartCount = 0;
+
+        if (userId) {
+            const cart = await Cart.findOne({ userId });
+            if (cart) {
+                cartCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+            }
         }
 
         const relatedProducts = await Product.find({
-
-            category:product.category,
-
-            isBlocked:false,
-
-            _id:{
-                $ne:product._id
-            }
-
+            category: product.category,
+            isBlocked: false,
+            _id: { $ne: product._id }
         }).limit(4);
 
-        // Get Reviews
-
         const reviews = await Review.find({
-
-            variantId:product._id
-
+            productId: product._id
         }).populate("userId");
 
-        // Calculate Average Rating
+        const averageRating =
+            reviews.length > 0
+                ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+                : 0;
 
-        const averageRating = reviews.length ? reviews.reduce( (sum,review)=> sum + review.rating, 0 ) / reviews.length :0;
-
-        const discountPercentage = product.regularPrice > 0 ? Math.round(( product.regularPrice - product.salePrice ) / product.regularPrice * 100 ): 0;
+        let discountPercentage = 0;
+        if (
+            defaultVariant &&
+            defaultVariant.regularPrice &&
+            defaultVariant.salePrice &&
+            defaultVariant.regularPrice > defaultVariant.salePrice
+        ) {
+            discountPercentage = Math.round(
+                ((defaultVariant.regularPrice - defaultVariant.salePrice) /
+                    defaultVariant.regularPrice) *
+                    100
+            );
+        }
 
         res.render("user/product-details", {
-                product,
-                relatedProducts,
-                reviews,
-                averageRating,
-                discountPercentage,
-                user: req.session.user || null
-            }
-        );
+            product,
+            filteredVariants,
+            defaultVariant,
+            wishlistExists,
+            relatedProducts,
+            reviews,
+            averageRating,
+            discountPercentage,
+            cartCount,
+            user: userId || null
+        });
 
-    }catch(error){
-
-        console.log(
-            "PRODUCT DETAILS ERROR:",
-            error
-        );
-
-        res.redirect(
-            "/user/pageNotFound"
-        );
-
+    } catch (error) {
+        console.log("PRODUCT DETAILS ERROR:", error);
+        res.redirect("/user/pageNotFound");
     }
-
 };
 
 

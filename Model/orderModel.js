@@ -9,7 +9,7 @@ const orderSchema = new mongoose.Schema({
 
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Users",
         required: true
     },
 
@@ -34,6 +34,48 @@ const orderSchema = new mongoose.Schema({
             price: {
                 type: Number,
                 required: true
+            },
+
+            status: {
+                type: String,
+            enum: [
+                    "pending",
+                    "shipped",
+                    "out_for_delivery",
+                    "delivered",
+                    "cancelled",
+                    "partially_cancelled",
+                    "returned",
+                    "return_requested",
+                    "partially_returned"
+                ],
+                default: "pending"
+            },
+
+            cancelReason: {
+                type: String,
+                default: ""
+            },
+
+            cancelledAt: {
+                type: Date,
+                default: null
+            },
+
+            returnReason: {
+            type: String,
+            default: ""
+            },
+
+            returnedAt: {
+                type: Date,
+                default: null
+            },
+
+            returnStatus: {
+                type: String,
+                enum: ["none", "requested", "approved", "rejected", "returned"],
+                default: "none"
             }
         }
     ],
@@ -68,7 +110,14 @@ const orderSchema = new mongoose.Schema({
 
     orderStatus: {
         type: String,
-        enum: ["pending", "delivered", "cancelled"],
+        enum: [
+            "pending",
+            "shipped",
+            "out_for_delivery",
+            "delivered",
+            "cancelled",
+            "partially_cancelled"
+        ],
         default: "pending"
     },
 
