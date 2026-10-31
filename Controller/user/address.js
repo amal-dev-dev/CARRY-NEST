@@ -38,17 +38,29 @@ const loadAddAddress = async (req, res) => {
 
         const userId = req.session.user;
 
+        if (!userId) {
+            return res.redirect("/user/login");
+        }
+
         const user = await User.findById(userId);
+
+        if (!user) {
+            return res.redirect("/user/login");
+        }
 
         res.render("user/add-address", {
 
-            user
+            user,
+            errors: {},
+            formData: {}
 
         });
 
     } catch (error) {
 
-        console.log(error);
+        console.log("LOAD ADD ADDRESS ERROR:", error);
+
+        res.redirect("/user/address");
 
     }
 
@@ -60,9 +72,19 @@ const addAddress = async (req, res) => {
 
     try {
 
-         console.log("❌ NORMAL ADD ADDRESS CONTROLLER HIT");
-
         const userId = req.session.user;
+
+        if (!userId) {
+
+            if (req.is("application/json")) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Please login first"
+                });
+            }
+
+            return res.redirect("/user/login");
+        }
 
         const {
             type,
@@ -72,37 +94,150 @@ const addAddress = async (req, res) => {
             city,
             state,
             pincode,
-            detailAddress,
             landmark
         } = req.body;
 
-        const newAddress = new Address({
 
+        // =========================
+        // INPUT VALIDATION
+        // =========================
+
+        const errors = {};
+
+        // Full name
+        if (!fullName || !fullName.trim()) {
+            errors.fullName = "Full name is required";
+        } else if (!/^[A-Za-z\s]+$/.test(fullName.trim())) {
+            errors.fullName = "Full name should contain only letters";
+        } else if (fullName.trim().length < 3) {
+            errors.fullName = "Full name must be at least 3 characters";
+        }
+
+
+        // Mobile
+        if (!mobile || !mobile.trim()) {
+            errors.mobile = "Mobile number is required";
+        } else if (!/^[6-9]\d{9}$/.test(mobile.trim())) {
+            errors.mobile = "Enter a valid 10-digit mobile number";
+        }
+
+
+        // Address
+        if (!address || !address.trim()) {
+            errors.address = "Address is required";
+        } else if (address.trim().length < 5) {
+            errors.address = "Address must be at least 5 characters";
+        }
+
+
+        // City
+        if (!city || !city.trim()) {
+            errors.city = "City is required";
+        } else if (!/^[A-Za-z\s]+$/.test(city.trim())) {
+            errors.city = "City should contain only letters";
+        }
+
+
+        // State
+        if (!state || !state.trim()) {
+            errors.state = "State is required";
+        } else if (!/^[A-Za-z\s]+$/.test(state.trim())) {
+            errors.state = "State should contain only letters";
+        }
+
+
+        // Pincode
+        if (!pincode || !pincode.trim()) {
+            errors.pincode = "Pincode is required";
+        } else if (!/^\d{6}$/.test(pincode.trim())) {
+            errors.pincode = "Pincode must be exactly 6 digits";
+        }
+
+
+        // Landmark - optional
+        if (landmark && landmark.trim().length > 100) {
+            errors.landmark = "Landmark is too long";
+        }
+
+
+        // =========================
+        // RETURN VALIDATION ERRORS
+        // =========================
+
+        if (Object.keys(errors).length > 0) {
+
+            if (req.is("application/json")) {
+
+                return res.status(400).json({
+                    success: false,
+                    errors
+                });
+
+            }
+
+            const user = await User.findById(userId);
+
+            return res.status(400).render("user/add-address", {
+                user,
+                errors,
+                formData: req.body
+            });
+        }
+
+
+        // =========================
+        // CREATE ADDRESS
+        // =========================
+
+        const newAddress = new Address({
             userId,
             type,
-            fullName,
-            mobile,
-            address,
-            city,
-            state,
-            pincode,
-            detailAddress,
-            landmark
-
+            fullName: fullName.trim(),
+            mobile: mobile.trim(),
+            address: address.trim(),
+            city: city.trim(),
+            state: state.trim(),
+            pincode: pincode.trim(),
+            landmark: landmark ? landmark.trim() : ""
         });
+
 
         await newAddress.save();
 
-        console.log("❌ REDIRECTING TO NORMAL ADDRESS");
+        // =========================
+        // CHECKOUT AJAX REQUEST
+        // =========================
 
-        res.redirect("/user/address");
+        if (req.is("application/json")) {
+
+            return res.status(201).json({
+                success: true,
+                message: "Address added successfully",
+                address: newAddress
+            });
+
+        }
+
+
+        // =========================
+        // NORMAL ADDRESS PAGE FORM
+        // =========================
+
+        return res.redirect("/user/address");
+
 
     } catch (error) {
+        console.error("ADD ADDRESS ERROR:", error.stack || error);
 
-        console.log(error);
+        if (req.is("application/json")) {
+            return res.status(500).json({
+                success: false,
+                message: "Unable to add address"
+            });
+        }
 
+        return res.redirect("/user/address");
     }
-
 };
 
 
@@ -137,7 +272,6 @@ const updateAddress = async (req, res) => {
             city,
             state,
             pincode,
-            detailAddress,
             landmark
         } = req.body;
 
@@ -150,7 +284,6 @@ const updateAddress = async (req, res) => {
             city,
             state,
             pincode,
-            detailAddress,
             landmark
 
         });

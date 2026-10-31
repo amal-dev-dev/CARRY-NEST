@@ -62,22 +62,27 @@
                 <a href="/user/address" class="nav-item active">
                     <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span> Addresses
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/user/referral" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-gift"></i></span> Referrals
                 </a>
                 <a href="/user/orders" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-box"></i></span> Order History
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/user/wallet" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-wallet"></i></span> Wallet
                 </a>
                 <a href="/user/change-password" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-key"></i></span> Change Password
                 </a>
                 <div class="nav-divider"></div>
-                <a href="/user/logout" class="nav-item logout-btn">
-                    <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>Logout
-                </a>
+                <form action="/user/logout" method="POST" class="logout-form">
+                    <button type="submit" class="nav-item logout-btn">
+                        <span class="nav-icon">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </span>
+                        Logout
+                    </button>
+                </form>
             </nav>
         </aside>
 
@@ -120,7 +125,7 @@
                             <p><%= address.mobile %></p>
                         </div>
                         <div class="address-actions">
-                            <form action="/user/address/delete/<%= address._id %>" 
+                            <form action="/user/address/delete/<%= address._id %>?_method=DELETE" 
                                 method="POST"
                                 class="delete-form">
                                 <button type="submit" class="delete-btn">

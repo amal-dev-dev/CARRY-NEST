@@ -98,6 +98,19 @@
                             value="<%= user.email %>"
                         >
 
+                        <div class="form-group">
+
+                            <label>Current Password</label>
+
+                            <input
+                                type="password"
+                                id="currentPassword"
+                                name="currentPassword"
+                                placeholder="Enter your current password"
+                            >
+
+                        </div>
+
                         <!-- SEND OTP -->
                         <button
                             type="button"
@@ -259,7 +272,12 @@
     // SEND OTP
     function sendOTP() {
 
-        const email = document.getElementById("email").value;
+        const email =
+            document.getElementById("email").value.trim();
+
+        const currentPassword =
+            document.getElementById("currentPassword").value;
+
 
         if (email === originalEmail) {
 
@@ -272,6 +290,19 @@
             return;
         }
 
+
+        if (!currentPassword) {
+
+            Swal.fire({
+                icon: "warning",
+                title: "Password Required",
+                text: "Please enter your current password"
+            });
+
+            return;
+        }
+
+
         fetch("/user/send-email-otp", {
 
             method: "POST",
@@ -281,7 +312,8 @@
             },
 
             body: JSON.stringify({
-                newEmail: email
+                newEmail: email,
+                currentPassword: currentPassword
             })
 
         })
@@ -295,10 +327,12 @@
                 Swal.fire({
                     icon: "success",
                     title: "OTP Sent",
-                    text: "OTP sent to email"
+                    text: "OTP sent to your new email"
                 });
 
-                document.getElementById("otpSection").style.display = "block";
+                document.getElementById(
+                    "otpSection"
+                ).style.display = "block";
 
                 clearInterval(timer);
 
@@ -308,14 +342,28 @@
 
                 Swal.fire({
                     icon: "error",
-                    title: "Failed",
+                    title: "Verification Failed",
                     text: data.message
                 });
 
             }
 
-        });
+        })
 
+        .catch(error => {
+
+            console.error(
+                "SEND OTP ERROR:",
+                error
+            );
+
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Something went wrong"
+            });
+
+        });
     }
 
     // RESEND OTP

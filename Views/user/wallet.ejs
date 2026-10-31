@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARRY NEST - Wallet</title>
+    <link rel="stylesheet" href="/Styles/user/wallet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">CARRY NEST</div>
+
+        <div class="nav-icons">
+            <a href="/user/cart" class="cart-link">
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <% if (cartCount > 0) { %>
+                    <span class="cart-badge"><%= cartCount %></span>
+                <% } %>
+            </a>
+            
+            <a href="/user/wishlist" class="wishlist-link">
+                <i class="fa-regular fa-heart"></i>
+
+                <% if (wishlistCount > 0) { %>
+                    <span class="wishlist-badge">
+                        <%= wishlistCount %>
+                    </span>
+                <% } %>
+            </a>
+
+            <a href="/user/profile">
+                <i class="fa-regular fa-user"></i>
+            </a>
+        </div>
+    </nav>
+
+    <div class="profile-page-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar-container">
+            <div class="user-id-card">
+                <div class="avatar-box">
+                    <img src="<%= user.profileImage || 'https://ui-avatars.com/api/?name=' + user.name %>">
+                </div>
+                <h3><%= user.name %></h3>
+                <p class="user-email"><%= user.email %></p>
+                <p class="user-phone"><%= user.phone %></p>
+            </div>
+
+            <nav class="nav-menu">
+                  <a href="/user/home" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-house"></i></span> Home
+                </a>
+                <a href="/user/profile" class="nav-item">
+                    <span class="nav-icon"><i class="fa-regular fa-user"></i></span> Personal Information
+                </a>
+                <!-- Addresses is now the ACTIVE item with black background -->
+                <a href="/user/address" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span> Addresses
+                </a>
+                <a href="/user/referral" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-gift"></i></span> Referrals
+                </a>
+                <a href="/user/orders" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-box"></i></span> Order History
+                </a>
+                <a href="#" class="nav-item active">
+                    <span class="nav-icon"><i class="fa-solid fa-wallet"></i></span> Wallet
+                </a>
+                <a href="/user/change-password" class="nav-item">
+                    <span class="nav-icon"><i class="fa-solid fa-key"></i></span> Change Password
+                </a>
+                <div class="nav-divider"></div>
+                <form action="/user/logout" method="POST" class="logout-form">
+                    <button type="submit" class="nav-item logout-btn">
+                        <span class="nav-icon">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </span>
+                        Logout
+                    </button>
+                </form>
+            </nav>
+        </aside>
+
+        <!-- Wallet Main Content -->
+        <main class="wallet-main">
+
+            <!-- Wallet Header -->
+            <div class="wallet-header">
+                <div>
+                    <h2>Wallet</h2>
+                </div>
+            </div>
+
+            <!-- Balance Card -->
+            <div class="wallet-balance-card">
+
+                <div class="balance-info">
+                    <span class="balance-label">Available Balance</span>
+
+                    <h1>
+                        <%= Number(wallet?.balance || 0).toFixed(2) %>
+                    </h1>
+                </div>
+
+                <button type="button" class="add-money-btn" id="addMoneyBtn">
+                    <span class="plus-icon">+</span>
+                    Add Money
+                </button>
+
+            </div>
+
+
+            <!-- Transaction History -->
+            <div class="transaction-section">
+
+                <div class="transaction-title">
+                    <h3>Transaction History</h3>
+                </div>
+
+                <% if (!wallet?.transactions?.length) { %>
+
+                    <div class="empty-transactions">
+                        <p>No transactions yet.</p>
+                    </div>
+
+                <% } else { %>
+
+                    <!-- Desktop Table -->
+                    <div class="transaction-table-wrapper">
+
+                        <table class="transaction-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <% wallet.transactions
+                                    .slice()
+                                    .reverse()
+                                    .forEach(transaction => { %>
+
+                                    <tr>
+
+                                        <!-- Date -->
+                                        <td>
+                                            <%= new Date(transaction.createdAt)
+                                                .toISOString()
+                                                .split("T")[0] %>
+                                        </td>
+
+                                        <!-- Description -->
+                                        <td>
+                                            <%= transaction.description %>
+                                        </td>
+
+                                        <!-- Amount -->
+                                        <td>
+                                            <% if (transaction.type === "credit") { %>
+
+                                                <span class="transaction-credit">
+                                                    ↑ ₹<%= Number(transaction.amount).toFixed(2) %>
+                                                </span>
+
+                                            <% } else { %>
+
+                                                <span class="transaction-debit">
+                                                    ↓ ₹<%= Number(transaction.amount).toFixed(2) %>
+                                                </span>
+
+                                            <% } %>
+                                        </td>
+
+                                        <!-- Status -->
+                                        <td>
+                                            <span class="transaction-status">
+                                                <span class="status-icon">✓</span>
+                                                Completed
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+                                <% }) %>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- Mobile Transaction Cards -->
+                    <div class="mobile-transactions">
+
+                        <% wallet.transactions
+                            .slice()
+                            .reverse()
+                            .forEach(transaction => { %>
+
+                            <div class="transaction-card">
+
+                                <div class="transaction-card-top">
+
+                                    <span class="transaction-date">
+                                        <%= new Date(transaction.createdAt)
+                                            .toISOString()
+                                            .split("T")[0] %>
+                                    </span>
+
+                                    <% if (transaction.type === "credit") { %>
+
+                                        <span class="transaction-credit">
+                                            ↑ ₹<%= Number(transaction.amount).toFixed(2) %>
+                                        </span>
+
+                                    <% } else { %>
+
+                                        <span class="transaction-debit">
+                                            ↓ ₹<%= Number(transaction.amount).toFixed(2) %>
+                                        </span>
+
+                                    <% } %>
+
+                                </div>
+
+                                <div class="transaction-card-bottom">
+
+                                    <span class="transaction-description">
+                                        <%= transaction.description %>
+                                    </span>
+
+                                    <span class="transaction-status">
+                                        <span class="status-icon">✓</span>
+                                        Completed
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        <% }) %>
+
+                    </div>
+
+                <% } %>
+
+            </div>
+
+        </main>
+
+    </div> 
+
+    <!-- Add Money Modal -->
+    <div class="wallet-modal" id="walletModal">
+
+        <div class="wallet-modal-content">
+
+            <button type="button" class="wallet-modal-close" id="closeWalletModal">
+                &times;
+            </button>
+
+            <h3>Add Money</h3>
+
+            <p>Enter the amount you want to add to your wallet.</p>
+
+            <input
+                type="number"
+                id="walletAmount"
+                placeholder="Enter amount"
+                min="1"
+                step="1"
+            >
+
+            <button type="button" id="proceedWalletPayment">
+                Proceed to Payment
+            </button>
+
+        </div>
+
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-col about">
+                <h3 class="footer-logo">CARRY NEST</h3>
+                <p>Lorem ipsum dolor sit amet consectetur. Purus in etiam risus ut sem eu urna. Massa feugiat consequat nec libero.</p>
+                <p>Lorem ipsum dolor sit</p>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Service</h3>
+                <ul>
+                    <li><a href="#">Laptop Bags</a></li>
+                    <li><a href="#">Trekking Bags</a></li>
+                    <li><a href="#">School Bags</a></li>
+                    <li><a href="#">Office Bags</a></li>
+                    <li><a href="#">Travelling Bags</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">Service</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Our Team</a></li>
+                    <li><a href="#">Portfolio</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col contact-form">
+                <h3>Contact Us</h3>
+                <p>Your Email/Phone no.</p>
+                <div class="subscribe-box">
+                    <input type="text" placeholder="Enter Your Email or Phone no.">
+                    <button class="send-btn">Send</button>
+                </div>
+                <div class="social-icons">
+                    <div class="social-icon fb"></div>
+                    <div class="social-icon ig"></div>
+                    <div class="social-icon wa"></div>
+                    <div class="social-icon li"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>Copyright Tanah Air Studio</p>
+            <div class="info-links">
+                <span>📍 8819 Ohio St. South Gate, CA 90280</span>
+                <span>✉️ CrossLine@hello.com</span>
+                <span>📞 +91 386-688-3295</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+
+const addMoneyBtn =
+    document.getElementById("addMoneyBtn");
+
+const walletModal =
+    document.getElementById("walletModal");
+
+const closeWalletModal =
+    document.getElementById("closeWalletModal");
+
+const proceedWalletPayment =
+    document.getElementById("proceedWalletPayment");
+
+const walletAmount =
+    document.getElementById("walletAmount");
+
+
+// Open modal
+addMoneyBtn.addEventListener("click", () => {
+
+    walletModal.classList.add("show");
+
+    walletAmount.value = "";
+
+});
+
+
+// Close modal
+closeWalletModal.addEventListener("click", () => {
+
+    walletModal.classList.remove("show");
+
+});
+
+
+// Close when clicking outside
+walletModal.addEventListener("click", (event) => {
+
+    if (event.target === walletModal) {
+
+        walletModal.classList.remove("show");
+
+    }
+
+});
+
+
+// Proceed payment
+proceedWalletPayment.addEventListener(
+    "click",
+    async () => {
+
+        const amount =
+            Number(walletAmount.value);
+
+
+        if (!amount || amount <= 0) {
+
+            Swal.fire({
+                icon: "warning",
+                title: "Invalid Amount",
+                text: "Please enter a valid amount."
+            });
+
+            return;
+
+        }
+
+
+        if (amount < 10) {
+
+            Swal.fire({
+                icon: "warning",
+                title: "Minimum Amount",
+                text: "Minimum wallet amount is ₹10."
+            });
+
+            return;
+
+        }
+
+
+        try {
+
+            // Create Razorpay order
+            const response =
+                await fetch(
+                    "/user/create-wallet-payment",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            amount: amount
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!data.success) {
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Payment Error",
+                    text: data.message ||
+                        "Unable to create payment"
+                });
+
+                return;
+
+            }
+
+
+            // Razorpay options
+            const options = {
+
+                key: "<%= razorpayKeyId %>",
+
+                amount:
+                    data.order.amount,
+
+                currency:
+                    data.order.currency,
+
+                name:
+                    "Carry Nest",
+
+                description:
+                    "Add Money to Wallet",
+
+                order_id:
+                    data.order.id,
+
+
+                handler:
+                    async function (
+                        paymentResponse
+                    ) {
+
+                        try {
+
+                            const verifyResponse =
+                                await fetch(
+                                    "/user/verify-wallet-payment",
+                                    {
+                                        method: "POST",
+
+                                        headers: {
+                                            "Content-Type":
+                                                "application/json"
+                                        },
+
+                                        body:
+                                            JSON.stringify({
+
+                                                razorpay_order_id:
+                                                    paymentResponse
+                                                        .razorpay_order_id,
+
+                                                razorpay_payment_id:
+                                                    paymentResponse
+                                                        .razorpay_payment_id,
+
+                                                razorpay_signature:
+                                                    paymentResponse
+                                                        .razorpay_signature
+
+                                            })
+                                    }
+                                );
+
+
+                            const verifyData =
+                                await verifyResponse.json();
+
+
+                            if (verifyData.success) {
+
+                                walletModal
+                                    .classList
+                                    .remove("show");
+
+
+                                Swal.fire({
+
+                                    icon: "success",
+
+                                    title:
+                                        "Money Added",
+
+                                    text:
+                                        `₹${amount.toFixed(2)} added to your wallet.`,
+
+                                    confirmButtonText:
+                                        "OK"
+
+                                }).then(() => {
+
+                                    window.location.reload();
+
+                                });
+
+                            } else {
+
+                                Swal.fire({
+
+                                    icon: "error",
+
+                                    title:
+                                        "Payment Failed",
+
+                                    text:
+                                        verifyData.message ||
+                                        "Payment verification failed"
+
+                                });
+
+                            }
+
+
+                        } catch (error) {
+
+                            console.log(
+                                "WALLET VERIFY ERROR:",
+                                error
+                            );
+
+                            Swal.fire({
+
+                                icon: "error",
+
+                                title:
+                                    "Something went wrong",
+
+                                text:
+                                    "Unable to verify payment."
+
+                            });
+
+                        }
+
+                    },
+
+
+                modal: {
+
+                    ondismiss: function () {
+
+                        console.log(
+                            "Wallet payment cancelled"
+                        );
+
+                    }
+
+                },
+
+
+                theme: {
+                    color: "#000000"
+                }
+
+            };
+
+
+            const razorpay =
+                new Razorpay(options);
+
+
+            razorpay.on(
+                "payment.failed",
+                function (response) {
+
+                    console.log(
+                        "WALLET PAYMENT FAILED:",
+                        response
+                    );
+
+                    Swal.fire({
+
+                        icon: "error",
+
+                        title:
+                            "Payment Failed",
+
+                        text:
+                            response.error?.description ||
+                            "Payment failed"
+
+                    });
+
+                }
+            );
+
+
+            razorpay.open();
+
+
+        } catch (error) {
+
+            console.log(
+                "CREATE WALLET PAYMENT ERROR:",
+                error
+            );
+
+            Swal.fire({
+
+                icon: "error",
+
+                title:
+                    "Payment Error",
+
+                text:
+                    "Unable to process payment."
+
+            });
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>

@@ -173,7 +173,26 @@ body {
 
 .nav-icon { margin-right: 12px; font-size: 1.1rem; }
 .nav-divider { height: 1px; background: var(--border-color); margin: 15px 0; }
-.logout-btn { color: #ef4444; }
+
+.logout-form {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.logout-btn {
+    color: #ef4444;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: none;
+}
 
 /* --- Main Content: Address Section --- */
 .main-content-container {

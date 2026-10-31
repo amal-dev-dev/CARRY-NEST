@@ -4,9 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Address - CARRY NEST</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/Styles/user/add-address.css">
 </head>
 <body>
+
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">CARRYNEST</div>
+
+            <div class="nav-icons">
+
+                <% if(user){ %>
+
+                    <a href="/user/cart" class="cart-link">
+                        <i class="fa-solid fa-cart-shopping"></i>
+
+                        <% if (cartCount > 0) { %>
+                            <span class="cart-badge"><%= cartCount %></span>
+                        <% } %>
+                    </a>
+
+                    <a href="/user/wishlist" class="wishlist-link">
+                        <i class="fa-regular fa-heart"></i>
+
+                        <% if (wishlistCount > 0) { %>
+                            <span class="wishlist-badge">
+                                <%= wishlistCount %>
+                            </span>
+                        <% } %>
+                    </a>
+
+                    <a href="/user/profile" style="color:black;">
+                        <i class="fa-regular fa-user"></i>
+                    </a>
+
+                <% } else { %>
+
+                    <a href="/user/login" class="login-btn">
+                        Login
+                    </a>
+
+                    <a href="/user/signup" class="signup-btn">
+                        Sign Up
+                    </a>
+
+                <% } %>
+
+            </div>
+        </nav>
+    </header>
 
     <div class="address-container">
         <header class="address-header">
@@ -18,6 +67,8 @@
 
             <form class="address-form" action="/user/address/add" method="POST">
 
+            <input type="hidden" name="from" value="address">
+
             <div class="section-label">
                 Contact Details
             </div>
@@ -26,94 +77,106 @@
 
                 <div class="form-group">
                     <label>Full Name <span class="required">*</span></label>
+                    <input type="text" name="fullName" 
+                        value="<%= formData?.fullName || '' %>" 
+                        placeholder="<%= user ? user.name : '' %>" >
 
-                    <input
-                        type="text"
-                        name="fullName"
-                        placeholder="<%= user ? user.name : '' %>"
-                        
-                    >
+                        <% if (errors?.fullName) { %> 
+                            <small class="input-error"> 
+                                <%= errors.fullName %>
+                            </small> 
+                        <% } %>
+
                 </div>
 
 
                 <div class="form-group">
                     <label>Phone Number <span class="required">*</span></label>
 
-                    <input
-                        type="tel"
-                        name="mobile"
-                        placeholder="<%= user ? user.phone : '' %>"
+                    <input type="tel" name="mobile" 
+                        value="<%= formData?.mobile || '' %>" 
+                        placeholder="<%= user ? user.phone : '' %>" > 
                         
-                    >
+                        <% if (errors?.mobile) { %> 
+                            <small class="input-error"> 
+                            <%= errors.mobile %> 
+                            </small> 
+                        <% } %>
+
                 </div>
 
 
                 <div class="form-group full-width">
                     <label>Address</label>
 
-                    <input
-                        type="text"
-                        name="address"
-                        placeholder=""
-                    >
+                    <input type="text" name="address" 
+                        value="<%= formData?.address || '' %>" 
+                        placeholder="Enter your address" > 
+                        
+                        <% if (errors?.address) { %> 
+                            <small class="input-error"> 
+                            <%= errors.address %> 
+                            </small> 
+                        <% } %>
                 </div>
 
                 <div class="form-group">
                     <label>Pincode <span class="required">*</span></label>
 
-                    <input
-                        type="text"
-                        name="pincode"
-                        placeholder=""
+                    <input type="text" name="pincode" 
+                        value="<%= formData?.pincode || '' %>" 
+                        placeholder="Enter 6-digit pincode" > 
                         
-                    >
+                        <% if (errors?.pincode) { %> 
+                            <small class="input-error"> 
+                                <%= errors.pincode %> 
+                            </small> 
+                        <% } %>
                 </div>
 
 
                 <div class="form-group">
                     <label>City <span class="required">*</span></label>
 
-                    <input
-                        type="text"
-                        name="city"
-                        placeholder=""
+                    <input type="text" name="city" 
+                        value="<%= formData?.city || '' %>" 
+                        placeholder="Enter city" > 
                         
-                    >
+                        <% if (errors?.city) { %> 
+                            <small class="input-error"> 
+                                <%= errors.city %>
+                            </small> 
+                        <% } %>
                 </div>
 
 
                 <div class="form-group">
                     <label>State <span class="required">*</span></label>
 
-                    <input
-                        type="text"
-                        name="state"
-                        placeholder=""
+                    <input type="text" name="state"
+                        value="<%= formData?.state || '' %>" 
+                        placeholder="Enter state" > 
                         
-                    >
+                        <% if (errors?.state) { %> 
+                            <small class="input-error"> 
+                                <%= errors.state %> 
+                            </small> 
+                            
+                        <% } %> 
                 </div>
-
-
-                <div class="form-group full-width">
-                    <label>Detailed Address <span class="required">*</span></label>
-
-                    <textarea
-                        name="detailAddress"
-                        placeholder="House No., Building Name, Street, Area"
-                        rows="4"
-                        
-                    ></textarea>
-                </div>
-
 
                 <div class="form-group full-width">
                     <label>Landmark <span class="optional">(Optional)</span></label>
 
-                    <input
-                        type="text"
-                        name="landmark"
-                        placeholder="Near City Park"
-                    >
+                    <input type="text" name="landmark" 
+                        value="<%= formData?.landmark || '' %>"
+                        placeholder="Near City Park" > 
+                        
+                        <% if (errors?.landmark) { %> 
+                            <small class="input-error"> 
+                                <%= errors.landmark %> 
+                            </small> 
+                        <% } %>
                 </div>
 
             </div>
@@ -131,7 +194,7 @@
                             type="radio"
                             name="type"
                             value="Home"
-                            checked
+                            <%= formData?.type === "Home" || !formData?.type ? "checked" : "" %>
                         >
 
                         <span class="type-text">Home</span>
@@ -145,6 +208,7 @@
                             type="radio"
                             name="type"
                             value="Office"
+                            <%= formData?.type === "Office" ? "checked" : "" %>
                         >
 
                         <span class="type-text">Office</span>
@@ -162,6 +226,19 @@
 
         </form>
     </div>
+
+    <!-- ================= VALIDATION STYLE ================= --> 
+     
+    <style> 
+
+    .input-error { 
+        display: block; 
+        color: #dc2626; 
+        font-size: 13px; 
+        margin-top: 5px; 
+    } 
+
+    </style>
 
 </body>
 </html>

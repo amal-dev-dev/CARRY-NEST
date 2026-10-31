@@ -1,5 +1,6 @@
 import Users from "../../Model/userModel.js";
 import Admin from "../../Model/adminModel.js";
+import Order from "../../Model/orderModel.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 
@@ -70,57 +71,7 @@ const login = async (req, res) => {
         });
     }
 };
-const loadDashboard = async (req, res) => {
 
-    try {
-
-        const search = req.query.search || "";
-
-        const page = parseInt(req.query.page) || 1;
-
-        const limit = 5;
-
-        const skip = (page - 1) * limit;
-
-        const users = await Users.find({
-
-            name: {
-                $regex: search,
-                $options: "i"
-            }
-
-        })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
-
-        const totalUsers = await Users.countDocuments({
-
-            name: {
-                $regex: search,
-                $options: "i"
-            }
-
-        });
-
-        const totalPages = Math.ceil(totalUsers / limit);
-
-        res.render("admin/dashboard", {
-
-            users,
-            currentPage: page,
-            totalPages,
-            search
-
-        });
-
-    } catch (error) {
-
-        console.log(error);
-
-    }
-
-};
 
 const blockUser = async (req, res) => {
 
@@ -162,75 +113,136 @@ const unblockUser = async (req, res) => {
 
 };
 
+
 const loadCustomers = async (req, res) => {
-
     try {
+        const search = (req.query.search || "").trim();
+        const sort = req.query.sort === "oldest" ? "oldest" : "latest";
 
-        const search = req.query.search || "";
-
-        const sort = req.query.sort || "latest";
-
-        const page = parseInt(req.query.page) || 1;
-
+        const page = Math.max(1, parseInt(req.query.page, 10) || 1);
         const limit = 5;
-
         const skip = (page - 1) * limit;
 
-        let sortOption = {};
+        // Escape special characters in the search input
+        const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-        // SORTING
-        if(sort === "latest"){
+        const searchRegex = new RegExp(escapedSearch, "i");
 
-            sortOption = { createdAt: -1 };
+        // Search by name, email, or phone
+        const filter = search
+            ? {
+                $or: [
+                    { name: searchRegex },
+                    { email: searchRegex },
+                    { phone: searchRegex }
+                ]
+            }
+            : {};
 
-        } else if(sort === "oldest"){
+        const sortOption = {
+            createdAt: sort === "latest" ? -1 : 1,
+            _id: -1
+        };
 
-            sortOption = { createdAt: 1 };
+        // Fetch customers for the current page
+        const users = await Users.find(filter)
+            .sort(sortOption)
+            .skip(skip)
+            .limit(limit)
+            .lean();
 
-        } 
+        const totalUsers = await Users.countDocuments(filter);
 
-        const users = await Users.find({
+        const totalPages = Math.max(1, Math.ceil(totalUsers / limit));
 
-            name: {
-                $regex: search,
-                $options: "i"
+        // Overall customer statistics (not affected by search)
+        const [activeCustomers, blockedCustomers] = await Promise.all([
+            Users.countDocuments({ isBlocked: { $ne: true } }),
+            Users.countDocuments({ isBlocked: true })
+        ]);
+
+        // Get orders belonging to the customers on this page
+        const userIds = users.map(user => user._id);
+
+        const orders = userIds.length
+            ? await Order.find({ userId: { $in: userIds } })
+                .select("userId totalAmount paymentStatus orderStatus paymentMethod")
+                .lean()
+            : [];
+
+        // Calculate order count and spending per customer
+        const customerStats = {};
+
+        for (const user of users) {
+            customerStats[user._id.toString()] = {
+                orderCount: 0,
+                totalSpent: 0
+            };
+        }
+
+        for (const order of orders) {
+            const customerId = order.userId?.toString();
+
+            if (!customerId || !customerStats[customerId]) {
+                continue;
             }
 
-        })
-        .sort(sortOption)
-        .skip(skip)
-        .limit(limit);
+            // Exclude cancelled and failed orders from order count
+            const excludedStatuses = [
+                "cancelled",
+                "payment_failed"
+            ];
 
-        const totalUsers = await Users.countDocuments({
+            const excludedPayments = ["failed"];
 
-            name: {
-                $regex: search,
-                $options: "i"
+            if (
+                excludedStatuses.includes(order.orderStatus) ||
+                excludedPayments.includes(order.paymentStatus)
+            ) {
+                continue;
             }
 
-        });
+            customerStats[customerId].orderCount++;
 
-        const totalPages = Math.ceil(totalUsers / limit);
+            // Count successfully paid orders.
+            // COD orders count as spent once delivered.
+            const isPaid =
+                order.paymentStatus === "completed" ||
+                (
+                    order.paymentMethod === "COD" &&
+                    order.orderStatus === "delivered"
+                );
 
+            if (isPaid) {
+                customerStats[customerId].totalSpent +=
+                    Number(order.totalAmount) || 0;
+            }
+        }
 
-        res.render("admin/customers", {
+        // Attach statistics to each customer for EJS
+        const customers = users.map(user => ({
+            ...user,
+            orderCount: customerStats[user._id.toString()].orderCount,
+            totalSpent: customerStats[user._id.toString()].totalSpent
+        }));
 
-            users,
+        return res.render("admin/customers", {
+            users: customers,
             search,
             sort,
             currentPage: page,
             totalPages,
-            totalUsers
-
+            totalUsers,
+            activeCustomers,
+            blockedCustomers
         });
 
     } catch (error) {
-
-        console.log(error);
-
+        console.error("LOAD CUSTOMERS ERROR:", error);
+        return res.status(500).send("Unable to load customers");
     }
-
 };
+
 
 const logout = (req, res) => {
 
@@ -253,7 +265,6 @@ export default {
 
     loadLogin,
     login,
-    loadDashboard,
     blockUser,
     unblockUser,
     loadCustomers,

@@ -61,22 +61,27 @@
                 <a href="/user/address" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span> Addresses
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/user/referral" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-gift"></i></span> Referrals
                 </a>
                 <a href="/user/orders" class="nav-item active">
                     <span class="nav-icon"><i class="fa-solid fa-box"></i></span> Order History
                 </a>
-                <a href="#" class="nav-item">
+                <a href="/user/wallet" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-wallet"></i></span> Wallet
                 </a>
                 <a href="/user/change-password" class="nav-item">
                     <span class="nav-icon"><i class="fa-solid fa-key"></i></span> Change Password
                 </a>
                 <div class="nav-divider"></div>
-                <a href="/user/logout" class="nav-item logout-btn">
-                    <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span> Logout
-                </a>
+                <form action="/user/logout" method="POST" class="logout-form">
+                    <button type="submit" class="nav-item logout-btn">
+                        <span class="nav-icon">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </span>
+                        Logout
+                    </button>
+                </form>
             </nav>
         </aside>
 
@@ -113,6 +118,7 @@
                                 <h3>
                                     Order #<%= order.orderId || order._id.toString().slice(-8).toUpperCase() %>
                                 </h3>
+
                                 <p>
                                     <%= new Date(order.createdAt).toLocaleDateString("en-IN", {
                                         day: "numeric",
@@ -122,9 +128,20 @@
                                 </p>
                             </div>
 
-                            <span class="order-status <%= order.orderStatus %>">
-                                <%= order.orderStatus.replaceAll("_", " ") %>
-                            </span>
+                            <% if (order.paymentStatus === "failed") { %>
+
+                                <span class="order-status payment-failed">
+                                    Payment Failed
+                                </span>
+
+                            <% } else { %>
+
+                                <span class="order-status <%= order.orderStatus %>">
+                                    <%= order.orderStatus.replaceAll("_", " ") %>
+                                </span>
+
+                            <% } %>
+
                         </div>
 
                         <% if (order.products && order.products.length > 0) { %>
@@ -165,9 +182,20 @@
                                         <%= order.products.length === 1 ? 'Item' : 'Items' %>
                                     </strong>
 
-                                    <p>
-                                        View order details to see all products
-                                    </p>
+                                    <% order.products.slice(0, 2).forEach(item => { %>
+
+                                        <p>
+                                            <%= item.productId?.productName || "Product unavailable" %>
+                                            × <%= item.quantity %>
+                                        </p>
+
+                                    <% }) %>
+
+                                    <% if (order.products.length > 2) { %>
+                                        <p>
+                                            +<%= order.products.length - 2 %> more item(s)
+                                        </p>
+                                    <% } %>
 
                                 </div>
 
@@ -178,8 +206,22 @@
                                 <span>Total</span>
 
                                 <strong>
-                                    ₹<%= order.totalAmount %>
+                                    ₹<%= Number(order.totalAmount || 0).toFixed(2) %>
                                 </strong>
+
+                                <% if (order.paymentStatus === "failed") { %>
+
+                                    <small class="payment-failed-text">
+                                        Payment Failed
+                                    </small>
+
+                                <% } else if (order.paymentStatus === "completed") { %>
+
+                                    <small class="payment-success-text">
+                                        Payment Completed
+                                    </small>
+
+                                <% } %>
 
                             </div>
 
@@ -187,7 +229,9 @@
 
                         <% } %>
 
+
                         <div class="order-bottom">
+
                             <a
                                 href="/user/order-details/<%= order._id %>"
                                 class="track-btn">
@@ -196,7 +240,27 @@
                                 View Order Details
 
                             </a>
+
+                            <% if (
+                                order.paymentStatus === "failed" &&
+                                order.orderStatus !== "cancelled"
+                            ) { %>
+
+                                <form
+                                    action="/user/retry-payment/<%= order._id %>"
+                                    method="POST">
+
+                                    <button type="submit" class="retry-payment-btn">
+                                        <i class="fa-solid fa-rotate-right"></i>
+                                        Retry Payment
+                                    </button>
+
+                                </form>
+
+                            <% } %>
+
                         </div>
+
                     </div>
 
                 <% }) %>

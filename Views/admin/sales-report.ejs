@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sales Reports | Carry Nest</title>
+
+    <link
+        rel="stylesheet"
+        href="/Styles/admin/sales-report.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+</head>
+
+<body>
+
+
+<div class="dashboard-container">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- LOGO -->
+
+            <div class="logo-section">
+
+                <div class="logo-box">
+                    C
+                </div>
+
+                <h2>CARRY NEST</h2>
+
+            </div>
+
+
+            <!-- MENU -->
+
+            <div class="menu-wrapper">
+
+
+                <!-- DASHBOARD -->
+
+                <a
+                    href="/admin/dashboard"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-dashboard-line"></i>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+
+                <!-- PRODUCTS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-bag-line"></i>
+
+                            Products
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+
+                    <div class="dropdown-menu">
+
+                        <a href="/admin/products">
+                            All Products
+                        </a>
+
+                        <a href="/admin/add-product">
+                            Add Product
+                        </a>
+
+                        <a href="/admin/category">
+                            Categories
+                        </a>
+
+                        <a href="#">
+                            Brands
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ORDERS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                            Orders
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+
+                    <div class="dropdown-menu">
+
+                        <a href="/admin/orders">
+                            All Orders
+                        </a>
+
+                        <a href="#">
+                            Pending
+                        </a>
+
+                        <a href="#">
+                            Processing
+                        </a>
+
+                        <a href="#">
+                            Shipped
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RETURNS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+
+                    <div class="dropdown-menu">
+
+                        <a href="/admin/return-requests">
+                            Requests
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CUSTOMERS -->
+
+                <a
+                    href="/admin/customers"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+
+                <!-- WALLET -->
+
+                <a
+                    href="/admin/wallet"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+
+                <!-- PROMOTIONS -->
+
+                <a
+                    href="/admin/coupons"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+
+                <!-- REPORTS -->
+
+                <a
+                    href="#"
+                    class="menu-item active"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- LOGOUT -->
+
+        <div class="logout-section">
+
+            <a
+                href="/admin/logout"
+                class="logout-btn"
+            >
+
+                <i class="ri-logout-box-r-line"></i>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+   <main class="main-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+
+        <div class="top-left">
+            <p class="breadcrumb">
+                Admin
+                <span>/</span>
+                Wallet & Payments
+            </p>
+        </div>
+
+        <div class="top-right">
+
+            <span class="notification">
+                <i class="ri-notification-3-line"></i>
+            </span>
+
+            <div class="admin-profile">
+
+                <div class="admin-avatar">
+                    AD
+                </div>
+
+                <div>
+                    <h4>Admin User</h4>
+                    <span>Super Admin</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+<main class="sales-main">
+
+    <!-- Page Header -->
+    <section class="sales-header">
+
+        <div>
+            <h1>Sales Reports & Analytics</h1>
+            <p>Monitor your sales, orders, returns, and performance.</p>
+        </div>
+
+        <div class="header-actions">
+
+            <select class="date-select" id="reportPeriod">
+                <option value="30">Last 30 Days</option>
+                <option value="7">Last 7 Days</option>
+                <option value="90">Last 90 Days</option>
+                <option value="365">This Year</option>
+                <option value="custom">Custom Date</option>
+            </select>
+
+            <div class="custom-date-container" id="customDateContainer">
+
+                <input
+                    type="date"
+                    id="startDate"
+                    title="Start Date"
+                >
+
+                <span>to</span>
+
+                <input
+                    type="date"
+                    id="endDate"
+                    title="End Date"
+                >
+
+                <button
+                    type="button"
+                    id="applyDateRange"
+                    class="apply-date-btn"
+                >
+                    Apply
+                </button>
+
+            </div>
+
+            <div class="export-buttons">
+
+                <button
+                    class="export-btn csv-btn"
+                    type="button"
+                    onclick="exportReport('csv')">
+                    CSV
+                </button>
+
+                <button
+                    class="export-btn excel-btn"
+                    type="button"
+                    onclick="exportReport('excel')">
+                    Excel
+                </button>
+
+                <button
+                    class="export-btn pdf-btn"
+                    type="button"
+                    onclick="exportReport('pdf')">
+                    PDF
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Summary Cards -->
+    <section class="summary-grid">
+
+        <div class="summary-card">
+            <span>Total Revenue</span>
+
+            <h2>
+                ₹<%= Number(totalRevenue || 0).toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) %>
+            </h2>
+        </div>
+
+
+        <div class="summary-card">
+            <span>Total Orders</span>
+
+            <h2>
+                <%= Number(totalOrders || 0).toLocaleString("en-IN") %>
+            </h2>
+        </div>
+
+
+        <div class="summary-card">
+            <span>Net Revenue</span>
+
+            <h2>
+                ₹<%= Number(netRevenue || 0).toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) %>
+            </h2>
+        </div>
+
+
+        <div class="summary-card">
+            <span>Total Items Sold</span>
+
+            <h2>
+                <%= Number(totalItemsSold || 0).toLocaleString("en-IN") %>
+            </h2>
+        </div>
+
+
+        <div class="summary-card">
+            <span>Refund Amount</span>
+
+            <h2>
+                ₹<%= Number(refundAmount || 0).toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) %>
+            </h2>
+        </div>
+
+
+        <div class="summary-card">
+            <span>Avg Order Value</span>
+
+            <h2>
+                ₹<%= Number(averageOrderValue || 0).toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }) %>
+            </h2>
+        </div>
+
+    </section>
+
+
+    <!-- Filters -->
+    <section class="filter-bar">
+
+        <button type="button" class="filter-btn">
+            Filters
+        </button>
+
+
+        <select id="statusFilter">
+            <option value="">All Statuses</option>
+
+            <option value="pending">Pending</option>
+            <option value="shipped">Shipped</option>
+            <option value="out_for_delivery">
+                Out for Delivery
+            </option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+        </select>
+
+
+        <select id="paymentFilter">
+            <option value="">All Payment Methods</option>
+
+            <option value="COD">COD</option>
+            <option value="RAZORPAY">Razorpay</option>
+            <option value="WALLET">Wallet</option>
+        </select>
+
+
+        <select id="categoryFilter">
+
+            <option value="">All Categories</option>
+
+            <% if (typeof categories !== "undefined" && categories.length) { %>
+
+                <% categories.forEach(category => { %>
+
+                    <option value="<%= category._id %>">
+                        <%= category.name %>
+                    </option>
+
+                <% }) %>
+
+            <% } %>
+
+        </select>
+
+
+        <input
+            type="text"
+            id="productSearch"
+            class="search-product"
+            placeholder="Search products..."
+        >
+
+
+        <button type="button" class="reset-btn" id="resetFilters">
+            Reset
+        </button>
+
+    </section>
+
+
+    <!-- Charts -->
+    <section class="charts-grid">
+
+
+        <!-- Revenue Chart -->
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h3>Revenue Over Time</h3>
+
+                <select id="revenuePeriod">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+
+            </div>
+
+
+            <div class="line-chart">
+
+                <div class="y-axis" id="revenueYAxis"></div>
+
+                <div class="chart-area">
+
+                    <div class="grid-line line-1"></div>
+                    <div class="grid-line line-2"></div>
+                    <div class="grid-line line-3"></div>
+                    <div class="grid-line line-4"></div>
+                    <div class="grid-line line-5"></div>
+
+
+                    <svg
+                        viewBox="0 0 500 220"
+                        preserveAspectRatio="none"
+                        class="revenue-svg"
+                        id="revenueSvg"
+                    >
+                        <polyline id="revenueLine"></polyline>
+                    </svg>
+
+
+                    <div
+                        class="x-axis"
+                        id="revenueXAxis"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Orders Chart -->
+        <div class="chart-card">
+
+            <div class="chart-header">
+
+                <h3>Orders Count</h3>
+
+                <select id="ordersPeriod">
+                    <option value="weekly">Weekly</option>
+                    <option value="daily">Daily</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+
+            </div>
+
+
+            <div class="bar-chart">
+
+                <div
+                    class="bar-y-axis"
+                    id="ordersYAxis"
+                ></div>
+
+
+                <div
+                    class="bars"
+                    id="ordersBars"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Order Status + Refund -->
+    <section class="analysis-grid">
+
+
+        <!-- Order Status -->
+        <div class="status-card">
+
+            <h3>Order Status Breakdown</h3>
+
+
+            <div class="donut-container">
+
+                <div
+                    class="donut"
+                    id="statusDonut"
+                >
+
+                    <div class="donut-center">
+
+                        <strong>
+                            <%= Number(totalOrders || 0).toLocaleString("en-IN") %>
+                        </strong>
+
+                        <span>Total Orders</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="status-list">
+
+                <% if (statusBreakdown && statusBreakdown.length) { %>
+
+                    <% statusBreakdown.forEach(item => { %>
+
+                        <div>
+
+                            <span>
+
+                                <i
+                                    class="status-dot"
+                                    data-status="<%= item.status %>"
+                                ></i>
+
+                                <%= item.status
+                                    .replace(/_/g, " ")
+                                    .replace(/\b\w/g, letter => letter.toUpperCase())
+                                %>
+
+                            </span>
+
+                            <strong>
+                                <%= Number(item.count || 0).toLocaleString("en-IN") %>
+                            </strong>
+
+                        </div>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <div class="empty-data">
+                        No order status data available.
+                    </div>
+
+                <% } %>
+
+            </div>
+
+        </div>
+
+
+        <!-- Refund Analysis -->
+        <div class="refund-card">
+
+            <div class="card-title-row">
+
+                <h3>Refund & Return Analysis</h3>
+
+                <span class="info-icon">
+                    i
+                </span>
+
+            </div>
+
+
+            <div class="refund-summary">
+
+                <div>
+
+                    <span>Total Refund Amount</span>
+
+                    <strong>
+                        ₹<%= Number(
+                            refundAnalysis?.totalRefundAmount || 0
+                        ).toLocaleString("en-IN", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }) %>
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>Refunded Orders</span>
+
+                    <strong>
+                        <%= Number(
+                            refundAnalysis?.refundedOrders || 0
+                        ).toLocaleString("en-IN") %>
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <h4>Top Return Reasons</h4>
+
+
+            <% if (
+                refundAnalysis?.returnReasons &&
+                refundAnalysis.returnReasons.length
+            ) { %>
+
+                <% refundAnalysis.returnReasons.forEach(reason => { %>
+
+                    <div class="reason">
+
+                        <div class="reason-top">
+
+                            <span>
+                                <%= reason.reason %>
+                            </span>
+
+                            <span>
+                                <%= reason.percentage %>% 
+                                (<%= reason.count %>)
+                            </span>
+
+                        </div>
+
+
+                        <div class="progress">
+
+                        <div
+                            class="progress-bar"
+                            style="--percentage: <%= reason.percentage %>%"
+                        ></div>
+
+                        </div>
+
+                    </div>
+
+                <% }) %>
+
+            <% } else { %>
+
+                <p class="empty-data">
+                    No return data available.
+                </p>
+
+            <% } %>
+
+        </div>
+
+    </section>
+
+
+    <!-- Tables -->
+    <section class="tables-grid">
+
+
+        <!-- Top Selling Products -->
+        <div class="table-card">
+
+            <h3>Top Selling Products</h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Product</th>
+                            <th>Orders</th>
+                            <th>Units</th>
+                            <th>Revenue</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <% if (topProducts && topProducts.length) { %>
+
+                            <% topProducts.forEach(product => { %>
+
+                                <tr>
+
+                                    <td>
+                                        <%= product.productName %>
+                                    </td>
+
+                                    <td>
+                                        <%= Number(
+                                            product.orders || 0
+                                        ).toLocaleString("en-IN") %>
+                                    </td>
+
+                                    <td>
+                                        <%= Number(
+                                            product.units || 0
+                                        ).toLocaleString("en-IN") %>
+                                    </td>
+
+                                    <td>
+                                        ₹<%= Number(
+                                            product.revenue || 0
+                                        ).toLocaleString("en-IN", {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }) %>
+                                    </td>
+
+                                </tr>
+
+                            <% }) %>
+
+                        <% } else { %>
+
+                            <tr>
+                                <td
+                                    colspan="4"
+                                    class="empty-table"
+                                >
+                                    No product data available.
+                                </td>
+                            </tr>
+
+                        <% } %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- Top Categories -->
+        <div class="table-card">
+
+            <h3>Top Categories</h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Category</th>
+                            <th>Orders</th>
+                            <th>Revenue</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <% if (topCategories && topCategories.length) { %>
+
+                            <% topCategories.forEach(category => { %>
+
+                                <tr>
+
+                                    <td>
+                                        <%= category.categoryName %>
+                                    </td>
+
+                                    <td>
+                                        <%= Number(
+                                            category.orders || 0
+                                        ).toLocaleString("en-IN") %>
+                                    </td>
+
+                                    <td>
+                                        ₹<%= Number(
+                                            category.revenue || 0
+                                        ).toLocaleString("en-IN", {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }) %>
+                                    </td>
+
+                                </tr>
+
+                            <% }) %>
+
+                        <% } else { %>
+
+                            <tr>
+                                <td
+                                    colspan="3"
+                                    class="empty-table"
+                                >
+                                    No category data available.
+                                </td>
+                            </tr>
+
+                        <% } %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- Top Customers -->
+        <div class="table-card">
+
+            <h3>Top Customers</h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Customer</th>
+                            <th>Orders</th>
+                            <th>Spent</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <% if (topCustomers && topCustomers.length) { %>
+
+                            <% topCustomers.forEach(customer => { %>
+
+                                <tr>
+
+                                    <td>
+                                        <%= customer.name %>
+                                    </td>
+
+                                    <td>
+                                        <%= Number(
+                                            customer.orders || 0
+                                        ).toLocaleString("en-IN") %>
+                                    </td>
+
+                                    <td>
+                                        ₹<%= Number(
+                                            customer.spent || 0
+                                        ).toLocaleString("en-IN", {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }) %>
+                                    </td>
+
+                                </tr>
+
+                            <% }) %>
+
+                        <% } else { %>
+
+                            <tr>
+                                <td
+                                    colspan="3"
+                                    class="empty-table"
+                                >
+                                    No customer data available.
+                                </td>
+                            </tr>
+
+                        <% } %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    
+    <!-- SALES ORDERS TABLE -->
+    <section class="sales-orders-section">
+
+        <div class="sales-orders-header">
+            <div>
+                <h2>Sales Orders</h2>
+                <p>Detailed order records based on your selected filters.</p>
+            </div>
+
+            <span class="orders-count">
+                <%= totalSalesOrders %> orders
+            </span>
+        </div>
+
+        <div class="sales-orders-table-wrapper">
+            <table class="sales-orders-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Amount</th>
+                        <th>Payment</th>
+                        <th>Payment Status</th>
+                        <th>Order Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% if (salesOrders.length > 0) { %>
+                        <% salesOrders.forEach(order => { %>
+                            <tr>
+                                <td class="order-id">
+                                   <%= order.orderId %>
+                                </td>
+
+                                <td>
+                                    <%= order.date
+                                        ? new Date(order.date).toLocaleDateString("en-IN")
+                                        : "N/A" %>
+                                </td>
+
+                                <td><%= order.customer %></td>
+
+                                <td><%= order.items %></td>
+
+                                <td class="order-amount">
+                                    ₹<%= Number(order.amount).toLocaleString(
+                                        "en-IN",
+                                        {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }
+                                    ) %>
+                                </td>
+
+                                <td><%= order.paymentMethod %></td>
+
+                                <td>
+                                    <span class="order-status-badge">
+                                        <%= order.paymentStatus %>
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span
+                                        class="order-status-badge"
+                                        data-status="<%= String(order.orderStatus).toLowerCase() %>"
+                                    >
+                                        <%= String(order.orderStatus)
+                                            .replace(/_/g, " ")
+                                            .replace(/\b\w/g, letter => letter.toUpperCase()) %>
+                                    </span>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="8" class="no-orders">
+                                No sales orders found for the selected filters.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (totalPages > 1) { %>
+            <div class="sales-pagination">
+                <span>Page <%= currentPage %> of <%= totalPages %></span>
+
+                <div class="pagination-actions">
+                    <button
+                        type="button"
+                        class="pagination-btn"
+                        <%= currentPage <= 1 ? "disabled" : "" %>
+                        onclick="changeSalesPage(<%= currentPage - 1 %>)"
+                    >
+                        Previous
+                    </button>
+
+                    <button
+                        type="button"
+                        class="pagination-btn"
+                        <%= currentPage >= totalPages ? "disabled" : "" %>
+                        onclick="changeSalesPage(<%= currentPage + 1 %>)"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
+        <% } %>
+
+    </section>
+
+</main>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+const dropdowns = document.querySelectorAll(".dropdown-btn");
+
+
+dropdowns.forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        const wrapper =
+            btn.parentElement;
+
+        const menu =
+            wrapper.querySelector(".dropdown-menu");
+
+        wrapper.classList.toggle("active");
+
+        menu.classList.toggle("show");
+
+    });
+
+});
+
+
+
+const reportPeriod = document.getElementById("reportPeriod");
+const customDateContainer = document.getElementById("customDateContainer");
+const startDate = document.getElementById("startDate");
+const endDate = document.getElementById("endDate");
+const applyDateRange = document.getElementById("applyDateRange");
+
+// Show / hide custom date inputs
+reportPeriod.addEventListener("change", () => {
+
+    const period = reportPeriod.value;
+
+    if (period === "custom") {
+
+        customDateContainer.classList.add("show");
+
+        return;
+    }
+
+    customDateContainer.classList.remove("show");
+
+    const params = new URLSearchParams(window.location.search);
+
+    params.set("period", period);
+
+    params.delete("startDate");
+    params.delete("endDate");
+
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
+});
+
+
+// Apply custom date range
+applyDateRange.addEventListener("click", () => {
+
+    const from = startDate.value;
+    const to = endDate.value;
+
+    if (!from || !to) {
+
+        alert("Please select both start date and end date.");
+
+        return;
+    }
+
+    if (from > to) {
+
+        alert("Start date cannot be after end date.");
+
+        return;
+    }
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    params.set("period", "custom");
+    params.set("startDate", from);
+    params.set("endDate", to);
+
+    window.location.href =
+        `${window.location.pathname}?${params.toString()}`;
+});
+
+
+const urlParams =
+    new URLSearchParams(window.location.search);
+
+const currentPeriod =
+    urlParams.get("period");
+
+const currentStartDate =
+    urlParams.get("startDate");
+
+const currentEndDate =
+    urlParams.get("endDate");
+
+
+if (currentPeriod === "custom") {
+
+    reportPeriod.value = "custom";
+
+    customDateContainer.classList.add("show");
+
+    if (currentStartDate) {
+        startDate.value = currentStartDate;
+    }
+
+    if (currentEndDate) {
+        endDate.value = currentEndDate;
+    }
+
+}
+
+
+
+const statusFilter = document.getElementById("statusFilter");
+
+statusFilter.addEventListener("change", () => {
+
+    applyFilters();
+
+});
+
+function applyFilters() {
+
+    const params =
+        new URLSearchParams();
+
+    const period =
+        document.getElementById("reportPeriod").value;
+
+    const status =
+        document.getElementById("statusFilter").value;
+
+    const payment =
+        document.getElementById("paymentFilter").value;
+
+    const category =
+        document.getElementById("categoryFilter").value;
+
+    const product =
+        document.getElementById("productSearch")
+            .value
+            .trim();
+
+
+    params.set("period", period);
+
+
+    // Keep custom dates
+    if (period === "custom") {
+
+        const from =
+            document.getElementById("startDate").value;
+
+        const to =
+            document.getElementById("endDate").value;
+
+        if (from) {
+            params.set("startDate", from);
+        }
+
+        if (to) {
+            params.set("endDate", to);
+        }
+    }
+
+
+    if (status) {
+        params.set("status", status);
+    }
+
+    if (payment) {
+        params.set("payment", payment);
+    }
+
+    if (category) {
+        params.set("category", category);
+    }
+
+    if (product) {
+        params.set("product", product);
+    }
+
+
+    window.location.href =
+        `${window.location.pathname}?${params.toString()}`;
+}
+
+
+
+    document
+    .getElementById("paymentFilter")
+    .addEventListener("change", applyFilters);
+
+
+    document
+    .getElementById("categoryFilter")
+    .addEventListener("change", applyFilters);
+
+    document
+    .getElementById("productSearch")
+    .addEventListener("keydown", (event) => {
+
+        if (event.key === "Enter") {
+            applyFilters();
+        }
+
+    });
+
+    document
+    .getElementById("resetFilters")
+    .addEventListener("click", () => {
+
+        window.location.href =
+            window.location.pathname;
+
+    });
+
+
+    
+    function changeSalesPage(page) {
+        const params = new URLSearchParams(window.location.search);
+
+        params.set("page", page);
+
+        window.location.href =
+            `${window.location.pathname}?${params.toString()}`;
+    }
+
+
+</script>
+
+
+<script id="salesChartData" type="application/json">
+    <%- JSON.stringify(salesChart || []) %>
+</script>
+
+<script>
+
+const salesChart = JSON.parse(
+    document.getElementById("salesChartData").textContent
+);
+
+const revenueLine = document.getElementById("revenueLine");
+
+const revenueXAxis = document.getElementById("revenueXAxis");
+
+if (salesChart.length) {
+
+    const maxRevenue =
+        Math.max(
+            ...salesChart.map(item =>
+                Number(item.amount) || 0
+            )
+        );
+
+    const points =
+        salesChart.map((item, index) => {
+
+            const x =
+                salesChart.length === 1
+                    ? 250
+                    : (index /
+                        (salesChart.length - 1)) * 500;
+
+            const revenue =
+                Number(item.amount) || 0;
+
+            const y =
+                200 -
+                ((revenue / maxRevenue) * 180);
+
+            return `${x},${y}`;
+
+        });
+
+    revenueLine.setAttribute(
+        "points",
+        points.join(" ")
+    );
+
+
+    salesChart.forEach(item => {
+
+        const label =
+            document.createElement("span");
+
+        label.textContent =
+            item.date;
+
+        revenueXAxis.appendChild(label);
+
+    });
+
+}
+
+</script>
+
+
+<script id="ordersChartData" type="application/json">
+    <%- JSON.stringify(ordersChart || []) %>
+</script>
+
+<script>
+
+const ordersChart = JSON.parse(
+    document.getElementById("ordersChartData").textContent
+);
+
+const ordersBars = document.getElementById("ordersBars");
+
+const ordersYAxis = document.getElementById("ordersYAxis");
+
+
+if (ordersChart.length && ordersBars) {
+
+    const maxOrders =
+        Math.max(
+            ...ordersChart.map(item =>
+                Number(item.count) || 0
+            ),
+            1
+        );
+
+
+    ordersChart.forEach(item => {
+
+        const barWrapper =
+            document.createElement("div");
+
+        barWrapper.className =
+            "bar-item";
+
+
+        const bar =
+            document.createElement("div");
+
+        bar.className =
+            "order-bar";
+
+
+        const height =
+            ((Number(item.count) || 0) /
+                maxOrders) * 100;
+
+
+        bar.style.height =
+            `${height}%`;
+
+
+        bar.title =
+            `${item.date}: ${item.count} orders`;
+
+
+        const label =
+            document.createElement("span");
+
+        label.className =
+            "bar-label";
+
+        label.textContent =
+            item.date;
+
+
+        barWrapper.appendChild(bar);
+
+        barWrapper.appendChild(label);
+
+        ordersBars.appendChild(barWrapper);
+
+    });
+
+
+    // Y-axis values
+
+    for (
+        let i = maxOrders;
+        i >= 0;
+        i--
+    ) {
+
+        const label =
+            document.createElement("span");
+
+        label.textContent =
+            i;
+
+        ordersYAxis.appendChild(label);
+
+    }
+
+}
+
+</script>
+
+
+<script>
+
+    function exportReport(type) {
+
+        const params = new URLSearchParams(window.location.search);
+
+        let url = "";
+
+        if (type === "csv") {
+            url = "/admin/sales-report/export/csv";
+        }
+
+        if (type === "excel") {
+            url = "/admin/sales-report/export/excel";
+        }
+
+        if (type === "pdf") {
+            url = "/admin/sales-report/export/pdf";
+        }
+
+        const query = params.toString();
+
+        window.location.href =
+            query
+                ? `${url}?${query}`
+                : url;
+    }
+
+</script>
+
+
+</body>
+
+</html>

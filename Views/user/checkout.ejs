@@ -39,7 +39,8 @@
         CHECKOUT
 =========================== -->
 <section class="checkout-section">
-    <form action="/user/placeOrder" method="POST">
+
+    <form id="checkoutForm" action="/user/placeOrder" method="POST">
         <div class="checkout-container">
 
             <!-- LEFT -->
@@ -49,42 +50,130 @@
 
                 <!-- Shipping -->
                 <div class="checkout-card">
-                    <h3>
-                        <i class="fa-solid fa-location-dot"></i>
-                        Shipping Details
-                    </h3>
+                    <div class="section-header">
+                        <div>
+                            <h3>
+                                <i class="fa-solid fa-location-dot"></i>
+                                Shipping Address
+                            </h3>
+                            <p class="section-subtitle">
+                                Select where you want your order delivered
+                            </p>
+                        </div>
 
-                    <% if(addresses && addresses.length > 0){ %>
-                        <% addresses.forEach((address, index)=>{ %>
-                            <div class="address-card <%= address.isDefault ? 'active' : '' %>">
-                                <div class="address-top">
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name="selectedAddress"
-                                            value="<%= address._id %>"
-                                            <%= (address.isDefault || index === 0) ? "checked" : "" %>
+                        <button type="button" id="addAddressBtn" class="add-address-btn">
+                            <i class="fa-solid fa-plus"></i>
+                            Add New Address
+                        </button>
+                    </div>
+
+
+                    <% if (addresses && addresses.length > 0) { %>
+
+                        <div class="address-list">
+
+                            <% addresses.forEach((address, index) => { %>
+
+                                <div
+                                    class="address-card <%= (address.isDefault || index === 0) ? 'active' : '' %>"
+                                    data-address-id="<%= address._id %>"
+                                >
+
+                                    <div class="address-top">
+
+                                        <label class="address-select">
+
+                                            <input
+                                                type="radio"
+                                                name="selectedAddress"
+                                                value="<%= address._id %>"
+                                                <%= (address.isDefault || index === 0) ? "checked" : "" %>
+                                            >
+
+                                            <span class="address-type">
+                                                <i class="fa-solid fa-house"></i>
+                                                <%= address.type %>
+                                            </span>
+
+                                            <% if (address.isDefault) { %>
+                                                <span class="default-badge">
+                                                    Default
+                                                </span>
+                                            <% } %>
+
+                                        </label>
+
+                                        <a
+                                            href="/user/Address/edit/<%= address._id %>"
+                                            class="edit-address"
                                         >
-                                        <%= address.type %>
-                                    </label>
+                                            Edit
+                                        </a>
 
-                                    <a href="/user/Address/edit/<%= address._id %>">Edit</a>
+                                    </div>
+
+
+                                    <div class="address-details">
+
+                                        <h4>
+                                            <%= address.fullName %>
+                                        </h4>
+
+                                        <% if (address.address) { %>
+                                            <p>
+                                                <%= address.address %>
+                                            </p>
+                                        <% } %>
+
+                                        <% if (address.detailAddress) { %>
+                                            <p>
+                                                <%= address.detailAddress %>
+                                            </p>
+                                        <% } %>
+
+                                        <p>
+                                            <%= address.city %>,
+                                            <%= address.state %>
+                                            -
+                                            <%= address.pincode %>
+                                        </p>
+
+                                        <% if (address.landmark) { %>
+                                            <p>
+                                                Landmark:
+                                                <%= address.landmark %>
+                                            </p>
+                                        <% } %>
+
+                                        <p class="address-mobile">
+                                            <i class="fa-solid fa-phone"></i>
+                                            <%= address.mobile %>
+                                        </p>
+
+                                    </div>
+
                                 </div>
 
-                                <p><strong><%= address.fullName %></strong></p>
-                                <p><%= address.address || "" %></p>
-                                <p><%= address.detailAddress || "" %></p>
-                                <p><%= address.city %>, <%= address.state %> - <%= address.pincode %></p>
-                                <p><%= address.mobile %></p>
-                            </div>
-                        <% }) %>
+                            <% }) %>
+
+                        </div>
+
                     <% } else { %>
-                        <p>No address found.</p>
+
+                        <div class="no-address">
+
+                            <i class="fa-solid fa-location-dot"></i>
+
+                            <h4>No delivery address</h4>
+
+                            <p>
+                                Add an address to continue with your order.
+                            </p>
+
+                        </div>
+
                     <% } %>
 
-                    <a href="/user/checkout/add-address" class="add-address">
-                        + Add New Address
-                    </a>
                 </div>
 
                 <!-- Payment -->
@@ -96,10 +185,44 @@
 
                     <div class="payment-card">
                         <label>
-                            <input type="radio" name="paymentMethod" value="COD" checked>
+                            <input
+                                type="radio"
+                                name="paymentMethod"
+                                value="COD"
+                            >
                             Cash On Delivery
                         </label>
+
                         <p>Pay when your order arrives</p>
+                    </div>
+
+                    <div class="payment-card">
+                        <label>
+                            <input
+                                type="radio"
+                                name="paymentMethod"
+                                value="RAZORPAY"
+                            >
+                            Razorpay
+                        </label>
+
+                        <p>Pay securely online</p>
+                    </div>
+
+                    <div class="payment-card">
+                        <label>
+                            <input
+                                type="radio"
+                                name="paymentMethod"
+                                value="WALLET"
+                            >
+                            Wallet
+                        </label>
+
+                        <p>
+                            Pay using your wallet balance
+                            — Available balance: ₹<%= wallet?.balance || 0 %>
+                        </p>
                     </div>
                 </div>
 
@@ -125,7 +248,29 @@
                                 <h4><%= item.productId.productName %></h4>
                                 <p>Qty : <%= item.quantity %></p>
                                 <p>Size : <%= item.variant ? item.variant.size : "-" %></p>
-                                <strong>₹<%= item.variant ? item.variant.salePrice : 0 %></strong>
+                                <% if (item.pricing && item.pricing.offerDiscountPercentage > 0) { %>
+                                    <p class="original-price">
+                                        ₹<%= item.pricing.basePrice.toFixed(2) %>
+                                    </p>
+
+                                    <strong class="offer-price">
+                                        ₹<%= item.pricing.finalPrice.toFixed(2) %>
+                                    </strong>
+
+                                    <span class="offer-badge">
+                                        <%= item.pricing.offerDiscountPercentage %>% OFF
+                                    </span>
+
+                                    <p class="offer-title">
+                                        <%= item.pricing.appliedOffer.title %>
+                                    </p>
+                                <% } else { %>
+                                    <strong>
+                                        ₹<%= item.pricing
+                                            ? item.pricing.finalPrice.toFixed(2)
+                                            : (item.variant ? item.variant.salePrice : 0) %>
+                                    </strong>
+                                <% } %>
                             </div>
                         </div>
                     <% }) %>
@@ -137,32 +282,142 @@
 
                 <div class="price-row">
                     <span>Subtotal</span>
-                    <span>₹<%= subtotal %></span>
+                    <span id="subtotalAmount">
+                        ₹<%= subtotal.toFixed(2) %>
+                    </span>
                 </div>
 
                 <div class="price-row">
-                    <span>Discount</span>
-                    <span>₹<%= discount %></span>
+                    <span>Product Discount</span>
+                    <span id="productDiscountAmount">
+                        - ₹<%= productDiscount.toFixed(2) %>
+                    </span>
+                </div>
+
+                <div class="price-row">
+                    <span>Offer Discount</span>
+                    <span id="offerDiscountAmount">
+                        - ₹<%= offerDiscount.toFixed(2) %>
+                    </span>
+                </div>
+
+                <div class="price-row">
+                    <span>Coupon Discount</span>
+                    <span id="couponDiscountAmount">
+                        - ₹<%= couponDiscount.toFixed(2) %>
+                    </span>
                 </div>
 
                 <div class="price-row">
                     <span>Delivery</span>
-                    <span><%= deliveryFee === 0 ? "Free" : "₹" + deliveryFee %></span>
+                    <span id="deliveryAmount">
+                        <%= deliveryFee === 0
+                            ? "Free"
+                            : "₹" + deliveryFee.toFixed(2)
+                        %>
+                    </span>
                 </div>
 
                 <hr>
 
                 <div class="price-row total">
                     <span>Total</span>
-                    <span>₹<%= grandTotal %></span>
+                    <span id="grandTotalAmount">
+                        ₹<%= grandTotal.toFixed(2) %>
+                    </span>
                 </div>
 
                 <div class="coupon-box">
-                    <input type="text" placeholder="Add promo code">
-                    <button type="button">Apply</button>
+
+                    <input
+                        type="text"
+                        id="couponCode"
+                        placeholder="Add promo code"
+                    >
+
+                    <button
+                        type="button"
+                        id="applyCouponBtn"
+                    >
+                        Apply
+                    </button>
+
                 </div>
 
-                <h4>View Available Coupons</h4>
+                <div id="couponMessage"></div>
+
+                <div id="appliedCouponBox" style="display:none;">
+
+                    <span>
+                        Coupon:
+                        <strong id="appliedCouponCode"></strong>
+                    </span>
+
+                    <button
+                        type="button"
+                        id="removeCouponBtn"
+                    >
+                        Remove
+                    </button>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="showCouponsBtn"
+                    class="available-coupons-btn"
+                >
+                    View Available Coupons
+                </button>
+
+                <div
+                    id="couponList"
+                    class="coupon-list"
+                    style="display:none;"
+                >
+
+                    <% if (coupons && coupons.length > 0) { %>
+
+                        <% coupons.forEach(coupon => { %>
+
+                            <div class="available-coupon">
+
+                                <div>
+
+                                    <strong>
+                                        <%= coupon.discountCode %>
+                                    </strong>
+
+                                    <p>
+                                        <%= coupon.description %>
+                                    </p>
+
+                                    <small>
+                                        Min order:
+                                        ₹<%= coupon.minOrderDiscountAmount %>
+                                    </small>
+
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="use-coupon-btn"
+                                    data-code="<%= coupon.discountCode %>"
+                                >
+                                    Apply
+                                </button>
+
+                            </div>
+
+                        <% }) %>
+
+                    <% } else { %>
+
+                        <p>No coupons available.</p>
+
+                    <% } %>
+
+                </div>
 
                 <!-- THIS is the real place order button -->
                 <button type="submit" class="place-order-small">
@@ -171,13 +426,176 @@
 
                 <div class="delivery-box">
                     <p>Estimated Delivery</p>
-                    <strong>Oct 15 - Oct 18</strong>
+                    <strong><%= estimatedDelivery %></strong>
                 </div>
 
             </div>
 
         </div>
     </form>
+
+<div id="addressModal" class="modal">
+
+    <div class="modal-overlay"></div>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+                <h2>Add New Address</h2>
+
+                <p>
+                    Enter your delivery address details
+                </p>
+            </div>
+
+            <button
+                type="button"
+                id="closeModal"
+                class="close-modal"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <form id="addAddressForm">
+
+            <div class="form-grid">
+
+                <div class="form-group full-width">
+                    <label>Full Name</label>
+
+                    <input
+                        type="text"
+                        name="fullName"
+                        placeholder="Enter full name"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Mobile</label>
+
+                    <input
+                        type="tel"
+                        name="mobile"
+                        placeholder="Enter mobile number"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Address Type</label>
+
+                    <select name="type" required>
+                        <option value="Home">Home</option>
+                        <option value="Work">Work</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+
+                <div class="form-group full-width">
+                    <label>Address</label>
+
+                    <textarea
+                        name="address"
+                        placeholder="Enter your address"
+                        required
+                    ></textarea>
+                </div>
+
+
+                <div class="form-group">
+                    <label>City</label>
+
+                    <input
+                        type="text"
+                        name="city"
+                        placeholder="City"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>State</label>
+
+                    <input
+                        type="text"
+                        name="state"
+                        placeholder="State"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>Pincode</label>
+
+                    <input
+                        type="text"
+                        name="pincode"
+                        placeholder="Pincode"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group">
+                    <label>House / Building</label>
+
+                    <input
+                        type="text"
+                        name="detailAddress"
+                        placeholder="House / Building"
+                    >
+                </div>
+
+
+                <div class="form-group full-width">
+                    <label>Landmark</label>
+
+                    <input
+                        type="text"
+                        name="landmark"
+                        placeholder="Nearby landmark"
+                    >
+                </div>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    id="cancelAddressBtn"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-address-btn"
+                >
+                    <i class="fa-solid fa-check"></i>
+                    Save Address
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
 </section>
 
 <!-- ===========================
@@ -213,6 +631,1786 @@
 
     </div>
 </footer>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+/* =========================================================
+   CHECKOUT PAGE JAVASCRIPT
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const checkoutForm =
+        document.getElementById("checkoutForm");
+
+    const addressModal =
+        document.getElementById("addressModal");
+
+    const addAddressBtn =
+        document.getElementById("addAddressBtn");
+
+    const closeModalBtn =
+        document.getElementById("closeModal");
+
+    const cancelAddressBtn =
+        document.getElementById("cancelAddressBtn");
+
+    const addAddressForm =
+        document.getElementById("addAddressForm");
+
+
+    /* =====================================================
+       CHECKOUT TOTAL
+    ===================================================== */
+
+    let grandTotal =
+        Number("<%= grandTotal %>");
+
+
+    /* =====================================================
+       COUPON ELEMENTS
+    ===================================================== */
+
+    const couponCodeInput =
+        document.getElementById("couponCode");
+
+    const applyCouponBtn =
+        document.getElementById("applyCouponBtn");
+
+    const removeCouponBtn =
+        document.getElementById("removeCouponBtn");
+
+    const couponMessage =
+        document.getElementById("couponMessage");
+
+    const appliedCouponBox =
+        document.getElementById("appliedCouponBox");
+
+    const appliedCouponCode =
+        document.getElementById("appliedCouponCode");
+
+    const couponDiscountElement =
+        document.getElementById("couponDiscountAmount");
+
+    const totalElement =
+        document.getElementById("grandTotalAmount");
+
+    const showCouponsBtn =
+        document.getElementById("showCouponsBtn");
+
+    const couponList =
+        document.getElementById("couponList");
+
+
+    /* =====================================================
+       HELPER - SHOW SWEETALERT
+    ===================================================== */
+
+    function showAlert(
+        icon,
+        title,
+        text
+    ) {
+
+        Swal.fire({
+            icon: icon,
+            title: title,
+            text: text,
+            confirmButtonText: "OK",
+            confirmButtonColor: "#111827"
+        });
+
+    }
+
+
+    /* =====================================================
+       HELPER - UPDATE TOTAL
+    ===================================================== */
+
+    function updateGrandTotal(total) {
+
+        grandTotal = Number(total);
+
+        totalElement.textContent =
+            `₹${grandTotal.toFixed(2)}`;
+
+    }
+
+
+    /* =====================================================
+       ADDRESS MODAL
+    ===================================================== */
+
+    function openAddressModal() {
+
+        if (!addressModal) {
+            return;
+        }
+
+        addressModal.classList.add("show");
+
+        document.body.style.overflow = "hidden";
+
+    }
+
+
+    function closeAddressModal() {
+
+        if (!addressModal) {
+            return;
+        }
+
+        addressModal.classList.remove("show");
+
+        document.body.style.overflow = "";
+
+    }
+
+
+    /* =====================================================
+       OPEN ADDRESS MODAL
+    ===================================================== */
+
+    if (addAddressBtn) {
+
+        addAddressBtn.addEventListener(
+            "click",
+            openAddressModal
+        );
+
+    }
+
+
+    /* =====================================================
+       CLOSE ADDRESS MODAL
+    ===================================================== */
+
+    if (closeModalBtn) {
+
+        closeModalBtn.addEventListener(
+            "click",
+            closeAddressModal
+        );
+
+    }
+
+
+    if (cancelAddressBtn) {
+
+        cancelAddressBtn.addEventListener(
+            "click",
+            closeAddressModal
+        );
+
+    }
+
+
+    /* =====================================================
+       CLOSE MODAL WHEN CLICKING OVERLAY
+    ===================================================== */
+
+    const modalOverlay =
+        document.querySelector(".modal-overlay");
+
+    if (modalOverlay) {
+
+        modalOverlay.addEventListener(
+            "click",
+            closeAddressModal
+        );
+
+    }
+
+
+    /* =====================================================
+       CLOSE MODAL WITH ESCAPE KEY
+    ===================================================== */
+
+    document.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key === "Escape" &&
+                addressModal &&
+                addressModal.classList.contains("show")
+            ) {
+
+                closeAddressModal();
+
+            }
+
+        }
+    );
+
+
+        /* =====================================================
+        ADD NEW ADDRESS
+        ===================================================== */
+
+        if (addAddressForm) {
+
+            addAddressForm.addEventListener("submit", async (event) => {
+
+                event.preventDefault();
+
+                const submitButton =
+                    addAddressForm.querySelector('button[type="submit"]');
+
+                const originalButtonText =
+                    submitButton ? submitButton.innerHTML : "";
+
+                try {
+
+                    /* ---------------------------------------------
+                    Disable button
+                    --------------------------------------------- */
+
+                    if (submitButton) {
+
+                        submitButton.disabled = true;
+
+                        submitButton.innerHTML =
+                            '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+                    }
+
+
+                    /* ---------------------------------------------
+                    Get form data
+                    --------------------------------------------- */
+
+                    const formData =
+                        new FormData(addAddressForm);
+
+                    const addressData =
+                        Object.fromEntries(formData.entries());
+
+
+                    /* ---------------------------------------------
+                    Send address to server
+                    --------------------------------------------- */
+
+                    const response =
+                        await fetch("/user/address/add", {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify(addressData)
+
+                        });
+
+
+                    /* ---------------------------------------------
+                    Read response
+                    --------------------------------------------- */
+
+                    const data =
+                        await response.json();
+
+
+                    /* ---------------------------------------------
+                    Check server response
+                    --------------------------------------------- */
+                    if (!response.ok || !data.success) {
+                        console.error("Address save failed:", {
+                            status: response.status,
+                            response: data
+                        });
+
+                        const errorMessage = Array.isArray(data.errors)
+                            ? data.errors.join("\n")
+                            : data.message || "Unable to add address.";
+
+                        showAlert(
+                            "error",
+                            "Address Not Added",
+                            errorMessage
+                        );
+
+                        return;
+                    }
+
+
+                    /* ---------------------------------------------
+                    Close modal
+                    --------------------------------------------- */
+
+                    closeAddressModal();
+
+
+                    /* ---------------------------------------------
+                    Show success message
+                    --------------------------------------------- */
+
+                    await addAddressToCheckout(data.address);
+
+                    closeAddressModal();
+
+                    showAlert(
+                        "success",
+                        "Address Added",
+                        "Your new address has been selected."
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "ADD ADDRESS ERROR:",
+                        error
+                    );
+
+                    showAlert(
+                        "error",
+                        "Something Went Wrong",
+                        "Unable to add address. Please try again."
+                    );
+
+
+                } finally {
+
+                    if (submitButton) {
+
+                        submitButton.disabled = false;
+
+                        submitButton.innerHTML =
+                            originalButtonText;
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+    /* =====================================================
+    ADD NEW ADDRESS TO CHECKOUT UI
+    ===================================================== */
+
+    function addAddressToCheckout(address) {
+
+        const addressList =
+            document.querySelector(".address-list");
+
+        /*
+        * If there was no address before,
+        * create the address list.
+        */
+        if (!addressList) {
+
+            const noAddress =
+                document.querySelector(".no-address");
+
+            if (noAddress) {
+                noAddress.remove();
+            }
+
+            const shippingCard =
+                document.querySelector(
+                    ".checkout-left .checkout-card"
+                );
+
+            const newAddressList =
+                document.createElement("div");
+
+            newAddressList.className =
+                "address-list";
+
+            shippingCard.appendChild(newAddressList);
+        }
+
+
+        const list =
+            document.querySelector(".address-list");
+
+
+        /* ---------------------------------------------
+        Remove active state from existing addresses
+        --------------------------------------------- */
+
+        document
+            .querySelectorAll(".address-card")
+            .forEach(card => {
+                card.classList.remove("active");
+
+                const radio =
+                    card.querySelector(
+                        'input[name="selectedAddress"]'
+                    );
+
+                if (radio) {
+                    radio.checked = false;
+                }
+            });
+
+
+        /* ---------------------------------------------
+        Create new address card
+        --------------------------------------------- */
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "address-card active";
+
+        card.dataset.addressId =
+            address._id;
+
+
+        card.innerHTML = `
+
+            <div class="address-top">
+
+                <label class="address-select">
+
+                    <input
+                        type="radio"
+                        name="selectedAddress"
+                        value="${address._id}"
+                        checked
+                    >
+
+                    <span class="address-type">
+                        <i class="fa-solid fa-house"></i>
+                        ${address.type}
+                    </span>
+
+                    ${
+                        address.isDefault
+                            ? `<span class="default-badge">
+                                Default
+                            </span>`
+                            : ""
+                    }
+
+                </label>
+
+                <a
+                    href="/user/Address/edit/${address._id}"
+                    class="edit-address"
+                >
+                    Edit
+                </a>
+
+            </div>
+
+
+            <div class="address-details">
+
+                <h4>
+                    ${address.fullName}
+                </h4>
+
+                ${
+                    address.address
+                        ? `<p>${address.address}</p>`
+                        : ""
+                }
+
+                <p>
+                    ${address.city},
+                    ${address.state}
+                    -
+                    ${address.pincode}
+                </p>
+
+                ${
+                    address.landmark
+                        ? `<p>
+                            Landmark:
+                            ${address.landmark}
+                        </p>`
+                        : ""
+                }
+
+                <p class="address-mobile">
+                    <i class="fa-solid fa-phone"></i>
+                    ${address.mobile}
+                </p>
+
+            </div>
+        `;
+
+
+        list.appendChild(card);
+
+
+        /* ---------------------------------------------
+        Make new card clickable
+        --------------------------------------------- */
+
+        const radio =
+            card.querySelector(
+                'input[name="selectedAddress"]'
+            );
+
+
+        card.addEventListener("click", (event) => {
+
+            if (event.target.closest(".edit-address")) {
+                return;
+            }
+
+            radio.checked = true;
+
+            document
+                .querySelectorAll(".address-card")
+                .forEach(item => {
+                    item.classList.remove("active");
+                });
+
+            card.classList.add("active");
+
+        });
+
+    }    
+
+
+    /* =====================================================
+       ADDRESS SELECTION
+    ===================================================== */
+
+    const addressCards =
+        document.querySelectorAll(
+            ".address-card"
+        );
+
+
+    addressCards.forEach((card) => {
+
+        const radio =
+            card.querySelector(
+                'input[name="selectedAddress"]'
+            );
+
+
+        if (!radio) {
+            return;
+        }
+
+
+        /* ---------------------------------------------
+           Make whole card clickable
+        --------------------------------------------- */
+
+        card.addEventListener(
+            "click",
+            (event) => {
+
+                /*
+                 * Don't interfere with Edit link.
+                 */
+
+                if (
+                    event.target.closest(".edit-address")
+                ) {
+
+                    return;
+
+                }
+
+
+                radio.checked = true;
+
+
+                addressCards.forEach(
+                    (item) => {
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                card.classList.add("active");
+
+            }
+        );
+
+
+        /* ---------------------------------------------
+           Radio change
+        --------------------------------------------- */
+
+        radio.addEventListener(
+            "change",
+            () => {
+
+                addressCards.forEach(
+                    (item) => {
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                card.classList.add("active");
+
+            }
+        );
+
+    });
+
+
+    /* =====================================================
+       PAYMENT CARD SELECTION
+    ===================================================== */
+
+    const paymentCards =
+        document.querySelectorAll(
+            ".payment-card"
+        );
+
+
+    paymentCards.forEach((card) => {
+
+        const radio =
+            card.querySelector(
+                'input[name="paymentMethod"]'
+            );
+
+
+        if (!radio) {
+            return;
+        }
+
+
+        card.addEventListener(
+            "click",
+            () => {
+
+                radio.checked = true;
+
+
+                paymentCards.forEach(
+                    (item) => {
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                card.classList.add("active");
+
+            }
+        );
+
+
+        radio.addEventListener(
+            "change",
+            () => {
+
+                paymentCards.forEach(
+                    (item) => {
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                card.classList.add("active");
+
+            }
+        );
+
+    });
+
+
+    /* =====================================================
+       APPLY COUPON
+    ===================================================== */
+
+    if (applyCouponBtn) {
+
+        applyCouponBtn.addEventListener(
+            "click",
+            async () => {
+
+                const couponCode =
+                    couponCodeInput.value.trim();
+
+
+                /* -----------------------------------------
+                   Empty coupon
+                ----------------------------------------- */
+
+                if (!couponCode) {
+
+                    couponMessage.textContent =
+                        "Please enter a coupon code.";
+
+                    couponMessage.style.color =
+                        "#dc2626";
+
+                    return;
+
+                }
+
+
+                try {
+
+                    applyCouponBtn.disabled = true;
+
+                    applyCouponBtn.textContent =
+                        "Applying...";
+
+
+                    const response =
+                        await fetch(
+                            "/user/apply-coupon",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+                                    couponCode:
+                                        couponCode
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    /* -----------------------------------------
+                       Coupon failed
+                    ----------------------------------------- */
+
+                    if (!data.success) {
+
+                        couponMessage.textContent =
+                            data.message ||
+                            "Invalid coupon.";
+
+                        couponMessage.style.color =
+                            "#dc2626";
+
+                        return;
+
+                    }
+
+
+                    /* -----------------------------------------
+                       Coupon success
+                    ----------------------------------------- */
+
+                    couponMessage.textContent =
+                        data.message ||
+                        "Coupon applied successfully.";
+
+                    couponMessage.style.color =
+                        "#16a34a";
+
+
+                    /* -----------------------------------------
+                       Show applied coupon
+                    ----------------------------------------- */
+
+                    appliedCouponBox.style.display =
+                        "flex";
+
+                    appliedCouponCode.textContent =
+                        data.couponCode ||
+                        couponCode;
+
+
+                    /* -----------------------------------------
+                       Disable coupon input
+                    ----------------------------------------- */
+
+                    couponCodeInput.disabled =
+                        true;
+
+                    applyCouponBtn.disabled =
+                        true;
+
+
+                    /* -----------------------------------------
+                       Update discount
+                    ----------------------------------------- */
+
+                    const discount =
+                        Number(data.discount || 0);
+
+
+                    couponDiscountElement.textContent =
+                        `- ₹${discount.toFixed(2)}`;
+
+
+                    /* -----------------------------------------
+                       Update total
+                    ----------------------------------------- */
+
+                    updateGrandTotal(
+                        Number(data.grandTotal)
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "APPLY COUPON ERROR:",
+                        error
+                    );
+
+                    couponMessage.textContent =
+                        "Something went wrong while applying the coupon.";
+
+                    couponMessage.style.color =
+                        "#dc2626";
+
+
+                } finally {
+
+                    if (
+                        !couponCodeInput.disabled
+                    ) {
+
+                        applyCouponBtn.disabled =
+                            false;
+
+                    }
+
+
+                    applyCouponBtn.textContent =
+                        "Apply";
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       REMOVE COUPON
+    ===================================================== */
+
+    if (removeCouponBtn) {
+
+        removeCouponBtn.addEventListener(
+            "click",
+            async () => {
+
+                try {
+
+                    removeCouponBtn.disabled =
+                        true;
+
+
+                    const response =
+                        await fetch(
+                            "/user/remove-coupon",
+                            {
+                                method: "POST"
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    /* -----------------------------------------
+                       Failed
+                    ----------------------------------------- */
+
+                    if (!data.success) {
+
+                        couponMessage.textContent =
+                            data.message ||
+                            "Unable to remove coupon.";
+
+                        couponMessage.style.color =
+                            "#dc2626";
+
+                        return;
+
+                    }
+
+
+                    /* -----------------------------------------
+                       Hide applied coupon
+                    ----------------------------------------- */
+
+                    appliedCouponBox.style.display =
+                        "none";
+
+
+                    /* -----------------------------------------
+                       Reset coupon input
+                    ----------------------------------------- */
+
+                    couponCodeInput.disabled =
+                        false;
+
+                    applyCouponBtn.disabled =
+                        false;
+
+                    couponCodeInput.value =
+                        "";
+
+
+                    /* -----------------------------------------
+                       Reset message
+                    ----------------------------------------- */
+
+                    couponMessage.textContent =
+                        data.message ||
+                        "Coupon removed.";
+
+                    couponMessage.style.color =
+                        "#16a34a";
+
+
+                    /* -----------------------------------------
+                       Reset discount
+                    ----------------------------------------- */
+
+                    couponDiscountElement.textContent =
+                        "- ₹0.00";
+
+
+                    /* -----------------------------------------
+                       Recalculate total
+                    ----------------------------------------- */
+
+                    const subtotal =
+                        Number("<%= subtotal %>");
+
+                    const productDiscount =
+                        Number("<%= productDiscount %>");
+
+                    const deliveryFee =
+                        Number("<%= deliveryFee %>");
+
+
+                    const offerDiscount =
+                        Number("<%= offerDiscount %>");
+
+                    const newTotal = Math.max(
+                        subtotal -
+                        productDiscount -
+                        offerDiscount +
+                        deliveryFee,
+                        0
+                    );
+
+
+                    updateGrandTotal(
+                        newTotal
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        "REMOVE COUPON ERROR:",
+                        error
+                    );
+
+                    couponMessage.textContent =
+                        "Something went wrong while removing the coupon.";
+
+                    couponMessage.style.color =
+                        "#dc2626";
+
+
+                } finally {
+
+                    removeCouponBtn.disabled =
+                        false;
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SHOW / HIDE AVAILABLE COUPONS
+    ===================================================== */
+
+    if (
+        showCouponsBtn &&
+        couponList
+    ) {
+
+        showCouponsBtn.addEventListener(
+            "click",
+            () => {
+
+                const isHidden =
+                    couponList.style.display === "none" ||
+                    couponList.style.display === "";
+
+
+                if (isHidden) {
+
+                    couponList.style.display =
+                        "flex";
+
+                    showCouponsBtn.textContent =
+                        "Hide Available Coupons";
+
+                } else {
+
+                    couponList.style.display =
+                        "none";
+
+                    showCouponsBtn.textContent =
+                        "View Available Coupons";
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       APPLY COUPON FROM AVAILABLE COUPON LIST
+    ===================================================== */
+
+    const couponButtons =
+        document.querySelectorAll(
+            ".use-coupon-btn"
+        );
+
+
+    couponButtons.forEach(
+        (button) => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const code =
+                        button.dataset.code;
+
+
+                    if (!code) {
+                        return;
+                    }
+
+
+                    couponCodeInput.value =
+                        code;
+
+
+                    /*
+                     * Trigger normal Apply button
+                     */
+
+                    applyCouponBtn.click();
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+    CHECKOUT FORM SUBMIT
+    ===================================================== */
+
+    if (checkoutForm) {
+
+        checkoutForm.addEventListener("submit", async (event) => {
+
+            event.preventDefault();
+
+            /* ---------------------------------------------
+            SELECT ADDRESS
+            --------------------------------------------- */
+
+            const selectedAddress =
+                document.querySelector(
+                    'input[name="selectedAddress"]:checked'
+                );
+
+            if (!selectedAddress) {
+
+                showAlert(
+                    "warning",
+                    "Address Required",
+                    "Please select a delivery address."
+                );
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+            SELECT PAYMENT METHOD
+            --------------------------------------------- */
+
+            const selectedPayment =
+                document.querySelector(
+                    'input[name="paymentMethod"]:checked'
+                );
+
+            if (!selectedPayment) {
+
+                showAlert(
+                    "warning",
+                    "Payment Method Required",
+                    "Please select a payment method before placing the order."
+                );
+
+                return;
+            }
+
+
+            const paymentMethod =
+                selectedPayment.value;
+
+
+            /* ---------------------------------------------
+            COD
+            --------------------------------------------- */
+
+            if (paymentMethod === "COD") {
+
+                checkoutForm.submit();
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+            WALLET
+            --------------------------------------------- */
+
+            if (paymentMethod === "WALLET") {
+
+                checkoutForm.submit();
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+            RAZORPAY
+            --------------------------------------------- */
+
+            if (paymentMethod === "RAZORPAY") {
+
+                await processRazorpayPayment(
+                    selectedAddress.value
+                );
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+            INVALID PAYMENT
+            --------------------------------------------- */
+
+            showAlert(
+                "error",
+                "Invalid Payment Method",
+                "Please select a valid payment method."
+            );
+
+        });
+
+    }
+
+
+    /* =====================================================
+    RAZORPAY PAYMENT
+    ===================================================== */
+
+/* =====================================================
+   SAVE FAILED PAYMENT ORDER
+===================================================== */
+
+async function saveFailedPaymentOrder(selectedAddressId) {
+
+    try {
+
+        const response = await fetch(
+            "/user/create-failed-payment-order",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    selectedAddress: selectedAddressId
+                })
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            console.error(
+                "FAILED ORDER CREATION ERROR:",
+                data.message
+            );
+
+            return null;
+        }
+
+
+        console.log(
+            "Failed payment order created:",
+            data.orderId
+        );
+
+
+        return data;
+
+
+    } catch (error) {
+
+        console.error(
+            "SAVE FAILED PAYMENT ORDER ERROR:",
+            error
+        );
+
+        return null;
+    }
+
+}
+
+
+/* =====================================================
+   RAZORPAY PAYMENT
+===================================================== */
+
+    async function processRazorpayPayment(selectedAddressId) {
+
+        let failedOrderHandled = false;
+        let paymentSucceeded = false;
+        let verificationInProgress = false;
+
+        const placeOrderButton =
+            document.querySelector(".place-order-small");
+
+
+        /* =================================================
+        RESET PLACE ORDER BUTTON
+        ================================================= */
+
+        function resetPlaceOrderButton() {
+
+            if (placeOrderButton) {
+
+                placeOrderButton.disabled = false;
+
+                placeOrderButton.textContent =
+                    "Place Order";
+
+            }
+
+        }
+
+
+        try {
+
+            /* =============================================
+            DISABLE BUTTON
+            ============================================= */
+
+            if (placeOrderButton) {
+
+                placeOrderButton.disabled = true;
+
+                placeOrderButton.textContent =
+                    "Processing...";
+
+            }
+
+
+            /* =============================================
+            CREATE RAZORPAY ORDER
+            ============================================= */
+
+            const response = await fetch(
+                "/user/create-razorpay-order",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        amount: grandTotal
+                    })
+                }
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to create Razorpay order"
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!data.success) {
+
+                resetPlaceOrderButton();
+
+                showAlert(
+                    "error",
+                    "Payment Error",
+                    data.message ||
+                    "Unable to create payment."
+                );
+
+                return;
+
+            }
+
+
+            /* =============================================
+            RAZORPAY OPTIONS
+            ============================================= */
+
+            const options = {
+
+                key:
+                    "<%= razorpayKeyId %>",
+
+                amount:
+                    data.order.amount,
+
+                currency:
+                    data.order.currency,
+
+                name:
+                    "Carry Nest",
+
+                description:
+                    "Carry Nest Order",
+
+                order_id:
+                    data.order.id,
+
+
+                /* =========================================
+                PAYMENT SUCCESS
+                ========================================= */
+
+                handler:
+                    async function(paymentResponse) {
+
+                        console.log(
+                            "Razorpay payment successful"
+                        );
+
+                        console.log(
+                            "Payment response:",
+                            paymentResponse
+                        );
+
+
+                        /*
+                        * Mark payment as successful.
+                        * This prevents ondismiss from
+                        * creating a failed order.
+                        */
+
+                        paymentSucceeded = true;
+
+
+                        try {
+
+                            const verifyResponse =
+                                await fetch(
+                                    "/user/verify-razorpay-payment",
+                                    {
+                                        method: "POST",
+
+                                        headers: {
+                                            "Content-Type":
+                                                "application/json"
+                                        },
+
+                                        body:
+                                            JSON.stringify({
+
+                                                razorpay_order_id:
+                                                    paymentResponse
+                                                        .razorpay_order_id,
+
+                                                razorpay_payment_id:
+                                                    paymentResponse
+                                                        .razorpay_payment_id,
+
+                                                razorpay_signature:
+                                                    paymentResponse
+                                                        .razorpay_signature,
+
+                                                selectedAddress:
+                                                    selectedAddressId
+
+                                            })
+                                    }
+                                );
+
+
+                            if (!verifyResponse.ok) {
+
+                                throw new Error(
+                                    "Payment verification failed"
+                                );
+
+                            }
+
+
+                            const verifyData =
+                                await verifyResponse.json();
+
+
+                            if (verifyData.success) {
+
+                                window.location.href =
+                                    `/user/order-success/${verifyData.orderId}`;
+
+                                return;
+
+                            }
+
+
+                            window.location.href =
+                                `/user/payment-failed?message=${encodeURIComponent(
+                                    verifyData.message ||
+                                    "Payment verification failed"
+                                )}`;
+
+
+                        } catch (error) {
+
+                            console.error(
+                                "PAYMENT VERIFY ERROR:",
+                                error
+                            );
+
+
+                            window.location.href =
+                                `/user/payment-failed?message=${encodeURIComponent(
+                                    error.message ||
+                                    "Something went wrong while verifying payment"
+                                )}`;
+
+                        }
+
+                    },
+
+
+                /* =========================================
+                PAYMENT MODAL CLOSED
+                ========================================= */
+
+                modal: {
+
+                    ondismiss: async function() {
+
+                        console.log(
+                            "Razorpay payment window closed"
+                        );
+
+
+                        /*
+                        * If payment was successful,
+                        * don't create failed order.
+                        */
+
+                        if (
+                            failedOrderHandled ||
+                            paymentSucceeded
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        failedOrderHandled = true;
+
+
+                        await saveFailedPaymentOrder(
+                            selectedAddressId
+                        );
+
+
+                        window.location.href =
+                            "/user/payment-failed?message=Payment cancelled";
+
+                    }
+
+                },
+
+
+                /* =========================================
+                THEME
+                ========================================= */
+
+                theme: {
+
+                    color:
+                        "#111827"
+
+                }
+
+            };
+
+
+            /* =============================================
+            CHECK RAZORPAY LIBRARY
+            ============================================= */
+
+            if (typeof Razorpay === "undefined") {
+
+                throw new Error(
+                    "Razorpay library is not loaded"
+                );
+
+            }
+
+
+            /* =============================================
+            CREATE RAZORPAY INSTANCE
+            ============================================= */
+
+            const razorpay =
+                new Razorpay(options);
+
+
+            /* =============================================
+            PAYMENT FAILED
+            ============================================= */
+
+            razorpay.on(
+                "payment.failed",
+                async function(response) {
+
+                    console.error(
+                        "RAZORPAY PAYMENT FAILED:",
+                        response
+                    );
+
+
+                    if (
+                        failedOrderHandled ||
+                        paymentSucceeded
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    failedOrderHandled = true;
+
+
+                    const errorMessage =
+                        response.error?.description ||
+                        "Payment failed";
+
+
+                    await saveFailedPaymentOrder(
+                        selectedAddressId
+                    );
+
+
+                    window.location.href =
+                        `/user/payment-failed?message=${encodeURIComponent(
+                            errorMessage
+                        )}`;
+
+                }
+            );
+
+
+            /* =============================================
+            OPEN RAZORPAY
+            ============================================= */
+
+            razorpay.open();
+
+
+        } catch (error) {
+
+            console.error(
+                "RAZORPAY ERROR:",
+                error
+            );
+
+
+            resetPlaceOrderButton();
+
+
+            showAlert(
+                "error",
+                "Payment Error",
+                error.message ||
+                "Unable to process Razorpay payment."
+            );
+
+        }
+
+    }
+
+    /* =====================================================
+       INITIAL ADDRESS STATE
+    ===================================================== */
+
+    const checkedAddress =
+        document.querySelector(
+            'input[name="selectedAddress"]:checked'
+        );
+
+
+    if (checkedAddress) {
+
+        const selectedCard =
+            checkedAddress.closest(
+                ".address-card"
+            );
+
+
+        if (selectedCard) {
+
+            addressCards.forEach(
+                (card) => {
+
+                    card.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            selectedCard.classList.add(
+                "active"
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       INITIAL PAYMENT STATE
+    ===================================================== */
+
+    const checkedPayment =
+        document.querySelector(
+            'input[name="paymentMethod"]:checked'
+        );
+
+
+    if (checkedPayment) {
+
+        const selectedPaymentCard =
+            checkedPayment.closest(
+                ".payment-card"
+            );
+
+
+        if (selectedPaymentCard) {
+
+            paymentCards.forEach(
+                (card) => {
+
+                    card.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            selectedPaymentCard.classList.add(
+                "active"
+            );
+
+        }
+
+    }
+
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<script>
+    const checkoutMessage = <%- JSON.stringify(
+        typeof message !== "undefined" ? message : ""
+    ) %>;
+
+    if (checkoutMessage) {
+        Swal.fire({
+            icon: checkoutMessage.includes("Insufficient wallet balance")
+                ? "warning"
+                : "error",
+            title: checkoutMessage.includes("Insufficient wallet balance")
+                ? "Insufficient Wallet Balance"
+                : "Unable to Proceed",
+            text: checkoutMessage,
+            confirmButtonText: "OK",
+            confirmButtonColor: "#111827"
+        });
+    }
+</script>
+
 
 </body>
 </html>

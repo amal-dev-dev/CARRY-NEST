@@ -16,53 +16,60 @@
 
 <!-- NAVBAR -->
 
+
 <nav class="navbar">
 
     <a href="/" class="logo">
         CARRY NEST
     </a>
 
-            <div class="nav-icons">
+    <div class="nav-icons">
 
-                <% if(user){ %>
+        <% if (user) { %>
 
-                    <a href="/user/cart" class="cart-link">
-                        <i class="fa-solid fa-cart-shopping"></i>
+            <!-- Cart Icon -->
+            <a href="/user/cart" class="cart-link">
+                <i class="fa-solid fa-cart-shopping"></i>
 
-                        <% if (cartCount > 0) { %>
-                            <span class="cart-badge"><%= cartCount %></span>
-                        <% } %>
-                    </a>
+                <span
+                    id="cartCountBadge"
+                    class="cart-badge"
+                    style="<%= Number(cartCount || 0) > 0 ? '' : 'display: none;' %>"
+                ><%= Number(cartCount || 0) %></span>
+            </a>
 
-                    <a href="/user/wishlist" class="wishlist-link">
-                        <i class="fa-regular fa-heart"></i>
+            <!-- Wishlist Icon -->
+            <a href="/user/wishlist" class="wishlist-link">
+                <i class="fa-regular fa-heart"></i>
 
-                        <% if (wishlistCount > 0) { %>
-                            <span class="wishlist-badge">
-                                <%= wishlistCount %>
-                            </span>
-                        <% } %>
-                    </a>
+                <span
+                    id="wishlistCountBadge"
+                    class="wishlist-badge"
+                    style="<%= (wishlistCount || 0) > 0 ? '' : 'display: none;' %>"
+                ><%= wishlistCount || 0 %></span>
+            </a>
 
-                    <a href="/user/profile" style="color:black;">
-                        <i class="fa-regular fa-user"></i>
-                    </a>
+            <!-- Profile Icon -->
+            <a href="/user/profile" style="color: black;">
+                <i class="fa-regular fa-user"></i>
+            </a>
 
-                <% } else { %>
+        <% } else { %>
 
-                    <a href="/user/login" class="login-btn">
-                        Login
-                    </a>
+            <a href="/user/login" class="login-btn">
+                Login
+            </a>
 
-                    <a href="/user/signup" class="signup-btn">
-                        Sign Up
-                    </a>
+            <a href="/user/signup" class="signup-btn">
+                Sign Up
+            </a>
 
-                <% } %>
+        <% } %>
 
-            </div>
+    </div>
 
 </nav>
+
 
 <!-- BREADCRUMB -->
 
@@ -136,21 +143,40 @@
                 Brand: <%= product.brand %>
             </p>
 
+
             <div class="price-box">
 
                 <span class="sale-price" id="price">
-                    ₹<%= defaultVariant ? defaultVariant.salePrice : 0 %>
+                    ₹<%= defaultVariant ? (offerPrice ?? defaultVariant.salePrice) : 0 %>
                 </span>
 
                 <span class="regular-price" id="regularPrice">
-                    <%= defaultVariant && defaultVariant.regularPrice ? `₹${defaultVariant.regularPrice}` : '' %>
+                    <%= defaultVariant && defaultVariant.regularPrice > (offerPrice ?? defaultVariant.salePrice)
+                        ? `₹${defaultVariant.regularPrice}`
+                        : '' %>
                 </span>
 
                 <span class="discount" id="discountText">
                     <%= discountPercentage %>% OFF
                 </span>
 
-            </div>
+                <span
+                    id="offerBadge"
+                    class="offer-badge"
+                    style="<%= appliedOffer ? '' : 'display:none;' %>"
+                >
+                    <%= appliedOffer ? `${offerDiscountPercentage}% OFFER` : '' %>
+                </span>
+
+                <p
+                    id="offerTitle"
+                    class="offer-title"
+                    style="<%= appliedOffer ? '' : 'display:none;' %>"
+                >
+                    <%= appliedOffer ? appliedOffer.title : '' %>
+                </p>
+
+            </div>  
 
             <p class="description">
                 <%= product.description %>
@@ -212,29 +238,49 @@
                     </div>
 
                     <div class="quantity-box">
-                        <button type="button">-</button>
+                        <button type="button" id="decreaseQty">-</button>
 
                         <input
                             type="number"
+                            id="quantity"
                             name="quantity"
                             value="1"
                             min="1"
+                            max="5"
                         >
 
-                        <button type="button">+</button>
+                        <button type="button" id="increaseQty">+</button>
                     </div>
+
 
                     <div class="action-buttons">
 
-                        <% if (defaultVariant && defaultVariant.stock > 0) { %>
-                            <button type="submit" id="addToCartBtn" class="add-cart-btn">
-                                Add To Cart
-                            </button>
-                        <% } else { %>
-                            <button type="button" id="addToCartBtn" class="add-cart-btn" disabled>
-                                Out Of Stock
-                            </button>
-                        <% } %>
+                        <%
+                            const hasAvailableVariant = filteredVariants.some(
+                                variant => Number(variant.stock) > 0
+                            );
+
+                            const initialVariant = filteredVariants.find(
+                                variant => String(variant._id) === String(defaultVariant?._id)
+                            ) || filteredVariants.find(
+                                variant => Number(variant.stock) > 0
+                            ) || filteredVariants[0];
+
+                            const initialVariantAvailable = initialVariant &&
+                                Number(initialVariant.stock) > 0;
+                        %>
+
+                        <button
+                            type="submit"
+                            id="addToCartBtn"
+                            class="add-cart-btn"
+                            <%= !hasAvailableVariant || !initialVariantAvailable ? "disabled" : "" %>
+                        >
+                            <%= !hasAvailableVariant || !initialVariantAvailable
+                                ? "Out Of Stock"
+                                : "Add To Cart" %>
+                        </button>
+
 
                         <% if (!wishlistExists) { %>
                             <button 
@@ -443,28 +489,77 @@ const priceEl = document.getElementById("price");
 const regularPriceEl = document.getElementById("regularPrice");
 const stockEl = document.getElementById("stock");
 const discountEl = document.getElementById("discountText");
+const offerBadgeEl = document.getElementById("offerBadge");
+const offerTitleEl = document.getElementById("offerTitle");
+const addToCartBtn = document.getElementById("addToCartBtn");
+
+// Offer percentage calculated by the backend
+const offerDiscountPercentage = <%- JSON.stringify(typeof offerDiscountPercentage !== "undefined" ? offerDiscountPercentage : 0) %>;
+
+const appliedOfferTitle = <%- JSON.stringify(typeof appliedOffer !== "undefined" && appliedOffer ? appliedOffer.title : "") %>;
+
 
 function updateVariantDetails(variantId) {
-    const selected = variants.find(v => String(v._id) === String(variantId));
+    const selected = variants.find(
+        v => String(v._id) === String(variantId)
+    );
 
     if (!selected) return;
 
-    priceEl.textContent = `₹${selected.salePrice}`;
-    stockEl.textContent = selected.stock;
+    const stock = Number(selected.stock || 0);
+    const basePrice = Number(selected.salePrice || 0);
 
-    if (selected.regularPrice) {
-        regularPriceEl.textContent = `₹${selected.regularPrice}`;
+    const finalPrice = Math.round(
+        basePrice * (1 - offerDiscountPercentage / 100)
+    );
 
-        const discount = Math.round(
-            ((selected.regularPrice - selected.salePrice) / selected.regularPrice) * 100
+    // Update price and stock
+    priceEl.textContent = `₹${finalPrice}`;
+    stockEl.textContent = stock;
+
+    // Update regular price and discount
+    const regularPrice = Number(selected.regularPrice || 0);
+
+    if (regularPrice > finalPrice) {
+        regularPriceEl.textContent = `₹${regularPrice}`;
+
+        const totalDiscount = Math.round(
+            ((regularPrice - finalPrice) / regularPrice) * 100
         );
 
-        discountEl.textContent = `${discount}% OFF`;
+        discountEl.textContent = `${totalDiscount}% OFF`;
     } else {
         regularPriceEl.textContent = "";
         discountEl.textContent = "";
     }
+
+    // Update offer information
+    if (offerDiscountPercentage > 0 && appliedOfferTitle) {
+        offerBadgeEl.textContent =
+            `${offerDiscountPercentage}% OFFER`;
+
+        offerBadgeEl.style.display = "inline-block";
+        offerTitleEl.textContent = appliedOfferTitle;
+        offerTitleEl.style.display = "block";
+    } else {
+        offerBadgeEl.style.display = "none";
+        offerTitleEl.style.display = "none";
+    }
+
+    // Update Add To Cart button for the selected variant
+    if (addToCartBtn) {
+        if (stock > 0) {
+            addToCartBtn.disabled = false;
+            addToCartBtn.textContent = "Add To Cart";
+            addToCartBtn.type = "submit";
+        } else {
+            addToCartBtn.disabled = true;
+            addToCartBtn.textContent = "Out Of Stock";
+            addToCartBtn.type = "button";
+        }
+    }
 }
+
 
 radios.forEach(radio => {
     radio.addEventListener("change", function () {
@@ -532,6 +627,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
             }
+
+            // ADD THIS: Update wishlist count immediately
+            updateNavbarCounts({
+                wishlistCount: data.wishlistCount
+            });
 
             if (data.action === "added") {
 
@@ -609,6 +709,11 @@ if (addToCartForm) {
 
             if (data.success) {
 
+                updateNavbarCounts({
+                    cartCount: data.cartCount,
+                    wishlistCount: data.wishlistCount
+                });
+
                 await Swal.fire({
                     icon: "success",
                     title: "Added!",
@@ -616,9 +721,6 @@ if (addToCartForm) {
                     timer: 1500,
                     showConfirmButton: false
                 });
-
-                window.location.href = "/user/cart";
-
             } else {
 
                 Swal.fire({
@@ -644,6 +746,103 @@ if (addToCartForm) {
     });
 
 }
+
+
+// Quantity Increase and Decrease
+
+const quantityInput = document.getElementById("quantity");
+const decreaseBtn = document.getElementById("decreaseQty");
+const increaseBtn = document.getElementById("increaseQty");
+
+function updateQuantityLimit() {
+    const selectedVariant = document.querySelector(
+        'input[name="variantId"]:checked'
+    );
+
+    const variant = variants.find(
+        v => String(v._id) === String(selectedVariant?.value)
+    );
+
+    const stock = variant ? Number(variant.stock) : 0;
+
+    // Maximum quantity is 5 or available stock, whichever is lower
+    quantityInput.max = Math.min(5, stock);
+
+    let quantity = Number(quantityInput.value);
+
+    if (!Number.isFinite(quantity) || quantity < 1) {
+        quantity = 1;
+    }
+
+    if (stock > 0) {
+        quantity = Math.min(quantity, Number(quantityInput.max));
+    } else {
+        quantity = 1;
+    }
+
+    quantityInput.value = quantity;
+
+    decreaseBtn.disabled = quantity <= 1;
+    increaseBtn.disabled =
+        stock <= 0 || quantity >= Number(quantityInput.max);
+}
+
+decreaseBtn.addEventListener("click", () => {
+    let quantity = Number(quantityInput.value);
+
+    if (quantity > 1) {
+        quantityInput.value = quantity - 1;
+    }
+
+    updateQuantityLimit();
+});
+
+increaseBtn.addEventListener("click", () => {
+    let quantity = Number(quantityInput.value);
+    const maxQuantity = Number(quantityInput.max);
+
+    if (quantity < maxQuantity) {
+        quantityInput.value = quantity + 1;
+    }
+
+    updateQuantityLimit();
+});
+
+// Handle manual quantity entry
+quantityInput.addEventListener("input", () => {
+    if (quantityInput.value !== "") {
+        updateQuantityLimit();
+    }
+});
+
+// Update the quantity when the selected size changes
+radios.forEach(radio => {
+    radio.addEventListener("change", updateQuantityLimit);
+});
+
+// Initial quantity setup
+updateQuantityLimit();
+
+
+
+function updateNavbarCounts({ cartCount, wishlistCount } = {}) {
+    const cartBadge = document.getElementById("cartCountBadge");
+    const wishlistBadge = document.getElementById("wishlistCountBadge");
+
+    if (cartBadge && cartCount !== undefined) {
+        cartBadge.textContent = cartCount;
+        cartBadge.style.display = cartCount > 0 ? "inline-flex" : "none";
+    }
+
+    if (wishlistBadge && wishlistCount !== undefined) {
+        wishlistBadge.textContent = wishlistCount;
+        wishlistBadge.style.display =
+            wishlistCount > 0 ? "inline-flex" : "none";
+    }
+}
+
+
+
 </script>
 
 </body>

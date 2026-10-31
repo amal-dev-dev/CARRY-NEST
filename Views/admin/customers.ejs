@@ -130,8 +130,6 @@
 
                         <a href="#">Requests</a>
 
-                        <a href="#">Refunds</a>
-
                     </div>
 
                 </div>
@@ -149,7 +147,7 @@
 
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="/admin/wallet" class="menu-item">
 
                     <span class="menu-left">
 
@@ -161,7 +159,7 @@
 
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="/admin/coupons" class="menu-item">
 
                     <span class="menu-left">
 
@@ -173,7 +171,7 @@
 
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="/admin/sales-report" class="menu-item">
 
                     <span class="menu-left">
 
@@ -228,10 +226,6 @@
 
             <div class="top-right">
 
-                <input type="text"
-                       placeholder="Search..."
-                       class="top-search">
-
                 <span class="notification">
                     <i class="ri-notification-3-line"></i>
                 </span>
@@ -266,6 +260,42 @@
             </p>
 
         </section>
+
+        <!-- CUSTOMER SUMMARY CARDS -->
+        <section class="customer-summary">
+
+            <div class="summary-card">
+                <div class="summary-icon total-icon">
+                    <i class="ri-group-line"></i>
+                </div>
+                <div>
+                    <p>Total Customers</p>
+                    <h2><%= totalUsers %></h2>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon active-icon">
+                    <i class="ri-user-follow-line"></i>
+                </div>
+                <div>
+                    <p>Active Customers</p>
+                    <h2><%= activeCustomers %></h2>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon blocked-icon">
+                    <i class="ri-user-forbid-line"></i>
+                </div>
+                <div>
+                    <p>Blocked Customers</p>
+                    <h2><%= blockedCustomers %></h2>
+                </div>
+            </div>
+
+        </section>
+
         <!-- CUSTOMER TABLE -->
         <section class="table-card">
 
@@ -376,10 +406,6 @@
 
                                         <h4><%= user.name %></h4>
 
-                                        <span>
-                                            ID # <%= user._id %>
-                                        </span>
-
                                     </div>
 
                                 </div>
@@ -398,9 +424,14 @@
 
                             </td>
 
-                            <td>0</td>
+                            <td><%= user.orderCount %></td>
 
-                            <td>$0.00</td>
+                            <td>
+                                ₹<%= Number(user.totalSpent || 0).toLocaleString("en-IN", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }) %>
+                            </td>
 
                             <td>
 

@@ -71,17 +71,40 @@
                 <div class="top-order-actions">
 
                     <span class="top-status-badge <%= order.orderStatus %>">
-                        <%= order.orderStatus.replaceAll("_", " ") %>
+                        <% if (order.paymentStatus === "failed") { %>
+                            Payment Failed
+                        <% } else { %>
+                            <%= order.orderStatus.replaceAll("_", " ") %>
+                        <% } %>
                     </span>
+
+                    <% if (
+                        order.paymentMethod === "RAZORPAY" &&
+                        order.paymentStatus === "failed" &&
+                        order.orderStatus === "payment_failed"
+                    ) { %>
+
+                        <form
+                            action="/user/retry-payment/<%= order._id %>"
+                            method="POST"
+                            class="top-action-form"
+                        >
+                            <button type="submit" class="retry-payment-btn">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                Retry Payment
+                            </button>
+                        </form>
+
+                    <% } %>
 
                     <% if (order.orderStatus !== "cancelled") { %>
 
-                        <a href="/user/orders/<%= order._id %>/invoice"
-                        class="invoice-btn">
-
+                        <a
+                            href="/user/orders/<%= order._id %>/invoice"
+                            class="invoice-btn"
+                        >
                             <i class="fa-solid fa-file-invoice"></i>
                             Download Invoice
-
                         </a>
 
                     <% } %>
@@ -247,13 +270,21 @@
                                         <p>Size : <%= product.size %></p>
                                     <% } %>
 
+                                    <%
+                                        const variant = product.productId?.variants?.find(
+                                            v => v._id.toString() === product.variantId.toString()
+                                        );
+                                    %>
+
+                                    <p>Variant : <%= variant ? variant.size : "-" %></p>
+
                                     <span class="product-status <%= product.status || order.orderStatus %>">
                                         <%= (product.status || order.orderStatus).replaceAll("_", " ") %>
                                     </span>
                                 </div>
 
                                 <div class="product-price-box">
-                                    ₹<%= product.price * product.quantity %>
+                                   ₹<%= product.price %>
                                 </div>
 
                                 <div class="order-actions">
@@ -277,6 +308,7 @@
 
                                     <%
                                     const canCancelProduct =
+                                        order.orderStatus !== "payment_failed" &&
                                         ["pending", "confirmed"].includes(
                                             product.status || order.orderStatus
                                         );
@@ -299,21 +331,38 @@
                                     <% } %>
 
                                     <!-- RETURN BUTTON -->
-                                    <% const canReturn =
-                                        product.status === "delivered" &&
-                                        order.orderStatus === "delivered";
+                                    <%
+                                    const canReturn =
+                                        product.status === "delivered";
                                     %>
 
                                     <% if (canReturn) { %>
 
-                                    <button
-                                        type="button"
-                                        class="return-order-btn"
-                                        onclick="openReturnProductModal('<%= order._id %>','<%= product.productId?._id || product.productId %>')">
+                                        <button
+                                            type="button"
+                                            class="return-order-btn"
+                                            onclick="openReturnProductModal(
+                                                '<%= order._id %>',
+                                                '<%= product.productId?._id || product.productId %>'
+                                            )">
 
-                                        Return Product
+                                            Return Product
 
-                                    </button>
+                                        </button>
+
+                                    <% } %>
+
+                                    <!-- WRITE REVIEW BUTTON -->
+                                    <% if (product.status === "delivered") { %>
+
+                                        <a
+                                            href="/user/write-review/<%= order._id %>/<%= product.productId?._id || product.productId %>"
+                                            class="write-review-btn">
+
+                                            <i class="fa-solid fa-star"></i>
+                                            Write Review
+
+                                        </a>
 
                                     <% } %>
 
@@ -364,7 +413,11 @@
                         <p>
                             Status :
                             <strong>
-                                <%= order.orderStatus.replaceAll("_", " ") || "pending" %>
+                                <% if (order.paymentStatus === "failed") { %>
+                                    Payment Failed
+                                <% } else { %>
+                                    <%= order.orderStatus.replaceAll("_", " ") %>
+                                <% } %>
                             </strong>
                         </p>
                     </div>
@@ -409,9 +462,12 @@
                 );
 
                 const canCancelAll =
+                    order.orderStatus !== "payment_failed" &&
                     activeProducts.length > 0 &&
                     activeProducts.every(product =>
-                        ["pending", "confirmed"].includes(product.status || order.orderStatus)
+                        ["pending", "confirmed"].includes(
+                            product.status || order.orderStatus
+                        )
                     );
                 %>
 
@@ -458,21 +514,15 @@
 
                     <h3 class="section-title">Order Summary</h3>
 
-                    <%
-                        let subtotal = 0;
-                        const discount = order.discountApplied || 0;
-                        const delivery = 0;
-                    %>
-
                     <% order.products.forEach(product => { %>
 
                         <%
-                            const isCancelled = product.status === "cancelled";
-                            const itemTotal = product.price * product.quantity;
+                            const isCancelled =
+                                ["cancelled", "returned"].includes(product.status);
 
-                            if (!isCancelled) {
-                                subtotal += itemTotal;
-                            }
+                            const itemTotal =
+                                Number(product.price || 0) *
+                                Number(product.quantity || 0);
                         %>
 
                         <div class="summary-row product-row">
@@ -486,7 +536,7 @@
                                 <% if (isCancelled) { %>
 
                                     <small class="cancelled-text">
-                                        Cancelled
+                                        <%= product.status.replaceAll("_", " ") %>
                                     </small>
 
                                 <% } else { %>
@@ -500,17 +550,11 @@
                             </div>
 
                             <span>
-
                                 <% if (isCancelled) { %>
-
                                     --
-
                                 <% } else { %>
-
-                                    ₹<%= itemTotal %>
-
+                                    ₹<%= itemTotal.toFixed(2) %>
                                 <% } %>
-
                             </span>
 
                         </div>
@@ -521,24 +565,49 @@
 
                     <div class="summary-row">
                         <span>Subtotal</span>
-                        <span>₹<%= subtotal %></span>
+                        <span>
+                            ₹<%= Number(subtotal || 0).toFixed(2) %>
+                        </span>
                     </div>
 
                     <div class="summary-row">
-                        <span>Discount</span>
-                        <span>₹<%= discount %></span>
+                        <span>Product Discount</span>
+                        <span>
+                            - ₹<%= Number(productDiscount || 0).toFixed(2) %>
+                        </span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Offer Discount</span>
+                        <span>
+                            - ₹<%= Number(offerDiscount || 0).toFixed(2) %>
+                        </span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Coupon Discount</span>
+                        <span>
+                            - ₹<%= Number(couponDiscount || 0).toFixed(2) %>
+                        </span>
                     </div>
 
                     <div class="summary-row">
                         <span>Delivery</span>
-                        <span><%= delivery === 0 ? "FREE" : "₹" + delivery %></span>
+                        <span>
+                            <%= Number(delivery || 0) === 0
+                                ? "FREE"
+                                : "₹" + Number(delivery).toFixed(2)
+                            %>
+                        </span>
                     </div>
 
                     <div class="summary-divider"></div>
 
                     <div class="summary-row total-row">
                         <span>Total</span>
-                        <span>₹<%= subtotal - discount + delivery %></span>
+                        <span>
+                            ₹<%= Number(currentTotal || 0).toFixed(2) %>
+                        </span>
                     </div>
 
                 </div>

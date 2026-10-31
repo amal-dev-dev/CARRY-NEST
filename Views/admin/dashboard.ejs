@@ -87,7 +87,7 @@
                             Categories
                         </a>
 
-                        <a href="#">
+                        <a href="/admin/brands">
                             Brands
                         </a>
 
@@ -155,12 +155,8 @@
 
                     <div class="dropdown-menu">
 
-                        <a href="/admin/return-request">
+                        <a href="/admin/return-requests">
                             Requests
-                        </a>
-
-                        <a href="#">
-                            Refunds
                         </a>
 
                     </div>
@@ -183,7 +179,7 @@
 
                 <!-- WALLET -->
 
-                <a href="#" class="menu-item">
+                <a href="/admin/wallet" class="menu-item">
 
                     <span class="menu-left">
 
@@ -197,7 +193,7 @@
 
                 <!-- PROMOTIONS -->
 
-                <a href="#" class="menu-item">
+                <a href="/admin/coupons" class="menu-item">
 
                     <span class="menu-left">
 
@@ -211,7 +207,7 @@
 
                 <!-- REPORTS -->
 
-                <a href="#" class="menu-item">
+                <a href="/admin/sales-report" class="menu-item">
 
                     <span class="menu-left">
 
@@ -261,14 +257,6 @@
 
             <div class="top-right">
 
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    class="top-search"
-                >
-
-                <i class="ri-notification-3-line notification"></i>
-
                 <div class="admin-profile">
 
                     <div class="admin-avatar">
@@ -305,8 +293,12 @@
 
             <div class="dashboard-actions">
 
-                <button class="light-btn">
+                <button
+                    class="light-btn"
+                    onclick="window.location.href='/admin/sales-report'">
+
                     Download Report
+
                 </button>
 
                 <button class="dark-btn">
@@ -333,7 +325,9 @@
 
                 </div>
 
-                <h2>$45,231.89</h2>
+                <h2>
+                    ₹<%= totalRevenue.toLocaleString("en-IN") %>
+                </h2>
 
                 <p class="growth green">
                     ↗ 20.1% vs last month
@@ -351,7 +345,7 @@
 
                 </div>
 
-                <h2>1,342</h2>
+                <h2><%= totalOrders %></h2>
 
                 <p class="growth green">
                     ↗ 12.5% vs last month
@@ -369,7 +363,7 @@
 
                 </div>
 
-                <h2>892</h2>
+                <h2><%= activeCustomers %></h2>
 
                 <p class="growth green">
                     ↗ 4.3% vs last month
@@ -387,7 +381,7 @@
 
                 </div>
 
-                <h2>25</h2>
+                <h2><%= pendingActions %></h2>
 
                 <p class="growth green">
                     ↗ 8 new vs last month
@@ -423,7 +417,7 @@
 
                     <div class="action-right">
 
-                        <span>12</span>
+                        <span><%= pendingOrders %></span>
 
                         <i class="ri-arrow-right-line"></i>
 
@@ -447,7 +441,7 @@
 
                     <div class="action-right">
 
-                        <span>5</span>
+                        <span><%= returnRequests %></span>
 
                         <i class="ri-arrow-right-line"></i>
 
@@ -471,7 +465,7 @@
 
                     <div class="action-right">
 
-                        <span>8</span>
+                        <span><%= lowStockProducts.length %></span>
 
                         <i class="ri-arrow-right-line"></i>
 
@@ -491,9 +485,9 @@
 
                     <div class="mini-card">
 
-                        <span>Requests Today</span>
-
-                        <h2>3</h2>
+                        <span>Pending Requests</span>
+                        
+                        <h2><%= returnRequests %></h2>
 
                     </div>
 
@@ -501,11 +495,13 @@
 
                         <span>Refunds Pending</span>
 
-                        <h2>7</h2>
+                        <h2><%= refundPending %></h2>
 
                     </div>
 
                 </div>
+
+                <a href="/admin/return-requests">
 
                 <button class="process-btn">
 
@@ -514,6 +510,8 @@
                     Process Returns
 
                 </button>
+
+                </a>
 
             </div>
 
@@ -531,7 +529,7 @@
 
                     <h3>Recent Orders</h3>
 
-                    <a href="#">
+                    <a href="/admin/orders">
                         View All
                     </a>
 
@@ -557,59 +555,47 @@
 
                         <tbody>
 
-                        <tr>
+                            <% if (recentOrders.length === 0) { %>
 
-                            <td>#ORD-001</td>
-                            <td>Alex Thompson</td>
-                            <td>$120.00</td>
+                                <tr>
+                                    <td colspan="5" style="text-align:center;">
+                                        No orders found
+                                    </td>
+                                </tr>
 
-                            <td>
+                            <% } else { %>
 
-                                <span class="badge delivered">
-                                    Delivered
-                                </span>
+                                <% recentOrders.forEach(order => { %>
 
-                            </td>
+                                    <tr>
 
-                            <td>2 mins ago</td>
+                                        <td>
+                                            #<%= order.orderId %>
+                                        </td>
 
-                        </tr>
+                                        <td>
+                                            <%= order.userId?.name || "Unknown Customer" %>
+                                        </td>
 
-                        <tr>
+                                        <td>
+                                            ₹<%= order.totalAmount.toLocaleString("en-IN") %>
+                                        </td>
 
-                            <td>#ORD-002</td>
-                            <td>Sarah Parker</td>
-                            <td>$54.00</td>
+                                        <td>
+                                            <span class="badge <%= order.orderStatus %>">
+                                                <%= order.orderStatus %>
+                                            </span>
+                                        </td>
 
-                            <td>
+                                        <td>
+                                            <%= new Date(order.createdAt).toLocaleString("en-IN") %>
+                                        </td>
 
-                                <span class="badge processing">
-                                    Processing
-                                </span>
+                                    </tr>
 
-                            </td>
+                                <% }) %>
 
-                            <td>15 mins ago</td>
-
-                        </tr>
-
-                        <tr>
-
-                            <td>#ORD-003</td>
-                            <td>Michael Chen</td>
-                            <td>$299.99</td>
-
-                            <td>
-
-                                <span class="badge pending">
-                                    Pending
-                                </span>
-
-                            </td>
-
-                            <td>1 hour ago</td>
-
-                        </tr>
+                            <% } %>
 
                         </tbody>
 
@@ -625,55 +611,49 @@
 
                 <h3>Stock Alerts</h3>
 
-                <div class="alert-box">
+                <% if (lowStockProducts.length === 0) { %>
 
-                    <div class="alert-top">
+                    <div class="alert-box">
 
-                        <i class="ri-error-warning-line"></i>
+                        <div class="alert-top">
+                            <i class="ri-checkbox-circle-line"></i>
+                            <span>Stock Status</span>
+                        </div>
 
-                        <span>Low Stock Warning</span>
-
-                    </div>
-
-                    <p>
-                        Wireless Headphones is below threshold.
-                    </p>
-
-                </div>
-
-                <div class="alert-box">
-
-                    <div class="alert-top">
-
-                        <i class="ri-error-warning-line"></i>
-
-                        <span>Low Stock Warning</span>
+                        <p>
+                            All products have sufficient stock.
+                        </p>
 
                     </div>
 
-                    <p>
-                        Wireless Headphones is below threshold.
-                    </p>
+                <% } else { %>
 
-                </div>
+                    <% lowStockProducts.slice(0, 3).forEach(product => { %>
 
-                <div class="alert-box">
+                        <div class="alert-box">
 
-                    <div class="alert-top">
+                            <div class="alert-top">
 
-                        <i class="ri-error-warning-line"></i>
+                                <i class="ri-error-warning-line"></i>
 
-                        <span>Low Stock Warning</span>
+                                <span>Low Stock Warning</span>
 
-                    </div>
+                            </div>
 
-                    <p>
-                        Wireless Headphones is below threshold.
-                    </p>
+                            <p>
+                                <%= product.productName %>
+                                has only
+                                <strong><%= product.stock %></strong>
+                                item(s) remaining.
+                            </p>
 
-                </div>
+                        </div>
 
-                <button class="view-products-btn">
+                    <% }) %>
+
+                <% } %>
+
+                <button class="view-products-btn" onclick="window.location.href='/admin/products'">
                     View Products
                 </button>
 

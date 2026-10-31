@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Coupon - Carry Nest</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/Styles/admin/add-coupon.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="dashboard-container">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- LOGO -->
+
+            <div class="logo-section">
+
+                <div class="logo-box">
+                    C
+                </div>
+
+                <h2>CARRY NEST</h2>
+
+            </div>
+
+
+            <!-- MENU -->
+
+            <div class="menu-wrapper">
+
+
+                <!-- DASHBOARD -->
+
+                <a
+                    href="/admin/dashboard"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-dashboard-line"></i>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+
+                <!-- PRODUCTS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-bag-line"></i>
+
+                            Products
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+
+                    <div class="dropdown-menu">
+
+                        <a href="/admin/products">
+                            All Products
+                        </a>
+
+                        <a href="/admin/add-product">
+                            Add Product
+                        </a>
+
+                        <a href="/admin/category">
+                            Categories
+                        </a>
+
+                        <a href="#">
+                            Brands
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ORDERS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                            Orders
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+
+                    <div class="dropdown-menu">
+
+                        <a href="/admin/orders">
+                            All Orders
+                        </a>
+
+                        <a href="#">
+                            Pending
+                        </a>
+
+                        <a href="#">
+                            Processing
+                        </a>
+
+                        <a href="#">
+                            Shipped
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RETURNS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+
+                    <div class="dropdown-menu">
+
+                        <a href="/admin/return-request">
+                            Requests
+                        </a>
+
+                        <a href="#">
+                            Refunds
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CUSTOMERS -->
+
+                <a
+                    href="/admin/customers"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+
+                <!-- WALLET -->
+
+                <a
+                    href="/admin/wallet"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+
+                <!-- PROMOTIONS -->
+
+                <a
+                    href="/admin/coupons"
+                    class="menu-item active"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+
+                <!-- REPORTS -->
+
+                <a
+                    href="#"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- LOGOUT -->
+
+        <div class="logout-section">
+
+            <a
+                href="/admin/logout"
+                class="logout-btn"
+            >
+
+                <i class="ri-logout-box-r-line"></i>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+
+            <div>
+
+                <p class="breadcrumb">
+
+                    <span>Admin</span>
+
+                    <span>/</span>
+
+                    <span>Promotions</span>
+
+                    <span>/</span>
+
+                    <strong>Add Coupon</strong>
+
+                </p>
+
+            </div>
+
+
+            <div class="top-right">
+
+
+                <i class="ri-notification-3-line notification"></i>
+
+
+                <div class="admin-profile">
+
+                    <div class="admin-avatar">
+                        AD
+                    </div>
+
+                    <div>
+
+                        <h4>Admin User</h4>
+
+                        <span>Super Admin</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ================= PAGE HEADER ================= -->
+
+        <section class="page-header">
+
+
+            <div class="page-title">
+
+
+                <a
+                    href="/admin/coupons"
+                    class="back-btn"
+                >
+
+                    <i class="ri-arrow-left-line"></i>
+
+                </a>
+
+
+                <div>
+
+                    <h1>
+                        Create Discount
+                    </h1>
+
+                    <p>
+                        Configure new campaign parameters
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <a
+                    href="/admin/coupons"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </a>
+
+
+                <button
+                    type="submit"
+                    form="couponForm"
+                    class="save-btn"
+                >
+
+                    <i class="ri-save-line"></i>
+
+                    Save
+
+                </button>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ================= COUPON FORM ================= -->
+
+        <% if (message) { %>
+            <div class="alert-message">
+                <%= message %>
+            </div>
+        <% } %>
+
+        <form
+            id="couponForm"
+            action="/admin/coupons/add"
+            method="POST"
+        >
+
+
+            <!-- BASIC DETAILS -->
+
+            <section class="form-card">
+
+
+                <div class="card-header">
+
+                    <h3>
+                        Basic Details
+                    </h3>
+
+                </div>
+
+
+                <div class="card-body">
+
+
+                    <div class="form-grid two-column">
+
+
+                        <!-- DISCOUNT NAME -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Discount Name
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="discountName"
+                                placeholder="NEW YEAR OFFER"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- DISCOUNT CODE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Discount Code
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                name="discountCode"
+                                placeholder="WELCOME26"
+                                required
+                            >
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            placeholder="Enter coupon description"
+                        ></textarea>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================= CONFIGURATION ================= -->
+
+            <section class="form-card">
+
+
+                <div class="card-header">
+
+                    <h3>
+                        Configuration
+                    </h3>
+
+                </div>
+
+
+                <div class="card-body">
+
+
+                    <div class="form-grid-three">
+
+
+                        <!-- DISCOUNT TYPE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Discount Type
+                                <span>*</span>
+                            </label>
+
+                            <select
+                                name="discountType"
+                                required
+                            >
+
+                                <option value="">
+                                    Select Type
+                                </option>
+
+                                <option value="percentage">
+                                    Percentage (%)
+                                </option>
+
+                                <option value="fixed">
+                                    Flat Amount
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- VALUE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Value
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                name="discountValue"
+                                placeholder="35"
+                                min="0"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- MAX DISCOUNT -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Max Discount Amount
+                            </label>
+
+                            <input
+                                type="number"
+                                name="maxDiscountAmount"
+                                placeholder="500"
+                                min="0"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- APPLY TO -->
+
+                    <div class="form-group apply-group">
+
+                        <label>
+                            Apply To
+                            <span>*</span>
+                        </label>
+
+
+                        <select
+                            name="applyTo"
+                            required
+                        >
+
+                            <option value="cart_total">
+                                Cart Total
+                            </option>
+
+                            <option value="each-product">
+                                Each Product
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================= PURCHASE CONDITIONS ================= -->
+
+            <section class="form-card">
+
+
+                <div class="card-header">
+
+                    <h3>
+                        Purchase Conditions
+                    </h3>
+
+                </div>
+
+
+                <div class="card-body">
+
+
+                    <!-- MINIMUM PURCHASE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Minimum Purchase Amount
+                        </label>
+
+                        <input
+                            type="number"
+                            name="minOrderDiscountAmount"
+                            placeholder="500"
+                            min="0"
+                        >
+
+                    </div>
+
+
+                    <div class="form-grid-two">
+
+
+                        <!-- USER LIMIT -->
+
+                        <div class="form-group">
+
+                            <label>
+                                User per Customer
+                            </label>
+
+                            <input
+                                type="number"
+                                name="userLimit"
+                                value="1"
+                                min="1"
+                            >
+
+                        </div>
+
+
+                        <!-- TOTAL USAGE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Total Usage Limit
+                            </label>
+
+                            <input
+                                type="number"
+                                name="usageLimit"
+                                placeholder="500"
+                                min="1"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================= VALIDITY ================= -->
+
+            <section class="form-card">
+
+
+                <div class="card-header">
+
+                    <h3>
+                        Validity
+                    </h3>
+
+                </div>
+
+
+                <div class="card-body">
+
+
+                    <div class="form-grid-two">
+
+
+                        <!-- START DATE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                Start Date
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                name="validFrom"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- END DATE -->
+
+                        <div class="form-group">
+
+                            <label>
+                                End Date
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="date"
+                                name="validTo"
+                                required
+                            >
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ================= CREATE BUTTON ================= -->
+
+            <button
+                type="submit"
+                class="create-coupon-btn"
+            >
+
+                Create Discount
+
+            </button>
+
+
+        </form>
+
+
+    </main>
+
+</div>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+const dropdowns =
+    document.querySelectorAll(".dropdown-btn");
+
+
+dropdowns.forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        const wrapper =
+            btn.parentElement;
+
+        const menu =
+            wrapper.querySelector(".dropdown-menu");
+
+        wrapper.classList.toggle("active");
+
+        menu.classList.toggle("show");
+
+    });
+
+});
+
+
+// Convert coupon code to uppercase
+
+const couponCode =
+    document.querySelector('input[name="discountCode"]');
+
+
+if (couponCode) {
+
+    couponCode.addEventListener("input", function () {
+
+        this.value =
+            this.value.toUpperCase();
+
+    });
+
+}
+
+
+// Start date cannot be after end date
+
+const startDate =
+    document.querySelector('input[name="validFrom"]');
+
+const endDate =
+    document.querySelector('input[name="validTo"]');
+
+
+if (startDate && endDate) {
+
+    startDate.addEventListener("change", () => {
+
+        endDate.min = startDate.value;
+
+    });
+
+}
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Wallet & Payments</title>
+
+    <link
+        rel="stylesheet"
+        href="/Styles/admin/wallet.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+</head>
+
+<body>
+
+
+<div class="dashboard-container">
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div>
+
+            <!-- LOGO -->
+
+            <div class="logo-section">
+
+                <div class="logo-box">
+                    C
+                </div>
+
+                <h2>CARRY NEST</h2>
+
+            </div>
+
+
+            <!-- MENU -->
+
+            <div class="menu-wrapper">
+
+
+                <!-- DASHBOARD -->
+
+                <a
+                    href="/admin/dashboard"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-dashboard-line"></i>
+
+                        Dashboard
+
+                    </span>
+
+                </a>
+
+
+                <!-- PRODUCTS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-bag-line"></i>
+
+                            Products
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+
+                    <div class="dropdown-menu">
+
+                        <a href="/admin/products">
+                            All Products
+                        </a>
+
+                        <a href="/admin/add-product">
+                            Add Product
+                        </a>
+
+                        <a href="/admin/category">
+                            Categories
+                        </a>
+
+                        <a href="#">
+                            Brands
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ORDERS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-shopping-cart-line"></i>
+
+                            Orders
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+
+                    <div class="dropdown-menu">
+
+                        <a href="/admin/orders">
+                            All Orders
+                        </a>
+
+                        <a href="#">
+                            Pending
+                        </a>
+
+                        <a href="#">
+                            Processing
+                        </a>
+
+                        <a href="#">
+                            Shipped
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RETURNS -->
+
+                <div class="dropdown-wrapper">
+
+                    <button class="dropdown-btn">
+
+                        <span class="menu-left">
+
+                            <i class="ri-arrow-go-back-line"></i>
+
+                            Returns
+
+                        </span>
+
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+
+                    </button>
+
+
+                    <div class="dropdown-menu">
+
+                        <a href="/admin/return-requests">
+                            Requests
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CUSTOMERS -->
+
+                <a
+                    href="/admin/customers"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-group-line"></i>
+
+                        Customers
+
+                    </span>
+
+                </a>
+
+
+                <!-- WALLET -->
+
+                <a
+                    href="#"
+                    class="menu-item active"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-wallet-3-line"></i>
+
+                        Wallet & Payments
+
+                    </span>
+
+                </a>
+
+
+                <!-- PROMOTIONS -->
+
+                <a
+                    href="/admin/coupons"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-price-tag-3-line"></i>
+
+                        Promotions
+
+                    </span>
+
+                </a>
+
+
+                <!-- REPORTS -->
+
+                <a
+                    href="/admin/sales-report"
+                    class="menu-item"
+                >
+
+                    <span class="menu-left">
+
+                        <i class="ri-bar-chart-box-line"></i>
+
+                        Reports
+
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- LOGOUT -->
+
+        <div class="logout-section">
+
+            <a
+                href="/admin/logout"
+                class="logout-btn"
+            >
+
+                <i class="ri-logout-box-r-line"></i>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+   <main class="main-content">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+
+        <div class="top-left">
+            <p class="breadcrumb">
+                Admin
+                <span>/</span>
+                Wallet & Payments
+            </p>
+        </div>
+
+        <div class="top-right">
+
+            <span class="notification">
+                <i class="ri-notification-3-line"></i>
+            </span>
+
+            <div class="admin-profile">
+
+                <div class="admin-avatar">
+                    AD
+                </div>
+
+                <div>
+                    <h4>Admin User</h4>
+                    <span>Super Admin</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- WALLET CONTENT -->
+    <div class="wallet-content">
+
+        <!-- PAGE TITLE -->
+
+        <div class="wallet-heading">
+
+            <h1>Wallet &amp; Payments</h1>
+
+        </div>
+
+
+        <!-- SUMMARY CARDS -->
+
+        <section class="summary-cards">
+
+            <!-- TOTAL TRANSACTIONS -->
+
+            <div class="summary-card">
+
+                <div class="summary-info">
+
+                    <span class="summary-label">
+                        Total Transactions
+                    </span>
+
+                    <h2>
+                        <%= totalTransactions || 0 %>
+                    </h2>
+
+                    <div class="growth positive">
+                        <i class="ri-arrow-up-line"></i>
+                        <span>+5%</span>
+                    </div>
+
+                </div>
+
+                <div class="summary-icon">
+                    <i class="ri-wallet-3-line"></i>
+                </div>
+
+            </div>
+
+
+            <!-- REVENUE -->
+
+            <div class="summary-card">
+
+                <div class="summary-info">
+
+                    <span class="summary-label">
+                        Revenue
+                    </span>
+
+                    <h2>
+                        ₹<%= Number(revenue || 0).toLocaleString("en-IN", {
+                            minimumFractionDigits: 2
+                        }) %>
+                    </h2>
+
+                    <div class="growth positive">
+                        <i class="ri-arrow-up-line"></i>
+                        <span>+12%</span>
+                    </div>
+
+                </div>
+
+                <div class="summary-icon revenue-icon">
+                    <i class="ri-money-rupee-circle-line"></i>
+                </div>
+
+            </div>
+
+
+            <!-- REFUNDS -->
+
+            <div class="summary-card">
+
+                <div class="summary-info">
+
+                    <span class="summary-label">
+                        Refunds Due
+                    </span>
+
+                    <h2>
+                        <%= refundsDue || 0 %>
+                    </h2>
+
+                    <div class="growth negative">
+                        <span>+3% from last month</span>
+                    </div>
+
+                </div>
+
+                <div class="summary-icon refund-icon">
+                    <i class="ri-refresh-line"></i>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TRANSACTIONS CARD -->
+
+        <section class="transactions-card">
+
+            <!-- TRANSACTIONS HEADER -->
+
+            <div class="transactions-header">
+
+                <h3>Recent Transactions</h3>
+
+                <div class="transaction-actions">
+
+                    <div class="transaction-search">
+
+                        <i class="ri-search-line"></i>
+
+                        <input
+                            type="text"
+                            name="search"
+                            value="<%= search || '' %>"
+                            id="transactionSearch"
+                            placeholder="Search..."
+                        >
+
+                    </div>
+
+                    <% if (search) { %>
+                        <a href="/admin/wallet" class="clear-search">
+                            Clear
+                        </a>
+                    <% } %>
+
+                    <button
+                        type="button"
+                        class="filter-btn"
+                        id="filterBtn">
+
+                        <i class="ri-filter-3-line"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="table-wrapper">
+
+                <table class="transactions-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Transaction ID</th>
+                            <th>User</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                            <th>Date</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <% if (transactions && transactions.length > 0) { %>
+
+                            <% transactions.forEach(transaction => { %>
+
+                                <tr>
+
+                                    <!-- TRANSACTION ID -->
+
+                                    <td>
+                                        <span class="transaction-id">
+                                            <%= transaction.transactionId %>
+                                        </span>
+                                    </td>
+
+
+                                    <!-- USER -->
+
+                                    <td>
+
+                                        <div class="user-cell">
+
+                                            <div class="user-avatar">
+                                                <%= transaction.user?.name
+                                                    ?.charAt(0)
+                                                    ?.toUpperCase() || "U" %>
+                                            </div>
+
+                                            <span>
+                                                <%= transaction.user?.name || "Unknown User" %>
+                                            </span>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- TYPE -->
+
+                                    <td>
+                                        <span class="transaction-type">
+                                            <%= transaction.type %>
+                                        </span>
+                                    </td>
+
+
+                                    <!-- AMOUNT -->
+
+                                    <td>
+
+                                        <span class="
+                                            transaction-amount
+                                            <%= transaction.type === 'Refund' ||
+                                                transaction.type === 'Deposit'
+                                                ? 'amount-positive'
+                                                : 'amount-negative' %>
+                                        ">
+
+                                            <%= transaction.type === 'Refund' ||
+                                                transaction.type === 'Deposit'
+                                                ? '+' : '-' %>
+
+                                            ₹<%= Number(transaction.amount || 0)
+                                                .toLocaleString("en-IN", {
+                                                    minimumFractionDigits: 2
+                                                }) %>
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- STATUS -->
+
+                                    <td>
+
+                                        <span class="
+                                            status-badge
+                                            status-<%= transaction.status?.toLowerCase() %>
+                                        ">
+
+                                            <%= transaction.status %>
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- ACTION -->
+
+                                    <td>
+
+                                        <a
+                                            href="/admin/wallet/transaction/<%= transaction._id %>"
+                                            class="view-btn"
+                                            title="View Transaction">
+
+                                            <i class="ri-eye-line"></i>
+
+                                        </a>
+
+                                    </td>
+
+
+                                    <!-- DATE -->
+
+                                    <td>
+
+                                        <span class="transaction-date">
+
+                                            <%= new Date(
+                                                transaction.createdAt
+                                            ).toLocaleDateString("en-GB") %>
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            <% }) %>
+
+                        <% } else { %>
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="empty-table">
+
+                                    <i class="ri-wallet-3-line"></i>
+
+                                    <p>No transactions found</p>
+
+                                </td>
+
+                            </tr>
+
+                        <% } %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+            
+            <% if (totalPages > 1) { %>
+
+                <div class="pagination">
+
+                    <!-- Previous -->
+                    <% if (currentPage > 1) { %>
+
+                        <a
+                            href="/admin/wallet?page=<%= currentPage - 1 %>&search=<%= encodeURIComponent(search || '') %>"
+                            class="page-btn"
+                        >
+                            Previous
+                        </a>
+
+                    <% } %>
+
+
+                    <!-- Page Numbers -->
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+
+                        <a
+                            href="/admin/wallet?page=<%= i %>&search=<%= encodeURIComponent(search || '') %>"
+                            class="page-btn <%= currentPage === i ? 'active' : '' %>"
+                        >
+                            <%= i %>
+                        </a>
+
+                    <% } %>
+
+
+                    <!-- Next -->
+                    <% if (currentPage < totalPages) { %>
+                        <a
+                            href="/admin/wallet?page=<%= currentPage + 1 %>&search=<%= encodeURIComponent(search || '') %>"
+                            class="page-btn"
+                        >
+                            Next
+                        </a>
+
+                    <% } %>
+
+                </div>
+
+            <% } %>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+const dropdowns = document.querySelectorAll(".dropdown-btn");
+
+
+dropdowns.forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        const wrapper =
+            btn.parentElement;
+
+        const menu =
+            wrapper.querySelector(".dropdown-menu");
+
+        wrapper.classList.toggle("active");
+
+        menu.classList.toggle("show");
+
+    });
+
+});
+
+
+
+const searchInput = document.getElementById("transactionSearch");
+
+searchInput.addEventListener("keydown", function (event) {
+
+    if (event.key === "Enter") {
+
+        const search = searchInput.value.trim();
+
+        window.location.href =
+            `/admin/wallet?search=${encodeURIComponent(search)}`;
+    }
+
+});
+
+
+</script>
+
+
+</body>
+
+</html>

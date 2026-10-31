@@ -1,11 +1,15 @@
+
 import PDFDocument from "pdfkit";
 import Order from "../../Model/orderModel.js";
 
 const downloadInvoice = async (req, res) => {
     try {
-
         const { orderId } = req.params;
         const userId = req.session.user;
+
+        // ----------------------------------------------------
+        // FIND ORDER
+        // ----------------------------------------------------
 
         const order = await Order.findOne({
             _id: orderId,
@@ -16,51 +20,105 @@ const downloadInvoice = async (req, res) => {
             return res.status(404).send("Order not found");
         }
 
-        /*
-        ==========================================
-        SEPARATE ACTIVE AND CANCELLED PRODUCTS
-        ==========================================
-        */
 
-        const activeProducts = order.products.filter(
-            item => item.status !== "cancelled"
-        );
+        // Separate products based on their latest item status
+        const getItemStatus = item =>
+            String(item.status || "pending").toLowerCase();
 
         const cancelledProducts = order.products.filter(
-            item => item.status === "cancelled"
+            item => getItemStatus(item) === "cancelled"
         );
 
+        const returnedProducts = order.products.filter(
+            item => getItemStatus(item) === "returned"
+        );
 
-        /*
-        ==========================================
-        CALCULATE SUBTOTAL
-        ==========================================
-        */
+        const activeProducts = order.products.filter(item =>
+            !["cancelled", "returned"].includes(getItemStatus(item))
+        );
 
-        let subtotal = 0;
+        // Calculate the original order subtotal
+        const originalSubtotal = order.products.reduce(
+            (total, item) =>
+                total +
+                Number(item.price || 0) *
+                Number(item.quantity || 0),
+            0
+        );
 
-        activeProducts.forEach(item => {
+        // Calculate subtotal for items not cancelled or returned
+        const subtotal = activeProducts.reduce(
+            (total, item) =>
+                total +
+                Number(item.price || 0) *
+                Number(item.quantity || 0),
+            0
+        );
 
-            const quantity = item.quantity || 1;
-            const price = item.price || 0;
+        // Adjust coupon discount proportionally
+        const originalDiscount = Number(order.discountApplied || 0);
 
-            subtotal += quantity * price;
+        let discount = originalDiscount;
 
-        });
+        const hasRemovedItems =
+            cancelledProducts.length > 0 ||
+            returnedProducts.length > 0;
 
+        if (hasRemovedItems && originalSubtotal > 0) {
+            discount =
+                originalDiscount * (subtotal / originalSubtotal);
+        }
 
-        const discount = order.discountApplied || 0;
+        discount = Number(
+            Math.min(Math.max(discount, 0), subtotal).toFixed(2)
+        );
+
+        // Keep your existing free-delivery rule
         const deliveryCharge = 0;
 
-        const grandTotal =
-            subtotal - discount + deliveryCharge;
+        const grandTotal = Math.max(
+            Number((subtotal - discount + deliveryCharge).toFixed(2)),
+            0
+        );
+
+        // Determine the status to display on the invoice
+        const allItemsRemoved =
+            order.products.length > 0 &&
+            activeProducts.length === 0;
+
+        let displayStatus = order.orderStatus || "pending";
+
+        if (allItemsRemoved) {
+            const allCancelled =
+                cancelledProducts.length === order.products.length;
+
+            const allReturned =
+                returnedProducts.length === order.products.length;
+
+            if (allCancelled) {
+                displayStatus = "cancelled";
+            } else if (allReturned) {
+                displayStatus = "returned";
+            } else {
+                displayStatus = "cancelled/returned";
+            }
+        } else if (cancelledProducts.length > 0 ||
+                   returnedProducts.length > 0) {
+            if (returnedProducts.length > 0) {
+                displayStatus = "partially_returned";
+            } else {
+                displayStatus = "partially_cancelled";
+            }
+        }
+
+        const isPaymentFailed =
+            order.paymentStatus === "failed" ||
+            order.orderStatus === "payment_failed";
 
 
-        /*
-        ==========================================
-        PDF RESPONSE
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // PDF RESPONSE HEADERS
+        // ----------------------------------------------------
 
         res.setHeader(
             "Content-Type",
@@ -72,12 +130,9 @@ const downloadInvoice = async (req, res) => {
             `attachment; filename=invoice-${order.orderId || order._id}.pdf`
         );
 
-
-        /*
-        ==========================================
-        CREATE PDF
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // CREATE PDF
+        // ----------------------------------------------------
 
         const doc = new PDFDocument({
             size: "A4",
@@ -86,12 +141,9 @@ const downloadInvoice = async (req, res) => {
 
         doc.pipe(res);
 
-
-        /*
-        ==========================================
-        COLORS
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // COLORS
+        // ----------------------------------------------------
 
         const dark = "#1f2937";
         const gray = "#6b7280";
@@ -100,19 +152,19 @@ const downloadInvoice = async (req, res) => {
         const green = "#15803d";
         const red = "#dc2626";
 
-
-        /*
-        ==========================================
-        HEADER
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // HEADER
+        // ----------------------------------------------------
 
         doc
             .fontSize(24)
             .fillColor(dark)
             .font("Helvetica-Bold")
-            .text("CARRY NEST", 45, 45);
-
+            .text(
+                "CARRY NEST",
+                45,
+                45
+            );
 
         doc
             .fontSize(10)
@@ -123,7 +175,6 @@ const downloadInvoice = async (req, res) => {
                 45,
                 75
             );
-
 
         doc
             .fontSize(26)
@@ -139,12 +190,9 @@ const downloadInvoice = async (req, res) => {
                 }
             );
 
-
-        /*
-        ==========================================
-        HEADER LINE
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // HEADER LINE
+        // ----------------------------------------------------
 
         doc
             .moveTo(45, 105)
@@ -152,35 +200,40 @@ const downloadInvoice = async (req, res) => {
             .strokeColor(border)
             .stroke();
 
-
-        /*
-        ==========================================
-        ORDER INFORMATION
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // ORDER INFORMATION
+        // ----------------------------------------------------
 
         doc
             .fontSize(10)
             .fillColor(gray)
             .font("Helvetica")
-            .text("ORDER ID", 45, 125);
+            .text(
+                "ORDER ID",
+                45,
+                125
+            );
 
         doc
             .fontSize(11)
             .fillColor(dark)
             .font("Helvetica-Bold")
             .text(
-                order.orderId || order._id.toString(),
+                order.orderId ||
+                order._id.toString(),
                 45,
                 141
             );
-
 
         doc
             .fontSize(10)
             .fillColor(gray)
             .font("Helvetica")
-            .text("INVOICE DATE", 250, 125);
+            .text(
+                "INVOICE DATE",
+                250,
+                125
+            );
 
         doc
             .fontSize(11)
@@ -192,12 +245,15 @@ const downloadInvoice = async (req, res) => {
                 141
             );
 
-
         doc
             .fontSize(10)
             .fillColor(gray)
             .font("Helvetica")
-            .text("PAYMENT", 420, 125);
+            .text(
+                "PAYMENT",
+                420,
+                125
+            );
 
         doc
             .fontSize(11)
@@ -209,18 +265,20 @@ const downloadInvoice = async (req, res) => {
                 141
             );
 
-
-        /*
-        ==========================================
-        CUSTOMER DETAILS
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // CUSTOMER DETAILS
+        // ----------------------------------------------------
 
         doc
-            .roundedRect(45, 175, 245, 105, 5)
+            .roundedRect(
+                45,
+                175,
+                245,
+                105,
+                5
+            )
             .fillColor(lightGray)
             .fill();
-
 
         doc
             .fontSize(11)
@@ -231,7 +289,6 @@ const downloadInvoice = async (req, res) => {
                 60,
                 190
             );
-
 
         doc
             .fontSize(10)
@@ -263,18 +320,20 @@ const downloadInvoice = async (req, res) => {
                 280
             );
 
-
-        /*
-        ==========================================
-        ORDER STATUS BOX
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // ORDER STATUS BOX
+        // ----------------------------------------------------
 
         doc
-            .roundedRect(310, 175, 240, 105, 5)
+            .roundedRect(
+                310,
+                175,
+                240,
+                105,
+                5
+            )
             .fillColor(lightGray)
             .fill();
-
 
         doc
             .fontSize(11)
@@ -287,15 +346,14 @@ const downloadInvoice = async (req, res) => {
             );
 
 
-        const status =
-            order.orderStatus
-                ? order.orderStatus.replaceAll("_", " ").toUpperCase()
-                : "PENDING";
-
+        const status = isPaymentFailed
+            ? "PAYMENT FAILED"
+            : displayStatus.replaceAll("_", " ").toUpperCase();
 
         doc
             .fontSize(12)
             .fillColor(
+                isPaymentFailed ||
                 status === "CANCELLED"
                     ? red
                     : green
@@ -307,7 +365,6 @@ const downloadInvoice = async (req, res) => {
                 215
             );
 
-
         doc
             .fontSize(10)
             .fillColor(gray)
@@ -318,26 +375,49 @@ const downloadInvoice = async (req, res) => {
                 245
             );
 
-
         doc
             .fontSize(10)
             .fillColor(dark)
             .font("Helvetica-Bold")
             .text(
-                order.paymentMethod || "Cash On Delivery",
+                order.paymentMethod === "RAZORPAY"
+                    ? "Razorpay"
+                    : order.paymentMethod === "WALLET"
+                        ? "Wallet"
+                        : "Cash On Delivery",
                 325,
                 261
             );
 
+        // ----------------------------------------------------
+        // PAYMENT STATUS
+        // ----------------------------------------------------
 
-        /*
-        ==========================================
-        PRODUCTS TABLE
-        ==========================================
-        */
+        doc
+            .fontSize(9)
+            .fillColor(
+                order.paymentStatus === "failed"
+                    ? red
+                    : order.paymentStatus === "completed"
+                        ? green
+                        : gray
+            )
+            .font("Helvetica-Bold")
+            .text(
+                order.paymentStatus === "failed"
+                    ? "Payment Failed"
+                    : order.paymentStatus === "completed"
+                        ? "Payment Completed"
+                        : "Payment Pending",
+                325,
+                278
+            );
+
+        // ----------------------------------------------------
+        // PRODUCTS TABLE
+        // ----------------------------------------------------
 
         let tableTop = 315;
-
 
         doc
             .fontSize(13)
@@ -349,44 +429,58 @@ const downloadInvoice = async (req, res) => {
                 tableTop
             );
 
-
         tableTop += 25;
 
-
-        /*
-        TABLE HEADER
-        */
+        // ----------------------------------------------------
+        // TABLE HEADER
+        // ----------------------------------------------------
 
         doc
-            .rect(45, tableTop, 505, 28)
+            .rect(
+                45,
+                tableTop,
+                505,
+                28
+            )
             .fillColor(dark)
             .fill();
-
 
         doc
             .fontSize(9)
             .fillColor("#ffffff")
             .font("Helvetica-Bold")
-            .text("PRODUCT", 55, tableTop + 9);
+            .text(
+                "PRODUCT",
+                55,
+                tableTop + 9
+            );
 
         doc
-            .text("QTY", 350, tableTop + 9);
+            .text(
+                "QTY",
+                350,
+                tableTop + 9
+            );
 
         doc
-            .text("PRICE", 400, tableTop + 9);
+            .text(
+                "PRICE",
+                400,
+                tableTop + 9
+            );
 
         doc
-            .text("TOTAL", 475, tableTop + 9);
-
+            .text(
+                "TOTAL",
+                475,
+                tableTop + 9
+            );
 
         tableTop += 28;
 
-
-        /*
-        ==========================================
-        PRODUCT ROWS
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // ACTIVE PRODUCT ROWS
+        // ----------------------------------------------------
 
         activeProducts.forEach((item, index) => {
 
@@ -395,17 +489,15 @@ const downloadInvoice = async (req, res) => {
                 "Product";
 
             const quantity =
-                item.quantity || 1;
+                Number(item.quantity || 1);
 
             const price =
-                item.price || 0;
+                Number(item.price || 0);
 
             const total =
                 quantity * price;
 
-
             const rowHeight = 35;
-
 
             if (index % 2 === 0) {
 
@@ -418,9 +510,7 @@ const downloadInvoice = async (req, res) => {
                     )
                     .fillColor("#f9fafb")
                     .fill();
-
             }
-
 
             doc
                 .fontSize(9)
@@ -435,14 +525,12 @@ const downloadInvoice = async (req, res) => {
                     }
                 );
 
-
             doc
                 .text(
                     quantity.toString(),
                     350,
                     tableTop + 12
                 );
-
 
             doc
                 .text(
@@ -451,7 +539,6 @@ const downloadInvoice = async (req, res) => {
                     tableTop + 12
                 );
 
-
             doc
                 .font("Helvetica-Bold")
                 .text(
@@ -459,7 +546,6 @@ const downloadInvoice = async (req, res) => {
                     475,
                     tableTop + 12
                 );
-
 
             doc
                 .moveTo(
@@ -473,17 +559,12 @@ const downloadInvoice = async (req, res) => {
                 .strokeColor(border)
                 .stroke();
 
-
             tableTop += rowHeight;
-
         });
 
-
-        /*
-        ==========================================
-        NO ACTIVE PRODUCTS
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // NO ACTIVE PRODUCTS
+        // ----------------------------------------------------
 
         if (activeProducts.length === 0) {
 
@@ -498,20 +579,15 @@ const downloadInvoice = async (req, res) => {
                 );
 
             tableTop += 35;
-
         }
 
-
-        /*
-        ==========================================
-        CANCELLED PRODUCTS
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // CANCELLED PRODUCTS
+        // ----------------------------------------------------
 
         if (cancelledProducts.length > 0) {
 
             tableTop += 25;
-
 
             doc
                 .fontSize(11)
@@ -523,9 +599,7 @@ const downloadInvoice = async (req, res) => {
                     tableTop
                 );
 
-
             tableTop += 20;
-
 
             cancelledProducts.forEach(item => {
 
@@ -534,39 +608,75 @@ const downloadInvoice = async (req, res) => {
                     "Product";
 
                 const quantity =
-                    item.quantity || 1;
+                    Number(item.quantity || 1);
 
+                const price =
+                    Number(item.price || 0);
+
+                const total =
+                    quantity * price;
 
                 doc
                     .fontSize(9)
                     .fillColor(gray)
                     .font("Helvetica")
                     .text(
-                        `${name}  •  Qty: ${quantity}  •  Cancelled`,
+                        `${name}  •  Qty: ${quantity}  •  ₹${total.toFixed(2)}  •  Cancelled`,
                         55,
                         tableTop
                     );
 
+                tableTop += 20;
+            });
+        }
+
+        // ----------------------------------------------------
+        // Returned products
+        // ----------------------------------------------------
+        
+        if (returnedProducts.length > 0) {
+            tableTop += 25;
+
+            doc
+                .fontSize(11)
+                .fillColor(red)
+                .font("Helvetica-Bold")
+                .text("RETURNED ITEMS", 45, tableTop);
+
+            tableTop += 20;
+
+            returnedProducts.forEach(item => {
+                const name =
+                    item.productId?.productName || "Product";
+
+                const quantity = Number(item.quantity || 1);
+                const price = Number(item.price || 0);
+                const total = quantity * price;
+
+                doc
+                    .fontSize(9)
+                    .fillColor(gray)
+                    .font("Helvetica")
+                    .text(
+                        `${name}  |  Qty: ${quantity}  |  ₹${total.toFixed(2)}  |  Returned`,
+                        55,
+                        tableTop,
+                        { width: 490 }
+                    );
 
                 tableTop += 20;
-
             });
-
         }
 
 
-        /*
-        ==========================================
-        SUMMARY
-        ==========================================
-        */
+        // ----------------------------------------------------
+        // SUMMARY
+        // ----------------------------------------------------
 
         tableTop += 20;
 
-
         const summaryX = 345;
         const valueX = 475;
-
 
         doc
             .fontSize(12)
@@ -578,9 +688,11 @@ const downloadInvoice = async (req, res) => {
                 tableTop
             );
 
-
         tableTop += 25;
 
+        // ----------------------------------------------------
+        // SUBTOTAL
+        // ----------------------------------------------------
 
         doc
             .fontSize(10)
@@ -600,29 +712,39 @@ const downloadInvoice = async (req, res) => {
                 tableTop
             );
 
-
         tableTop += 20;
 
+        // ----------------------------------------------------
+        // COUPON DISCOUNT
+        // ----------------------------------------------------
 
         doc
             .fillColor(gray)
             .text(
-                "Discount",
+                "Coupon Discount",
                 summaryX,
                 tableTop
             );
 
         doc
-            .fillColor(dark)
+            .fillColor(
+                discount > 0
+                    ? green
+                    : dark
+            )
             .text(
-                `- ₹${discount.toFixed(2)}`,
+                discount > 0
+                    ? `- ₹${discount.toFixed(2)}`
+                    : "₹0.00",
                 valueX,
                 tableTop
             );
 
-
         tableTop += 20;
 
+        // ----------------------------------------------------
+        // DELIVERY
+        // ----------------------------------------------------
 
         doc
             .fillColor(gray)
@@ -642,9 +764,11 @@ const downloadInvoice = async (req, res) => {
                 tableTop
             );
 
-
         tableTop += 12;
 
+        // ----------------------------------------------------
+        // SUMMARY LINE
+        // ----------------------------------------------------
 
         doc
             .moveTo(
@@ -658,9 +782,11 @@ const downloadInvoice = async (req, res) => {
             .strokeColor(border)
             .stroke();
 
-
         tableTop += 18;
 
+        // ----------------------------------------------------
+        // GRAND TOTAL
+        // ----------------------------------------------------
 
         doc
             .fontSize(13)
@@ -672,7 +798,6 @@ const downloadInvoice = async (req, res) => {
                 tableTop
             );
 
-
         doc
             .text(
                 `₹${grandTotal.toFixed(2)}`,
@@ -680,22 +805,62 @@ const downloadInvoice = async (req, res) => {
                 tableTop
             );
 
+        // ----------------------------------------------------
+        // PAYMENT FAILED NOTE
+        // ----------------------------------------------------
 
-        /*
-        ==========================================
-        FOOTER
-        ==========================================
-        */
+        if (isPaymentFailed) {
+
+            tableTop += 35;
+
+            doc
+                .fontSize(9)
+                .fillColor(red)
+                .font("Helvetica-Bold")
+                .text(
+                    "Payment was not completed for this order.",
+                    45,
+                    tableTop,
+                    {
+                        align: "center",
+                        width: 505
+                    }
+                );
+
+            tableTop += 15;
+
+            doc
+                .fontSize(8)
+                .fillColor(gray)
+                .font("Helvetica")
+                .text(
+                    "This invoice is provided for order reference only.",
+                    45,
+                    tableTop,
+                    {
+                        align: "center",
+                        width: 505
+                    }
+                );
+        }
+
+        // ----------------------------------------------------
+        // FOOTER
+        // ----------------------------------------------------
 
         const footerY = 750;
 
-
         doc
-            .moveTo(45, footerY - 20)
-            .lineTo(550, footerY - 20)
+            .moveTo(
+                45,
+                footerY - 20
+            )
+            .lineTo(
+                550,
+                footerY - 20
+            )
             .strokeColor(border)
             .stroke();
-
 
         doc
             .fontSize(10)
@@ -711,7 +876,6 @@ const downloadInvoice = async (req, res) => {
                 }
             );
 
-
         doc
             .fontSize(8)
             .fillColor(gray)
@@ -726,21 +890,28 @@ const downloadInvoice = async (req, res) => {
                 }
             );
 
+        // ----------------------------------------------------
+        // END PDF
+        // ----------------------------------------------------
 
         doc.end();
 
     } catch (error) {
 
         console.error(
-            "downloadInvoice error:",
+            "DOWNLOAD INVOICE ERROR:",
             error
         );
 
-        res.status(500).send("Server error");
-
+        if (!res.headersSent) {
+            return res
+                .status(500)
+                .send("Server error");
+        }
     }
 };
 
 export default {
     downloadInvoice
 };
+

@@ -57,32 +57,82 @@
         </nav>
     </header>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-content">
-            <span class="offer-tag">Limited Time Offer</span>
+    <!-- Dynamic Offer Banners -->
 
-            <h1>UP TO 50% OFF</h1>
+    <section class="offer-slider">
+        <div class="offer-slides" id="offerSlides">
 
-            <p>
-                Discover premium backpacks, travel bags, and accessories
-                at unbeatable prices.
-            </p>
+            <% if (homepageOffers && homepageOffers.length > 0) { %>
+                <% homepageOffers.forEach((offer, index) => { %>
 
-            <a href="/user/products" class="shop-btn">
-                Shop Now
-            </a>
+                    <div class="offer-slide <%= index === 0 ? 'active' : '' %>">
+
+                        <div class="offer-slide-content">
+                            <span class="offer-label">LIMITED TIME OFFER</span>
+
+                            <h1><%= offer.title %></h1>
+
+                            <p>
+                                Get <strong><%= offer.discountPercentage %>% OFF</strong>
+                                on selected bags.
+                            </p>
+
+                            <a href="/user/products" class="offer-shop-btn">
+                                Shop Now <span>→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                <% }) %>
+            <% } else { %>
+
+                <div class="offer-slide active">
+                    <div class="offer-slide-content">
+                        <span class="offer-label">CARRY NEST COLLECTION</span>
+                        <h1>Find Your Perfect Bag</h1>
+                        <p>Style, comfort and space for every journey.</p>
+                        <a href="/user/products" class="offer-shop-btn">
+                            Explore Collection <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
+            <% } %>
+
         </div>
+
+        <button class="slider-arrow slider-prev" id="offerPrev"
+                type="button" aria-label="Previous offer">&#10094;</button>
+
+        <button class="slider-arrow slider-next" id="offerNext"
+                type="button" aria-label="Next offer">&#10095;</button>
+
+        <div class="slider-dots" id="offerDots"></div>
     </section>
 
-    <!-- Brands -->
-    <section class="brands">
-        <span>Nike</span>
-        <span>Hush</span>
-        <span>Puma</span>
-        <span>Shoe</span>
-        <span>Marc</span>
-        <span>Supreme</span>
+
+    <!-- Dynamic Brands -->
+    <section class="brands-section">
+        <h2>POPULAR BRANDS</h2>
+
+        <div class="brands">
+            <% if (brands && brands.length > 0) { %>
+
+                <% brands.forEach(brand => { %>
+                    <a
+                        href="/user/products?brand=<%= encodeURIComponent(brand) %>"
+                        class="brand-item"
+                    >
+                        <%= brand %>
+                    </a>
+                <% }) %>
+
+            <% } else { %>
+
+                <p>No brands available yet.</p>
+
+            <% } %>
+        </div>
     </section>
 
     <!-- New Arrivals -->
@@ -104,7 +154,32 @@
 
                             <h4><%= product.productName %></h4>
 
-                            <p>₹<%= product.variants[0]?.salePrice %></p>
+                            
+                            <div class="home-product-price">
+
+                                <% if (product.appliedOffer) { %>
+
+                                    <span class="original-offer-price">
+                                        ₹<%= product.basePrice %>
+                                    </span>
+
+                                    <span class="discounted-offer-price">
+                                        ₹<%= product.offerPrice %>
+                                    </span>
+
+                                    <span class="offer-badge">
+                                        <%= product.appliedOffer.discountPercentage %>% OFF
+                                    </span>
+
+                                <% } else { %>
+
+                                    <span class="discounted-offer-price">
+                                        ₹<%= product.basePrice %>
+                                    </span>
+
+                                <% } %>
+
+                            </div>
 
                         </div>
 
@@ -117,121 +192,323 @@
         <a href="/user/products" class="view-btn" style="text-decoration: none; color: #000;">View All</a>
     </section>
 
-    <!-- Top Selling -->
-    <section class="products">
-        <h2>TOP SELLING</h2>
+    <!-- Top Selling Products -->
+    <section class="products top-selling-section">
+        <h2>TOP SELLING PRODUCTS</h2>
 
-        <div class="product-grid">
-            <div class="card">
-                <img src="https://via.placeholder.com/200">
-                <h4>Leather Bag</h4>
-                <p>$210</p>
+        <% if (topSellingProducts && topSellingProducts.length > 0) { %>
+
+            <div class="product-grid">
+                <% topSellingProducts.forEach(product => { %>
+
+                    <a
+                        href="/user/product-details/<%= product._id %>"
+                        class="home-product-link"
+                    >
+                        <div class="card">
+                            <img
+                                src="<%= product.productImage?.[0] || '' %>"
+                                alt="<%= product.productName %>"
+                                loading="lazy"
+                            >
+
+                            <h4><%= product.productName %></h4>
+
+                            <div class="home-product-price">
+                                <% if (product.appliedOffer) { %>
+
+                                    <span class="original-offer-price">
+                                        ₹<%= product.basePrice %>
+                                    </span>
+
+                                    <span class="discounted-offer-price">
+                                        ₹<%= product.offerPrice %>
+                                    </span>
+
+                                    <span class="offer-badge">
+                                        <%= product.appliedOffer.discountPercentage %>% OFF
+                                    </span>
+
+                                <% } else { %>
+
+                                    <span class="discounted-offer-price">
+                                        ₹<%= product.basePrice %>
+                                    </span>
+
+                                <% } %>
+                            </div>
+                        </div>
+                    </a>
+
+                <% }); %>
             </div>
 
-            <div class="card">
-                <img src="https://via.placeholder.com/200">
-                <h4>Travel Pack</h4>
-                <p>$145</p>
-            </div>
+        <% } else { %>
 
-            <div class="card">
-                <img src="https://via.placeholder.com/200">
-                <h4>Minimal Backpack</h4>
-                <p>$90</p>
-            </div>
+            <p class="no-top-selling">
+                Best-selling products will appear here once eligible sales are available.
+            </p>
 
-            <div class="card">
-                <img src="https://via.placeholder.com/200">
-                <h4>Office Bag</h4>
-                <p>$210</p>
-            </div>
-        </div>
+        <% } %>
 
-        <button class="view-btn">View All</button>
+        <a href="/user/products" class="view-btn top-selling-view-btn">
+            View All Products
+        </a>
     </section>
+
 
     <!-- Browse Style -->
     <section class="style-section">
         <h2>BROWSE BY STYLE</h2>
 
         <div class="style-grid">
-            <div class="style-card">
-                <img src="https://via.placeholder.com/400x250">
-            </div>
 
-            <div class="style-card">
-                <img src="https://via.placeholder.com/400x250">
-            </div>
+            <% if (products && products.length > 0) { %>
 
-            <div class="style-card">
-                <img src="https://via.placeholder.com/400x250">
-            </div>
+                <% products.slice(0, 4).forEach(product => { %>
 
-            <div class="style-card">
-                <img src="https://via.placeholder.com/400x250">
-            </div>
+                    <a
+                        href="/user/product-details/<%= product._id %>"
+                        class="style-card"
+                        title="<%= product.productName %>"
+                    >
+                        <img
+                            src="<%= product.productImage && product.productImage.length
+                                ? product.productImage[0]
+                                : '' %>"
+                            alt="<%= product.productName %>"
+                            loading="lazy"
+                        >
+
+                        <div class="style-card-overlay">
+                            <h3><%= product.productName %></h3>
+                            <span>Explore Collection →</span>
+                        </div>
+                    </a>
+
+                <% }) %>
+
+            <% } else { %>
+
+                <p>No styles available.</p>
+
+            <% } %>
+
         </div>
     </section>
 
-    <!-- Testimonials -->
+
+    <!-- Customer Reviews -->
     <section class="testimonial-section">
-        <h2>OUR HAPPY CUSTOMERS</h2>
+        <h2>WHAT OUR CUSTOMERS SAY</h2>
 
-        <div class="testimonial-grid">
-            <div class="testimonial">
-                <h4>Sarah</h4>
-                <p>Excellent quality and premium design.</p>
+        <% if (recentReviews && recentReviews.length > 0) { %>
+
+            <div class="testimonial-grid">
+
+                <% recentReviews.forEach(review => { %>
+
+                    <div class="testimonial">
+
+                        <div class="testimonial-stars"
+                            aria-label="<%= review.rating %> out of 5 stars">
+
+                            <% for (let i = 1; i <= 5; i++) { %>
+                                <% if (i <= review.rating) { %>
+                                    <i class="fa-solid fa-star"></i>
+                                <% } else { %>
+                                    <i class="fa-regular fa-star"></i>
+                                <% } %>
+                            <% } %>
+
+                        </div>
+
+                        <h4>
+                            <%= review.userId?.name || "Customer" %>
+                        </h4>
+
+                        <% if (review.productId?.productName) { %>
+                            <p class="review-product-name">
+                                <%= review.productId.productName %>
+                            </p>
+                        <% } %>
+
+                        <% if (review.title) { %>
+                            <h5><%= review.title %></h5>
+                        <% } %>
+
+                        <p class="review-comment">
+                            <%= review.comment %>
+                        </p>
+
+                        <small>
+                            <%= new Date(review.createdAt).toLocaleDateString(
+                                "en-IN",
+                                {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric"
+                                }
+                            ) %>
+                        </small>
+
+                    </div>
+
+                <% }) %>
+
             </div>
 
-            <div class="testimonial">
-                <h4>Nick</h4>
-                <p>Very comfortable and durable products.</p>
-            </div>
+        <% } else { %>
 
-            <div class="testimonial">
-                <h4>Anna</h4>
-                <p>Fast delivery and amazing customer support.</p>
-            </div>
-        </div>
+            <p class="no-reviews">
+                No customer reviews yet. Be the first to share your experience!
+            </p>
+
+        <% } %>
     </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-grid">
+ <!-- FOOTER -->
 
-            <div>
-                <h3>CARRYNEST</h3>
-                <p>Premium bags and travel accessories.</p>
-            </div>
+<footer>
 
-            <div>
-                <h4>Services</h4>
-                <ul>
-                    <li>Shipping</li>
-                    <li>Returns</li>
-                    <li>Support</li>
-                </ul>
-            </div>
+    <div class="footer-container">
 
-            <div>
-                <h4>Company</h4>
-                <ul>
-                    <li>About</li>
-                    <li>Blog</li>
-                    <li>Contact</li>
-                </ul>
-            </div>
-
-            <div>
-                <h4>Subscribe</h4>
-                <div class="subscribe">
-                    <input type="email" placeholder="Email">
-                    <button>Send</button>
-                </div>
-            </div>
-
+        <div class="footer-col">
+            <h3>CARRY NEST</h3>
+            <p>Lorem ipsum dolor sit amet consectetur. Purus in etiam risus ut sem eu urna. Massa feugiat consequat nec libero.</p>
+            <p>Lorem ipsum dolor sit</p>
         </div>
-    </footer>
+
+        <div class="footer-col">
+            <h4>Service</h4>
+            <p>Laptop Bags</p>
+            <p>Trekking Bags</p>
+            <p>School Bags</p>
+            <p>Office Bags</p>
+            <p>Travelling Bags</p>
+        </div>
+
+        <div class="footer-col">
+            <h4>Company</h4>
+            <p>Service</p>
+            <p>Features</p>
+            <p>Our Team</p>
+            <p>Portfolio</p>
+            <p>Blog</p>
+            <p>Contact Us</p>
+        </div>
+
+        <div class="footer-col footer-contact">
+            <h4>Contact Us</h4>
+
+            <div class="footer-input-box">
+                <input type="text" placeholder="Your Email / Phone no.">
+                <button>Send</button>
+            </div>
+
+            <div class="social-icons">
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+
+        <p>Copyright Tanah Air Studio</p>
+
+        <div class="footer-bottom-info">
+            <span><i class="fa-solid fa-location-dot"></i> 8819 Ohio St. South Gate, CA 90280</span>
+            <span><i class="fa-regular fa-envelope"></i> CrossLine@hello.com</span>
+            <span><i class="fa-solid fa-phone"></i> +91 386-688-3295</span>
+        </div>
+
+    </div>
+
+</footer>
+
+
+    
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+    const slides = Array.from(
+        document.querySelectorAll(".offer-slide")
+    );
+    const dotsContainer = document.getElementById("offerDots");
+    const prevButton = document.getElementById("offerPrev");
+    const nextButton = document.getElementById("offerNext");
+
+    if (!slides.length || !dotsContainer) return;
+
+    let currentIndex = 0;
+    let timer;
+
+    slides.forEach((slide, index) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "slider-dot";
+        dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
+
+        dot.addEventListener("click", () => {
+            showSlide(index);
+            restartTimer();
+        });
+
+        dotsContainer.appendChild(dot);
+    });
+
+    const dots = Array.from(
+        dotsContainer.querySelectorAll(".slider-dot")
+    );
+
+    function showSlide(index) {
+        currentIndex = (index + slides.length) % slides.length;
+
+        slides.forEach((slide, i) => {
+            slide.classList.toggle("active", i === currentIndex);
+        });
+
+        dots.forEach((dot, i) => {
+            dot.classList.toggle("active", i === currentIndex);
+        });
+    }
+
+    function nextSlide() {
+        showSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentIndex - 1);
+    }
+
+    function restartTimer() {
+        clearInterval(timer);
+
+        if (slides.length > 1) {
+            timer = setInterval(nextSlide, 5000);
+        }
+    }
+
+    nextButton.addEventListener("click", () => {
+        nextSlide();
+        restartTimer();
+    });
+
+    prevButton.addEventListener("click", () => {
+        prevSlide();
+        restartTimer();
+    });
+
+    showSlide(0);
+    restartTimer();
+});
+
+</script>
+
 
 </body>
 </html>

@@ -12,195 +12,200 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
+    <!-- NAVBAR -->
 
-<nav class="navbar">
+    <nav class="navbar">
 
-    <div class="logo">
-        CARRY NEST
+        <div class="logo">
+            CARRY NEST
+        </div>
+
+                <div class="nav-icons">
+
+                    <% if(user){ %>
+
+                        <a href="/user/cart" class="cart-link">
+                            <i class="fa-solid fa-cart-shopping"></i>
+
+                            <% if (cartCount > 0) { %>
+                                <span class="cart-badge"><%= cartCount %></span>
+                            <% } %>
+                        </a>
+                        
+                        <a href="/user/wishlist" class="wishlist-link">
+                            <i class="fa-regular fa-heart"></i>
+
+                            <% if (wishlistCount > 0) { %>
+                                <span class="wishlist-badge">
+                                    <%= wishlistCount %>
+                                </span>
+                            <% } %>
+                        </a>
+
+                        <a href="/user/profile" style="color:black;">
+                            <i class="fa-regular fa-user"></i>
+                        </a>
+
+                    <% } else { %>
+
+                        <a href="/user/login" class="login-btn">
+                            Login
+                        </a>
+
+                        <a href="/user/signup" class="signup-btn">
+                            Sign Up
+                        </a>
+
+                    <% } %>
+
+                </div>
+
+    </nav>
+
+    <!-- MOBILE FILTER BUTTON -->
+
+    <div class="mobile-filter">
+        <button id="filterBtn">
+            <i class="fa-solid fa-filter"></i>
+            Filters
+        </button>
     </div>
 
-            <div class="nav-icons">
+    <!-- MAIN -->
 
-                <% if(user){ %>
+    <section class="products-page">
 
-                    <a href="/user/cart" class="cart-link">
-                        <i class="fa-solid fa-cart-shopping"></i>
+        <aside class="sidebar" id="sidebar">
 
-                        <% if (cartCount > 0) { %>
-                            <span class="cart-badge"><%= cartCount %></span>
-                        <% } %>
-                    </a>
-                    
-                    <a href="/user/wishlist" class="wishlist-link">
-                        <i class="fa-regular fa-heart"></i>
+            <form id="filterForm" method="GET" action="/user/products">
 
-                        <% if (wishlistCount > 0) { %>
-                            <span class="wishlist-badge">
-                                <%= wishlistCount %>
-                            </span>
-                        <% } %>
-                    </a>
+                <input type="hidden" name="sort" value="<%= sort || '' %>">
+                <input type="hidden" name="search" value="<%= search || '' %>">
 
-                    <a href="/user/profile" style="color:black;">
-                        <i class="fa-regular fa-user"></i>
-                    </a>
+                <input
+                    type="hidden"
+                    id="categoryInput"
+                    name="category"
+                    value="<%= category || '' %>"
+                >
 
-                <% } else { %>
+                <input
+                    type="hidden"
+                    id="brandInput"
+                    name="brand"
+                    value="<%= brand || '' %>"
+                >
 
-                    <a href="/user/login" class="login-btn">
-                        Login
-                    </a>
+                <input
+                    type="hidden"
+                    id="colorInput"
+                    name="color"
+                    value="<%= color || '' %>"
+                >
 
-                    <a href="/user/signup" class="signup-btn">
-                        Sign Up
-                    </a>
+                <!-- CATEGORY -->
+                <div class="filter-box">
+                    <div class="filter-header">
+                        <h4>Category</h4>
+                        <span><%= category ? '−' : '+' %></span>
+                    </div>
 
-                <% } %>
-
-            </div>
-
-</nav>
-
-<!-- MOBILE FILTER BUTTON -->
-
-<div class="mobile-filter">
-    <button id="filterBtn">
-        <i class="fa-solid fa-filter"></i>
-        Filters
-    </button>
-</div>
-
-<!-- MAIN -->
-
-<section class="products-page">
-
-    <!-- SIDEBAR -->
-
-    <aside class="sidebar" id="sidebar">
-
-        <!-- Category -->
-
-        <form id="filterForm" method="GET" action="/user/products">
-
-            <input type="hidden" name="sort" value="<%= sort %>">
-            <input type="hidden" name="search" value="<%= search %>">
-            <input type="hidden" name="price" value="<%= price %>">
-
-            <input
-                type="hidden"
-                id="categoryInput"
-                name="category"
-                value="<%= category || '' %>"
-            >
-
-            <div class="filter-box">
-
-                <div class="filter-header">
-                    <h4>Category</h4>
-                    <span>+</span>
+                    <div class="filter-content <%= category ? 'active' : '' %>">
+                        <% categories.forEach(cat => { %>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    class="category-filter"
+                                    value="<%= cat._id %>"
+                                    <%= String(category) === String(cat._id) ? "checked" : "" %>
+                                >
+                                <%= cat.name %>
+                            </label>
+                        <% }) %>
+                    </div>
                 </div>
 
-                <div class="filter-content active">
+                <!-- BRAND -->
+                <div class="filter-box">
+                    <div class="filter-header">
+                        <h4>Brand</h4>
+                        <span><%= brand ? '−' : '+' %></span>
+                    </div>
 
-                    <% categories.forEach(cat => { %>
+                    <div class="filter-content <%= brand ? 'active' : '' %>">
+                        <% brands.forEach(item => { %>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    class="brand-filter"
+                                    value="<%= item.name %>"
+                                    <%= brand === item.name ? "checked" : "" %>
+                                >
+                                <%= item.name %>
+                            </label>
+                        <% }) %>
+                    </div>
+                </div>
 
+                <!-- COLOR -->
+                <div class="filter-box">
+                    <div class="filter-header">
+                        <h4>Color</h4>
+                        <span><%= color ? '−' : '+' %></span>
+                    </div>
+
+                    <div class="filter-content <%= color ? 'active' : '' %>">
+                        <% ['Black', 'Blue', 'Brown', 'Grey'].forEach(c => { %>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    class="color-filter"
+                                    value="<%= c %>"
+                                    <%= color === c ? "checked" : "" %>
+                                >
+                                <%= c %>
+                            </label>
+                        <% }) %>
+                    </div>
+                </div>
+
+                <!-- PRICE -->
+                <div class="filter-box">
+                    <div class="filter-header">
+                        <h4>Price</h4>
+                        <span>+</span>
+                    </div>
+
+                    <div class="filter-content">
                         <label>
-
-                            <input
-                                type="checkbox"
-                                class="category-filter"
-                                value="<%= cat._id %>"
-                                <%= category == cat._id ? "checked" : "" %>
-                            >
-
-                            <%= cat.name %>
-
+                            <input type="radio" name="price" value="0-1000"
+                                <%= price === '0-1000' ? 'checked' : '' %>>
+                            ₹0 - ₹1000
                         </label>
 
-                    <% }) %>
+                        <label>
+                            <input type="radio" name="price" value="1000-3000"
+                                <%= price === '1000-3000' ? 'checked' : '' %>>
+                            ₹1000 - ₹3000
+                        </label>
 
+                        <label>
+                            <input type="radio" name="price" value="3000-5000"
+                                <%= price === '3000-5000' ? 'checked' : '' %>>
+                            ₹3000 - ₹5000
+                        </label>
+
+                        <label>
+                            <input type="radio" name="price" value=""
+                                <%= !price ? 'checked' : '' %>>
+                            All prices
+                        </label>
+                    </div>
                 </div>
 
-            </div>
+            </form>
+        </aside>
 
-        </form>
-
-        <!-- Brand -->
-
-        <div class="filter-box"> 
-            <div class="filter-header"> 
-                <h4>Brand</h4> 
-                <span>+</span>
-            </div> 
-            <div class="filter-content"> 
-                <label><input type="checkbox"> Nike</label>
-                <label><input type="checkbox"> Puma</label> 
-                <label><input type="checkbox"> Adidas</label> 
-                <label><input type="checkbox"> Wildcraft</label> 
-            </div> 
-        </div>
-
-        <!-- Color -->
-
-        <div class="filter-box">
-
-            <div class="filter-header">
-                <h4>Color</h4>
-                <span>+</span>
-            </div>
-
-            <div class="filter-content">
-
-                <label><input type="checkbox"> Black</label>
-
-                <label><input type="checkbox"> Blue</label>
-
-                <label><input type="checkbox"> Brown</label>
-
-                <label><input type="checkbox"> Grey</label>
-
-            </div>
-
-        </div>
-
-        <!-- Price -->
-
-        <div class="filter-content">
-
-            <label>
-                <input
-                    type="radio"
-                    name="price"
-                    value="0-1000"
-                    onchange="document.getElementById('filterForm').submit()"
-                >
-                ₹0 - ₹1000
-            </label>
-
-            <label>
-                <input
-                    type="radio"
-                    name="price"
-                    value="1000-3000"
-                    onchange="document.getElementById('filterForm').submit()"
-                >
-                ₹1000 - ₹3000
-            </label>
-
-            <label>
-                <input
-                    type="radio"
-                    name="price"
-                    value="3000-5000"
-                    onchange="document.getElementById('filterForm').submit()"
-                >
-                ₹3000 - ₹5000
-            </label>
-
-        </div>
-
-    </aside>
 
     <!-- PRODUCTS -->
 
@@ -250,7 +255,7 @@
                 <option value="">Sort By</option>
 
                 <option value="oldest"
-                    <%= sort === "newest" ? "selected" : "" %>>
+                    <%= sort === "oldest" ? "selected" : "" %>>
                     Oldest First
                 </option>
 
@@ -279,18 +284,27 @@
         </form>
 
         <!-- GRID -->
-
         <div class="product-grid">
 
             <% products.forEach(product => { %>
 
-                <a
-                    href="/user/product-details/<%= product._id %>"
-                    class="product-link"
-                >
+                <div class="product-card">
 
-                    <div class="product-card">
+                    <button
+                        type="button"
+                        class="wishlist-btn <%= wishlistProductIds && wishlistProductIds.includes(product._id.toString()) ? 'active' : '' %>"
+                        data-product-id="<%= product._id %>"
+                        data-variant-id="<%= product.variants[0]?._id || '' %>"
+                        title="<%= wishlistProductIds && wishlistProductIds.includes(product._id.toString()) ? 'Remove from wishlist' : 'Add to wishlist' %>"
+                        aria-label="Wishlist"
+                    >
+                        <i class="<%= wishlistProductIds && wishlistProductIds.includes(product._id.toString()) ? 'fa-solid' : 'fa-regular' %> fa-heart"></i>
+                    </button>
 
+                    <a
+                        href="/user/product-details/<%= product._id %>"
+                        class="product-link"
+                    >
                         <img
                             src="<%= product.productImage[0] %>"
                             alt="<%= product.productName %>"
@@ -298,11 +312,12 @@
 
                         <h4><%= product.productName %></h4>
 
-                        <p>₹<%= product.variants[0]?.salePrice %></p>
+                        <p>
+                            ₹<%= product.variants[0]?.salePrice %>
+                        </p>
+                    </a>
 
-                    </div>
-
-                </a>
+                </div>
 
             <% }) %>
 
@@ -383,57 +398,154 @@
 
 <script>
 
-const filterBtn = document.getElementById("filterBtn");
+    // Filter accordion dropdowns
+    document.querySelectorAll(".filter-header").forEach(header => {
+        header.addEventListener("click", function () {
+            const content = this.nextElementSibling;
+            const icon = this.querySelector("span");    
 
-const sidebar = document.getElementById("sidebar");
+            content.classList.toggle("active");
 
-filterBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("show");
-});
-
-const headers = document.querySelectorAll(".filter-header");
-
-headers.forEach(header => {
-
-    header.addEventListener("click", () => {
-
-        const content = header.nextElementSibling;
-
-        content.classList.toggle("active");
-
+            if (icon) {
+                icon.textContent = content.classList.contains("active")
+                    ? "−"
+                    : "+";
+            }
+        });
     });
 
-});
+    const filterForm = document.getElementById("filterForm");
+    const categoryInput = document.getElementById("categoryInput");
+    const brandInput = document.getElementById("brandInput");
+    const colorInput = document.getElementById("colorInput");
 
-const categoryInput = document.getElementById("categoryInput");
-const categoryCheckboxes = document.querySelectorAll(".category-filter");
-const filterForm = document.getElementById("filterForm");
+    const sidebar = document.getElementById("sidebar");
 
-categoryCheckboxes.forEach(checkbox => {
+    if (filterBtn && sidebar) {
+        filterBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("show");
+        });
+    }
 
-    checkbox.addEventListener("click", function () {
+    const categoryCheckboxes = document.querySelectorAll(".category-filter");
 
-        if (this.checked) {
+    const brandCheckboxes = document.querySelectorAll(".brand-filter");
 
-            // Uncheck all other categories
-            categoryCheckboxes.forEach(cb => {
+    const colorCheckboxes = document.querySelectorAll(".color-filter");
+
+    // Category: single selection
+    categoryCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            categoryInput.value = this.checked ? this.value : "";
+            filterForm.submit();
+        });
+    });
+
+    // Brand: single selection
+    brandCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            brandCheckboxes.forEach(cb => {
                 if (cb !== this) cb.checked = false;
             });
 
-            categoryInput.value = this.value;
-
-        } else {
-
-            // Category removed
-            categoryInput.value = "";
-
-        }
-
-        filterForm.submit();
-
+            brandInput.value = this.checked ? this.value : "";
+            filterForm.submit();
+        });
     });
 
-});
+    // Color: single selection
+    colorCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            colorCheckboxes.forEach(cb => {
+                if (cb !== this) cb.checked = false;
+            });
+
+            colorInput.value = this.checked ? this.value : "";
+            filterForm.submit();
+        });
+    });
+
+    // Price filter
+    document.querySelectorAll('#filterForm input[name="price"]')
+        .forEach(radio => {
+            radio.addEventListener("change", () => filterForm.submit());
+        });
+
+
+    //wishlist
+    document.querySelectorAll(".wishlist-btn").forEach(button => {
+        button.addEventListener("click", async function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            <% if (!user) { %>
+                window.location.href = "/user/login";
+                return;
+            <% } %>
+
+            const productId = this.dataset.productId;
+            const variantId = this.dataset.variantId;
+
+            if (!variantId) {
+                alert("Product variant not found.");
+                return;
+            }
+
+            try {
+                this.disabled = true;
+
+                const response = await fetch(
+                    `/user/wishlist/toggle/${productId}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ variantId })
+                    }
+                );
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    alert(result.message || "Unable to update wishlist.");
+                    return;
+                }
+
+                const icon = this.querySelector("i");
+                const isAdded = result.action === "added";
+
+                this.classList.toggle("active", isAdded);
+                icon.classList.toggle("fa-solid", isAdded);
+                icon.classList.toggle("fa-regular", !isAdded);
+
+                this.title = isAdded
+                    ? "Remove from wishlist"
+                    : "Add to wishlist";
+
+                this.setAttribute(
+                    "aria-label",
+                    this.title
+                );
+
+                // Update navbar wishlist badge, if present
+                const badge = document.querySelector(".wishlist-badge");
+
+                if (badge) {
+                    badge.textContent = result.wishlistCount;
+                    badge.style.display = result.wishlistCount > 0
+                        ? ""
+                        : "none";
+                }
+
+            } catch (error) {
+                console.error("Wishlist request failed:", error);
+                alert("Something went wrong. Please try again.");
+            } finally {
+                this.disabled = false;
+            }
+        });
+    });
 
 </script>
 

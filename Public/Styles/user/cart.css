@@ -230,6 +230,13 @@ body{
     font-size:18px;
 }
 
+.cart-offer-label {
+    margin-top: 6px;
+    color: #16753b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
 .checkout-btn{
     display:block;
     width:100%;
@@ -250,6 +257,17 @@ body{
 .out-stock{
     color:red;
     font-weight:600;
+}
+
+.product-unavailable-warning {
+    margin-top: 8px;
+    padding: 8px 10px;
+    color: #b42318;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 .empty-cart{

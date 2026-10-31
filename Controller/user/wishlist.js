@@ -2,231 +2,192 @@ import Product from "../../Model/productModel.js";
 import Wishlist from "../../Model/wishlistModel.js";
 import Cart from "../../Model/cartModel.js";
 
+
+
 const toggleWishlist = async (req, res) => {
-
     try {
-
         const userId = req.session.user;
         const productId = req.params.id;
         const { variantId } = req.body;
 
-        // Validate product
+        // Validate product ID and product
         const product = await Product.findById(productId);
 
         if (!product) {
-
-            return res.json({
+            return res.status(404).json({
                 success: false,
                 message: "Product not found"
             });
+        }
 
+        if (product.isBlocked) {
+            return res.status(400).json({
+                success: false,
+                message: "This product is currently unavailable"
+            });
         }
 
         // Validate variant
         if (!variantId) {
-
-            return res.json({
+            return res.status(400).json({
                 success: false,
-                message: "Please select a size"
+                message: "Product variant not found"
             });
-
         }
 
-        // Check whether variant belongs to this product
         const selectedVariant = product.variants.find(
             variant => variant._id.toString() === variantId.toString()
         );
 
         if (!selectedVariant) {
-
-            return res.json({
+            return res.status(400).json({
                 success: false,
                 message: "Selected variant not found"
             });
-
         }
 
-        // Find wishlist
         let wishlist = await Wishlist.findOne({ userId });
 
-        // Create wishlist if it doesn't exist
         if (!wishlist) {
-
             wishlist = new Wishlist({
                 userId,
-                items: [
-                    {
-                        productId: product._id,
-                        variantId: selectedVariant._id
-                    }
-                ]
-            });
-
-            await wishlist.save();
-
-            return res.json({
-                success: true,
-                action: "added",
-                message: "Product added to wishlist"
+                items: []
             });
         }
 
-        // Check whether SAME product + SAME variant already exists
-        const index = wishlist.items.findIndex(item =>
-
-            item.productId.toString() === productId.toString() &&
-            item.variantId.toString() === variantId.toString()
-
+        // Check whether this product is already in the wishlist
+        const existingIndex = wishlist.items.findIndex(
+            item => item.productId.toString() === productId.toString()
         );
 
-        // Remove if same product + variant exists
-        if (index !== -1) {
-
-            wishlist.items.splice(index, 1);
-
+        // Remove if already added
+        if (existingIndex !== -1) {
+            wishlist.items.splice(existingIndex, 1);
             await wishlist.save();
 
             return res.json({
                 success: true,
                 action: "removed",
-                message: "Product removed from wishlist"
+                added: false,
+                message: "Product removed from wishlist",
+                wishlistCount: wishlist.items.length
             });
         }
 
-        // Check whether same product exists with another variant
-        const existingProductIndex = wishlist.items.findIndex(item =>
-            item.productId.toString() === productId.toString()
-        );
-
-        if (existingProductIndex !== -1) {
-
-            // Update the existing wishlist item's variant
-            wishlist.items[existingProductIndex].variantId =
-                selectedVariant._id;
-
-        } else {
-
-            // Add new product + variant
-            wishlist.items.push({
-                productId: product._id,
-                variantId: selectedVariant._id
+        // Maximum 5 products
+        if (wishlist.items.length >= 5) {
+            return res.status(400).json({
+                success: false,
+                action: "limit",
+                added: false,
+                message: "You can add only 5 products to your wishlist"
             });
-
         }
+
+        // Add product and selected variant
+        wishlist.items.push({
+            productId: product._id,
+            variantId: selectedVariant._id
+        });
 
         await wishlist.save();
 
         return res.json({
             success: true,
             action: "added",
-            message: "Product added to wishlist"
+            added: true,
+            message: "Product added to wishlist",
+            wishlistCount: wishlist.items.length
         });
 
     } catch (error) {
+        console.error("TOGGLE WISHLIST ERROR:", error);
 
-        console.log("TOGGLE WISHLIST ERROR:", error);
-
-        return res.json({
+        return res.status(500).json({
             success: false,
-            message: "Internal Server Error"
+            message: "Unable to update wishlist"
         });
-
     }
 };
 
+
+
 const loadWishlist = async (req, res) => {
-
     try {
-
         const userId = req.session.user;
 
         const wishlist = await Wishlist.findOne({ userId })
             .populate("items.productId");
 
         if (!wishlist) {
-
             return res.render("user/wishlist", {
                 wishlistItems: []
             });
-
         }
 
         const wishlistItems = [];
+        const validWishlistItems = [];
 
-        wishlist.items.forEach(item => {
-
+        for (const item of wishlist.items) {
             const product = item.productId;
 
-            if (!product) return;
-
-            // Old wishlist items may not have variantId
-            if (!item.variantId) {
-
-                console.log(
-                    "Skipping wishlist item because variantId is missing:",
-                    item.productId
-                );
-
-                return;
+            // Remove entries whose product no longer exists
+            if (!product || !item.variantId) {
+                continue;
             }
 
-            // Find the exact selected variant
-            const variant = product.variants.find(v =>
-                v._id.toString() === item.variantId.toString()
+            const variant = product.variants.find(
+                v => v._id.toString() === item.variantId.toString()
             );
 
-            // Variant no longer exists
+            // Remove entries whose variant no longer exists
             if (!variant) {
-
                 console.log(
-                    "Variant not found:",
-                    item.variantId
+                    "Removing invalid wishlist variant:",
+                    item.variantId,
+                    "Product:",
+                    product.productName
                 );
-
-                return;
+                continue;
             }
 
-            wishlistItems.push({
-
+            // Preserve valid database entries
+            validWishlistItems.push({
                 productId: product._id,
-
-                variantId: variant._id,
-
-                productName: product.productName,
-
-                brand: product.brand,
-
-                image: product.productImage?.[0],
-
-                offer: product.offer,
-
-                category: product.category,
-
-                size: variant.size,
-
-                stock: variant.stock,
-
-                regularPrice: variant.regularPrice,
-
-                salePrice: variant.salePrice
-
+                variantId: variant._id
             });
 
-        });
+            wishlistItems.push({
+                productId: product._id,
+                variantId: variant._id,
+                productName: product.productName,
+                brand: product.brand,
+                image: product.productImage?.[0],
+                offer: product.offer,
+                category: product.category,
+                size: variant.size,
+                stock: variant.stock,
+                regularPrice: variant.regularPrice,
+                salePrice: variant.salePrice
+            });
+        }
 
-        res.render("user/wishlist", {
+        // Persist the cleanup so invalid items are not counted
+        if (validWishlistItems.length !== wishlist.items.length) {
+            wishlist.items = validWishlistItems;
+            await wishlist.save();
+        }
+
+        return res.render("user/wishlist", {
             wishlistItems
         });
 
     } catch (error) {
-
-        console.log("LOAD WISHLIST ERROR:", error);
-
-        res.redirect("/pageNotFound");
-
+        console.error("LOAD WISHLIST ERROR:", error);
+        return res.redirect("/pageNotFound");
     }
-
 };
+
 
 const removeWishlist = async (req, res) => {
 
@@ -261,6 +222,8 @@ const removeWishlist = async (req, res) => {
 
 };
 
+
+
 const moveAllToCart = async (req, res) => {
 
     try {
@@ -288,23 +251,78 @@ const moveAllToCart = async (req, res) => {
 
         }
 
-        // Loop wishlist products
+        const addedItems = [];
+        const unavailableItems = [];
+        const remainingWishlistItems = [];
+
+        // Process every wishlist item
         for (const wishItem of wishlist.items) {
 
-            const product = await Product.findById(wishItem.productId);
-
-            if (!product || product.isBlocked) continue;
-
-            // First available variant
-            const variant = product.variants.find(v =>
-                v._id.toString() === wishItem.variantId.toString()
+            const product = await Product.findById(
+                wishItem.productId
             );
 
-            if (!variant || variant.stock <= 0) continue;
+            // Product deleted
+            if (!product) {
 
-            // Already exists in cart?
-            const cartItem = cart.items.find(item =>
-                item.variantId.toString() === variant._id.toString()
+                unavailableItems.push({
+                    name: "Product no longer available"
+                });
+
+                continue;
+            }
+
+            // Product blocked
+            if (product.isBlocked) {
+
+                unavailableItems.push({
+                    name: product.productName,
+                    reason: "Product is currently unavailable"
+                });
+
+                // Keep in wishlist
+                remainingWishlistItems.push(wishItem);
+
+                continue;
+            }
+
+            // Find selected variant
+            const variant = product.variants.find(
+                v =>
+                    v._id.toString() ===
+                    wishItem.variantId.toString()
+            );
+
+            // Variant deleted
+            if (!variant) {
+
+                unavailableItems.push({
+                    name: product.productName,
+                    reason: "Selected variant is no longer available"
+                });
+
+                continue;
+            }
+
+            // Out of stock
+            if (variant.stock <= 0) {
+
+                unavailableItems.push({
+                    name: product.productName,
+                    reason: "Out of stock"
+                });
+
+                // Keep in wishlist
+                remainingWishlistItems.push(wishItem);
+
+                continue;
+            }
+
+            // Check whether item already exists in cart
+            const cartItem = cart.items.find(
+                item =>
+                    item.variantId.toString() ===
+                    variant._id.toString()
             );
 
             if (cartItem) {
@@ -313,6 +331,16 @@ const moveAllToCart = async (req, res) => {
 
                     cartItem.quantity++;
 
+                    addedItems.push(product.productName);
+
+                } else {
+
+                    unavailableItems.push({
+                        name: product.productName,
+                        reason: "Cart quantity cannot be increased"
+                    });
+
+                    remainingWishlistItems.push(wishItem);
                 }
 
             } else {
@@ -325,24 +353,33 @@ const moveAllToCart = async (req, res) => {
 
                 });
 
+                addedItems.push(product.productName);
             }
-
         }
 
         await cart.save();
 
-        // Clear wishlist
-        wishlist.items = [];
+        // Keep only items that could not be moved
+        wishlist.items = remainingWishlistItems;
 
         await wishlist.save();
 
-        res.redirect("/user/cart");
+        // Save result in session
+        req.session.moveAllResult = {
+
+            addedCount: addedItems.length,
+
+            unavailableItems
+
+        };
+
+        return res.redirect("/user/cart");
 
     } catch (error) {
 
-        console.log("MOVE ALL ERROR:", error);
+        console.error("MOVE ALL ERROR:", error);
 
-        res.redirect("/user/wishlist");
+        return res.redirect("/user/wishlist");
 
     }
 

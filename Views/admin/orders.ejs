@@ -149,7 +149,6 @@
 
                         <a href="/admin/return-requests">Requests</a>
 
-                        <a href="#">Refunds</a>
 
                     </div>
 
@@ -168,7 +167,7 @@
 
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="/admin/wallet" class="menu-item">
 
                     <span class="menu-left">
 
@@ -180,7 +179,7 @@
 
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="/admin/coupons" class="menu-item">
 
                     <span class="menu-left">
 
@@ -192,7 +191,7 @@
 
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="/admin/sales-report" class="menu-item">
 
                     <span class="menu-left">
 
@@ -251,11 +250,6 @@
 
             <div class="topbar-right">
 
-                <div class="top-search">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Search...">
-                </div>
-
                 <button class="icon-btn">
                     <i class="fa-regular fa-bell"></i>
                 </button>
@@ -273,14 +267,12 @@
 
         <!-- PAGE HEADER -->
         <section class="page-header">
+
             <div>
                 <h1>Orders</h1>
                 <p>Manage and track customer orders.</p>
             </div>
 
-            <button class="export-btn">
-                Export CSV
-            </button>
         </section>
 
         <!-- STATUS FILTER TABS -->
@@ -365,7 +357,7 @@
                                     </td>
 
                                     <td data-label="Total Amount">
-                                        ₹<%= order.totalAmount %>
+                                        ₹<%= Number(order.totalAmount || 0).toFixed(2) %>
                                     </td>
 
                                     <td data-label="Status">

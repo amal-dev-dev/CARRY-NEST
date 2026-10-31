@@ -30,27 +30,27 @@
 
         <a href="/user/cart" class="cart-link">
             <i class="fa-solid fa-cart-shopping"></i>
-
-            <% if (cartCount > 0) { %>
-                <span
-                    id="cartCountBadge"
-                    class="cart-badge">
-                    <%= cartCount %>
-                </span>
-            <% } %>
+            
+            <span
+                id="cartCountBadge"
+                class="cart-badge"
+                style="<%= Number(cartCount || 0) > 0 ? '' : 'display: none;' %>"
+            ><%= Number(cartCount || 0) %></span>
         </a>
 
         <a href="/user/wishlist" class="wishlist-link">
             <i class="fa-regular fa-heart"></i>
 
-            <% if (wishlistCount > 0) { %>
-                <span class="wishlist-badge">
-                    <%= wishlistCount %>
-                </span>
-            <% } %>
+            <span
+                id="wishlistCountBadge"
+                class="wishlist-badge"
+                style="<%= Number(wishlistCount || 0) > 0 ? '' : 'display: none;' %>"
+            ><%= wishlistCount || 0 %></span>
         </a>
 
-        <a href="/user/profile" style="color: black;"><i class="fa-regular fa-user"></i></a>
+        <a href="/user/profile" style="color: black;">
+            <i class="fa-regular fa-user"></i>
+        </a>
 
     </div>
 
@@ -82,24 +82,25 @@
 
             <h1>YOUR CART</h1>
 
-            <% if (cart && cart.items.some(item => item.productId && item.productId.isBlocked)) { %>
+            <% if (hasBlockedItems) { %>
 
                 <div class="cart-warning">
                     <i class="fa-solid fa-triangle-exclamation"></i>
 
                     <span>
                         Some products in your cart are currently unavailable.
-                        Please remove them before proceeding to checkout.
+                        They will not be included in checkout.
+                        You can remove them from your cart.
                     </span>
                 </div>
 
             <% } %>
 
-            <% if(cart && cart.items.length > 0){ %>
+            <% if(cartItems && cartItems.length > 0){ %>
 
             <div id="cartItemsWrapper">
 
-            <% cart.items.forEach(item => { %>
+            <% cartItems.forEach(item => { %>
 
                 <% if(item.productId && item.variant){ %>
 
@@ -146,9 +147,25 @@
                                 <%= item.variant.stock %>
                             </p>
 
+                            <% if (item.isUnavailable) { %>
+                                <div class="product-unavailable-warning">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                    <%= item.unavailableReason %>
+                                </div>
+                            <% } %>
+
                             <h4 id="itemTotal-<%= item.variantId %>">
-                                ₹<%= item.variant.salePrice * item.quantity %>
+                                ₹<%= item.itemTotal ?? (item.variant.salePrice * item.quantity) %>
                             </h4>
+
+                            <% if (item.offerDiscountPercentage > 0) { %>
+                                <p class="cart-offer-label">
+                                    <%= item.offerDiscountPercentage %>% OFF
+                                    <% if (item.appliedOfferTitle) { %>
+                                        — <%= item.appliedOfferTitle %>
+                                    <% } %>
+                                </p>
+                            <% } %>
 
                             <% if(item.variant.stock <= 0){ %>
                                 <span class="out-stock">
@@ -247,7 +264,16 @@
             item => item.productId && item.productId.isBlocked
         ); %>
 
-        <% if (hasBlockedProduct) { %>
+        <% if (hasAvailableItems) { %>
+
+            <a
+                href="/user/checkout"
+                class="checkout-btn"
+                id="checkoutBtn">
+                Go To Checkout
+            </a>
+
+        <% } else { %>
 
             <button
                 type="button"
@@ -256,15 +282,6 @@
                 disabled>
                 Go To Checkout
             </button>
-
-        <% } else { %>
-
-            <a
-                href="/user/checkout"
-                class="checkout-btn"
-                id="checkoutBtn">
-                Go To Checkout
-            </a>
 
         <% } %>
 
@@ -360,7 +377,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const cartCountBadge = document.getElementById("cartCountBadge");
 
     async function updateCart(url) {
+
         try {
+
             const response = await fetch(url, {
                 method: "PATCH",
                 headers: {
@@ -370,53 +389,144 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const data = await response.json();
 
+            console.log("CART RESPONSE:", data);
+
             if (!data.success) {
+
                 Swal.fire({
                     icon: "warning",
                     title: data.message || "Something went wrong",
                     timer: 1800,
                     showConfirmButton: false
                 });
+
                 return;
             }
 
-            // item removed
+            /*
+            =====================================
+            FIND PRODUCT CARD
+            =====================================
+            */
+
+            const card = document.querySelector(
+                `.cart-card[data-variant-id="${data.variantId}"]`
+            );
+
+
+            /*
+            =====================================
+            REMOVE ITEM
+            =====================================
+            */
+
             if (data.removed) {
-                const card = document.querySelector(`[data-variant-id="${data.variantId}"]`);
+
                 if (card) {
                     card.remove();
                 }
-            } else {
-                // update qty
-                const qtyEl = document.getElementById(`qty-${data.variantId}`);
-                if (qtyEl) {
-                    qtyEl.textContent = data.quantity;
+
+            }
+
+
+            /*
+            =====================================
+            UPDATE QUANTITY
+            =====================================
+            */
+
+            else {
+
+                if (card) {
+
+                    const qtyEl = card.querySelector(
+                        `[id="qty-${data.variantId}"]`
+                    );
+
+                    if (qtyEl) {
+                        qtyEl.textContent = data.quantity;
+                    }
+
                 }
 
-                // update item total
-                const itemTotalEl = document.getElementById(`itemTotal-${data.variantId}`);
+            }
+
+
+            /*
+            =====================================
+            UPDATE ITEM PRICE
+            =====================================
+            */
+
+            if (!data.removed && card) {
+
+                const itemTotalEl = card.querySelector(
+                    `[id="itemTotal-${data.variantId}"]`
+                );
+
                 if (itemTotalEl) {
-                    itemTotalEl.textContent = `₹${data.itemTotal}`;
+                    itemTotalEl.textContent =
+                        `₹${data.itemTotal}`;
                 }
+
             }
 
-            // update summary
-            subtotalValue.textContent = `₹${data.subtotal}`;
-            discountValue.textContent = `-₹${data.discount}`;
-            grandTotalValue.textContent = `₹${data.grandTotal}`;
 
-            // update cart badge
+            /*
+            =====================================
+            UPDATE SUMMARY
+            =====================================
+            */
+
+            if (subtotalValue) {
+                subtotalValue.textContent =
+                    `₹${data.subtotal}`;
+            }
+
+            if (discountValue) {
+                discountValue.textContent =
+                    `-₹${data.discount}`;
+            }
+
+            if (grandTotalValue) {
+                grandTotalValue.textContent =
+                    `₹${data.grandTotal}`;
+            }
+
+
+            /*
+            =====================================
+            UPDATE CART BADGE
+            =====================================
+            */
+
             if (cartCountBadge) {
+
                 if (data.cartCount > 0) {
-                    cartCountBadge.textContent = data.cartCount;
+
+                    cartCountBadge.textContent =
+                        data.cartCount;
+
                 } else {
+
                     cartCountBadge.remove();
+
                 }
+
             }
 
-            // if no items left
-            const remainingCards = document.querySelectorAll(".cart-card");
+
+            /*
+            =====================================
+            EMPTY CART
+            =====================================
+            */
+
+            const remainingCards =
+                document.querySelectorAll(".cart-card");
+
             if (remainingCards.length === 0) {
+
                 if (cartItemsWrapper) {
                     cartItemsWrapper.style.display = "none";
                 }
@@ -428,38 +538,81 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (checkoutBtn) {
                     checkoutBtn.style.display = "none";
                 }
+
             }
 
         } catch (error) {
-            console.log("CART AJAX ERROR:", error);
+
+            console.error("CART AJAX ERROR:", error);
+
             Swal.fire({
                 icon: "error",
                 title: "Something went wrong",
                 timer: 1800,
                 showConfirmButton: false
             });
+
         }
+
     }
 
-    // increase
+
+    /*
+    =====================================
+    INCREASE
+    =====================================
+    */
+
     document.querySelectorAll(".increase-btn").forEach(btn => {
+
         btn.addEventListener("click", () => {
+
             const variantId = btn.dataset.id;
-            updateCart(`/user/cart/increase/${variantId}`);
+
+            console.log("INCREASE:", variantId);
+
+            updateCart(
+                `/user/cart/increase/${variantId}`
+            );
+
         });
+
     });
 
-    // decrease
+
+    /*
+    =====================================
+    DECREASE
+    =====================================
+    */
+
     document.querySelectorAll(".decrease-btn").forEach(btn => {
+
         btn.addEventListener("click", () => {
+
             const variantId = btn.dataset.id;
-            updateCart(`/user/cart/decrease/${variantId}`);
+
+            console.log("DECREASE:", variantId);
+
+            updateCart(
+                `/user/cart/decrease/${variantId}`
+            );
+
         });
+
     });
 
-    // remove
+
+    /*
+    =====================================
+    REMOVE
+    =====================================
+    */
+
     document.querySelectorAll(".remove-btn").forEach(btn => {
+
         btn.addEventListener("click", () => {
+
             const variantId = btn.dataset.id;
 
             Swal.fire({
@@ -468,12 +621,75 @@ document.addEventListener("DOMContentLoaded", () => {
                 showCancelButton: true,
                 confirmButtonText: "Yes, remove"
             }).then(result => {
+
                 if (result.isConfirmed) {
-                    updateCart(`/user/cart/remove/${variantId}`);
+
+                    console.log("REMOVE:", variantId);
+
+                    updateCart(
+                        `/user/cart/remove/${variantId}`
+                    );
+
                 }
+
             });
+
         });
+
     });
+
+});
+
+</script>
+
+<script>
+    const moveAllResult = <%- JSON.stringify(moveAllResult) %>;
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const addedCount = moveAllResult.addedCount || 0;
+    const unavailableItems = moveAllResult.unavailableItems || [];
+
+    let message = "";
+
+    if (addedCount > 0) {
+        message +=
+            `${addedCount} item${addedCount > 1 ? "s" : ""} added to cart.`;
+    }
+
+    if (unavailableItems.length > 0) {
+
+        if (message) {
+            message += "<br><br>";
+        }
+
+        message +=
+            `<strong>${unavailableItems.length} item${unavailableItems.length > 1 ? "s were" : " was"} not added:</strong>`;
+
+        unavailableItems.forEach(item => {
+            message += `<br>• ${item.name} - ${item.reason}`;
+        });
+    }
+
+    if (message) {
+
+        Swal.fire({
+            icon: unavailableItems.length > 0
+                ? "warning"
+                : "success",
+
+            title: unavailableItems.length > 0
+                ? "Some items could not be added"
+                : "Wishlist moved to cart",
+
+            html: message,
+
+            confirmButtonText: "OK"
+        });
+
+    }
 
 });
 </script>

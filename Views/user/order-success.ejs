@@ -57,10 +57,16 @@
                 <strong>#<%= order.orderId || order._id.toString().slice(-8).toUpperCase() %></strong>
             </div>
 
-            <div class="info-row">
-                <span>Order Total</span>
-                <strong>₹<%= order.totalAmount %></strong>
-            </div>
+            <% if (order.products && order.products.length > 0) { %>
+
+                <div class="info-row">
+                    <span>Total Amount</span>
+                    <strong>
+                        ₹<%= Number(order.totalAmount || 0).toFixed(2) %>
+                    </strong>
+                </div>
+                
+            <% } %>
 
             <div class="info-row">
                 <span>Payment Method</span>

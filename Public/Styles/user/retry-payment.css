@@ -1,0 +1,880 @@
+
+/* ===================================
+   GOOGLE FONT & RESET
+=================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #f7f7f7;
+    color: #222;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/* ===================================
+   NAVBAR
+=================================== */
+
+.navbar {
+    width: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 17px 5%;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #111;
+}
+
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.nav-icons a {
+    font-size: 18px;
+    transition: 0.3s ease;
+}
+
+.nav-icons a:hover {
+    color: #777;
+}
+
+/* ===================================
+   MAIN SECTION
+=================================== */
+
+.retry-section {
+    width: 100%;
+    padding: 42px 0 75px;
+    min-height: 65vh;
+}
+
+.retry-container {
+    width: 92%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ===================================
+   PAGE HEADING
+=================================== */
+
+.page-heading {
+    margin-bottom: 28px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 20px;
+    transition: 0.2s ease;
+}
+
+.back-link:hover {
+    color: #000;
+}
+
+.page-heading h1 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+
+.page-heading > p {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* ===================================
+   PAYMENT STATUS CARD
+=================================== */
+
+.status-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.04);
+}
+
+.status-icon {
+    flex-shrink: 0;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff1f1;
+    color: #dc2626;
+    font-size: 22px;
+}
+
+.status-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.status-label {
+    display: inline-block;
+    color: #dc2626;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.status-content h2 {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.status-content p {
+    color: #777;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.failed-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 12px;
+    border-radius: 30px;
+    background: #fff1f1;
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ===================================
+   MAIN TWO-COLUMN LAYOUT
+=================================== */
+
+.retry-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(300px, 1fr);
+    align-items: start;
+    gap: 30px;
+}
+
+.retry-left {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+.retry-right {
+    min-width: 0;
+}
+
+/* ===================================
+   COMMON CARDS
+=================================== */
+
+.content-card,
+.summary-card,
+.help-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.045);
+}
+
+.content-card {
+    padding: 25px;
+}
+
+.card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.card-heading h3,
+.summary-card > h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.card-heading p {
+    color: #777;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.heading-icon {
+    font-size: 23px;
+    color: #999;
+}
+
+/* ===================================
+   ORDER DETAILS
+=================================== */
+
+.order-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 22px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+.meta-item > span {
+    color: #888;
+    font-size: 12px;
+}
+
+.meta-item strong {
+    font-size: 13px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.meta-item strong i {
+    margin-right: 5px;
+}
+
+.text-failed {
+    color: #dc2626;
+}
+
+/* ===================================
+   ORDER PRODUCTS
+=================================== */
+
+.product-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 0;
+    border-top: 1px solid #eee;
+}
+
+.product-item:first-child {
+    padding-top: 0;
+    border-top: none;
+}
+
+.product-item:last-child {
+    padding-bottom: 0;
+}
+
+.product-image {
+    flex-shrink: 0;
+    width: 95px;
+    height: 95px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #f5f5f5;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #999;
+    font-size: 28px;
+}
+
+.product-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.product-details h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 9px;
+    overflow-wrap: anywhere;
+}
+
+.product-details p {
+    color: #777;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.product-details p strong {
+    color: #333;
+}
+
+.product-price {
+    flex-shrink: 0;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ===================================
+   SECURITY CARD
+=================================== */
+
+.security-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.security-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #f3f3f3;
+    color: #111;
+    font-size: 17px;
+}
+
+.security-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.security-card p {
+    color: #777;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* ===================================
+   PAYMENT SUMMARY
+=================================== */
+
+.summary-card {
+    padding: 25px;
+    position: sticky;
+    top: 100px;
+}
+
+.summary-card > h3 {
+    font-size: 22px;
+    margin-bottom: 22px;
+}
+
+.summary-order-id {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px;
+    background: #f7f7f7;
+    border-radius: 10px;
+}
+
+.summary-order-id span {
+    color: #777;
+    font-size: 11px;
+}
+
+.summary-order-id strong {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.summary-card hr {
+    border: none;
+    border-top: 1px solid #eaeaea;
+    margin: 22px 0;
+}
+
+.summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 16px 0;
+    font-size: 13px;
+}
+
+.summary-row > span:first-child {
+    color: #777;
+}
+
+.summary-row > span:last-child {
+    font-weight: 500;
+    text-align: right;
+}
+
+.discount-value {
+    color: #15803d;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.summary-total strong {
+    font-size: 23px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.amount-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: #777;
+    font-size: 11px;
+    line-height: 1.8;
+    margin: 18px 0 22px;
+}
+
+.amount-note i {
+    margin-top: 4px;
+}
+
+/* ===================================
+   RETRY PAYMENT BUTTON
+=================================== */
+
+.retry-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    border: none;
+    background: #000;
+    color: #fff;
+    padding: 16px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.retry-button:hover {
+    background: #292929;
+    transform: translateY(-1px);
+}
+
+.retry-button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.secondary-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    color: #222;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.secondary-button:hover {
+    border-color: #111;
+    background: #f8f8f8;
+}
+
+/* ===================================
+   PAYMENT MESSAGE
+=================================== */
+
+.payment-message {
+    display: none;
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 9px;
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.payment-message:not(:empty) {
+    display: block;
+}
+
+.payment-message.error {
+    color: #b91c1c;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.payment-message.info {
+    color: #333;
+    background: #f5f5f5;
+    border: 1px solid #e5e5e5;
+}
+
+.payment-method-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 22px;
+    color: #888;
+    font-size: 11px;
+}
+
+/* ===================================
+   HELP CARD
+=================================== */
+
+.help-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.help-card > i {
+    color: #555;
+    font-size: 20px;
+    margin-top: 2px;
+}
+
+.help-card h4 {
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.help-card p {
+    color: #777;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+/* ===================================
+   FOOTER
+=================================== */
+
+footer {
+    background: #111;
+    color: #fff;
+    padding: 50px 20px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.footer-container > div {
+    flex: 1;
+    min-width: 180px;
+}
+
+footer h3,
+footer h4 {
+    margin-bottom: 15px;
+}
+
+footer p {
+    margin: 6px 0;
+    color: #ccc;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+footer p:hover {
+    color: #fff;
+}
+
+/* ===================================
+   TABLET RESPONSIVE
+=================================== */
+
+@media (max-width: 992px) {
+    .retry-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .retry-right {
+        width: 100%;
+    }
+
+    .summary-card {
+        position: static;
+    }
+
+    .retry-left {
+        gap: 20px;
+    }
+
+    .footer-container {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 30px;
+    }
+}
+
+/* ===================================
+   MOBILE RESPONSIVE
+=================================== */
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 5%;
+    }
+
+    .retry-section {
+        padding: 28px 0 50px;
+    }
+
+    .retry-container {
+        width: 92%;
+    }
+
+    .page-heading h1 {
+        font-size: 29px;
+    }
+
+    .status-card {
+        padding: 20px;
+        gap: 13px;
+        flex-wrap: wrap;
+    }
+
+    .status-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 19px;
+    }
+
+    .status-content {
+        flex-basis: calc(100% - 65px);
+    }
+
+    .status-content h2 {
+        font-size: 16px;
+    }
+
+    .status-content p {
+        font-size: 12px;
+    }
+
+    .failed-badge {
+        margin-left: 58px;
+    }
+
+    .content-card,
+    .summary-card {
+        padding: 20px;
+    }
+
+    .order-meta {
+        gap: 18px 12px;
+    }
+
+    .product-item {
+        gap: 13px;
+    }
+
+    .product-image {
+        width: 75px;
+        height: 75px;
+    }
+
+    .product-details h4 {
+        font-size: 13px;
+    }
+
+    .product-price {
+        font-size: 13px;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+}
+
+/* ===================================
+   SMALL MOBILE
+=================================== */
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 14px 5%;
+    }
+
+    .logo {
+        font-size: 19px;
+    }
+
+    .nav-icons {
+        gap: 17px;
+    }
+
+    .retry-section {
+        padding-top: 22px;
+    }
+
+    .page-heading h1 {
+        font-size: 25px;
+    }
+
+    .page-heading > p {
+        font-size: 12px;
+    }
+
+    .status-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .status-content h2 {
+        font-size: 14px;
+    }
+
+    .status-label {
+        font-size: 9px;
+    }
+
+    .failed-badge {
+        margin-left: 0;
+    }
+
+    .content-card,
+    .summary-card {
+        padding: 17px;
+        border-radius: 14px;
+    }
+
+    .card-heading h3,
+    .summary-card > h3 {
+        font-size: 18px;
+    }
+
+    .order-meta {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .product-item {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .product-image {
+        width: 65px;
+        height: 65px;
+    }
+
+    .product-details {
+        flex-basis: calc(100% - 80px);
+    }
+
+    .product-price {
+        width: 100%;
+        text-align: right;
+        font-size: 14px;
+    }
+
+    .summary-total {
+        align-items: flex-start;
+    }
+
+    .summary-total strong {
+        font-size: 20px;
+    }
+
+    .retry-button {
+        padding: 14px;
+        font-size: 13px;
+    }
+
+    .security-card,
+    .help-card {
+        padding: 16px;
+    }
+
+    footer {
+        padding: 35px 20px;
+    }
+}

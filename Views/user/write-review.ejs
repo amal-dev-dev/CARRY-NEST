@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write a Review | CARRY NEST</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/Styles/user/write-review.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">CARRYNEST</div>
+
+            <div class="nav-icons">
+
+                <% if(user){ %>
+
+                    <a href="/user/cart" class="cart-link">
+                        <i class="fa-solid fa-cart-shopping"></i>
+
+                        <% if (cartCount > 0) { %>
+                            <span class="cart-badge"><%= cartCount %></span>
+                        <% } %>
+                    </a>
+
+                    <a href="/user/wishlist" class="wishlist-link">
+                        <i class="fa-regular fa-heart"></i>
+
+                        <% if (wishlistCount > 0) { %>
+                            <span class="wishlist-badge">
+                                <%= wishlistCount %>
+                            </span>
+                        <% } %>
+                    </a>
+
+                    <a href="/user/profile" style="color:black;">
+                        <i class="fa-regular fa-user"></i>
+                    </a>
+
+                <% } else { %>
+
+                    <a href="/user/login" class="login-btn">
+                        Login
+                    </a>
+
+                    <a href="/user/signup" class="signup-btn">
+                        Sign Up
+                    </a>
+
+                <% } %>
+
+            </div>
+        </nav>
+    </header>
+
+<main class="review-page">
+    <a class="back-link" href="<%= backUrl || '/user/orders' %>">
+        <span aria-hidden="true">‹</span> Back to Orders
+    </a>
+
+    <form id="reviewForm" class="review-form"
+          action="/user/product/<%= product._id %>/reviews"
+          method="POST">
+
+        <input type="hidden" name="orderId" value="<%= order._id %>">
+
+        <section class="product-card">
+            <img
+                class="product-image"
+                src="<%= product.productImage?.[0] || '/images/no-image.png' %>"
+                alt="<%= product.productName %>">
+
+            <div class="product-info">
+                <h1><%= product.productName %></h1>
+                <p>Share your experience with this product.</p>
+            </div>
+        </section>
+
+        <section class="rating-card">
+            <label class="section-label">Overall Rating <span>*</span></label>
+
+            <div class="stars" role="radiogroup" aria-label="Overall rating">
+                <% for (let i = 1; i <= 5; i++) { %>
+                    <input
+                        type="radio"
+                        id="star<%= i %>"
+                        name="rating"
+                        value="<%= i %>"
+                        required>
+
+                    <label for="star<%= i %>"
+                        title="<%= i %> star<%= i > 1 ? 's' : '' %>">
+                        ★
+                    </label>
+                <% } %>
+            </div>
+            <p id="ratingText" class="rating-hint">Select a rating</p>
+        </section>
+
+        <section class="review-fields">
+            <div class="field-group">
+                <label for="title">Review Title <span>*</span></label>
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    placeholder="Sum up your experience"
+                    minlength="3"
+                    maxlength="100"
+                    required>
+            </div>
+
+            <div class="field-group">
+                <label for="comment">Review <span>*</span></label>
+                <textarea
+                    id="comment"
+                    name="comment"
+                    placeholder="Share your thoughts about this product..."
+                    minlength="3"
+                    maxlength="1000"
+                    required></textarea>
+
+                <div class="character-count">
+                    <span id="charCount">0</span> / 1000 characters
+                </div>
+            </div>
+        </section>
+
+        <section class="photo-card">
+            <div class="photo-heading">
+                <label for="photos">Add Photos</label>
+                <span>(Optional)</span>
+            </div>
+
+            <label for="photos" class="upload-box">
+                <span class="upload-icon">⇧</span>
+                <span>Click to upload</span>
+                <small>JPG or PNG</small>
+            </label>
+
+            <input
+                type="file"
+                id="photos"
+                name="photos"
+                accept="image/jpeg,image/png"
+                multiple>
+
+            <p class="photo-help">
+                You can upload up to 5 photos.
+            </p>
+            <div id="photoPreview" class="photo-preview"></div>
+        </section>
+
+        <p id="formMessage" class="form-message" role="status"></p>
+
+        <button type="submit" class="submit-button" id="submitButton">
+            Submit Review
+        </button>
+    </form>
+</main>
+
+<script>
+    const ratingInputs = document.querySelectorAll('input[name="rating"]');
+    const ratingText = document.getElementById("ratingText");
+    const comment = document.getElementById("comment");
+    const charCount = document.getElementById("charCount");
+    const photos = document.getElementById("photos");
+    const photoPreview = document.getElementById("photoPreview");
+    const form = document.getElementById("reviewForm");
+    const message = document.getElementById("formMessage");
+
+    const ratingLabels = [
+        "Very poor",  // 1 star
+        "Poor",       // 2 stars
+        "Average",    // 3 stars
+        "Good",       // 4 stars
+        "Excellent"   // 5 stars
+    ];
+
+    function updateStars() {
+        const selected = Number(
+            document.querySelector('input[name="rating"]:checked')?.value || 0
+        );
+
+        ratingInputs.forEach((input) => {
+            const label = document.querySelector(
+                'label[for="' + input.id + '"]'
+            );
+
+            label.classList.toggle(
+                "selected",
+                Number(input.value) <= selected
+            );
+        });
+
+        ratingText.textContent = selected > 0
+            ? ratingLabels[selected - 1]
+            : "Select a rating";
+    }
+
+    ratingInputs.forEach(input => {
+        input.addEventListener("change", updateStars);
+    });
+
+    comment.addEventListener("input", () => {
+        charCount.textContent = comment.value.length;
+    });
+
+    photos.addEventListener("change", () => {
+        photoPreview.replaceChildren();
+
+        if (photos.files.length > 5) {
+            message.textContent = "Please select no more than 5 photos.";
+            photos.value = "";
+            return;
+        }
+
+        for (const file of photos.files) {
+            if (!["image/jpeg", "image/png"].includes(file.type)) {
+                message.textContent = "Only JPG and PNG images are allowed.";
+                photos.value = "";
+                photoPreview.replaceChildren();
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                message.textContent = "Each photo must be 5 MB or smaller.";
+                photos.value = "";
+                photoPreview.replaceChildren();
+                return;
+            }
+        }
+
+        message.textContent = "";
+
+        for (const file of photos.files) {
+            const image = document.createElement("img");
+            image.className = "preview-image";
+            image.alt = "Selected review photo";
+            image.src = URL.createObjectURL(file);
+            photoPreview.appendChild(image);
+        }
+    });
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        message.textContent = "";
+
+        const selectedRating =
+            document.querySelector('input[name="rating"]:checked');
+
+        if (!selectedRating) {
+            message.textContent = "Please select a star rating.";
+            return;
+        }
+
+        if (photos.files.length > 5) {
+            message.textContent = "Please select no more than 5 photos.";
+            return;
+        }
+
+        const submitButton = document.getElementById("submitButton");
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting...";
+
+        try {
+            // JSON submission for the review controller shown earlier.
+            // Photo uploads require a separate multipart upload implementation.
+            const response = await fetch(form.action, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    orderId: form.orderId.value,
+                    rating: Number(selectedRating.value),
+                    title: document.getElementById("title").value.trim(),
+                    comment: comment.value.trim()
+                })
+            });
+
+            const responseText = await response.text();
+
+            let result;
+
+            try {
+                result = JSON.parse(responseText);
+            } catch {
+                console.error("Unexpected server response:", responseText);
+
+                throw new Error(
+                    "The server returned an unexpected response. Check the server terminal."
+                );
+            }
+
+            if (!response.ok || !result.success) {
+                throw new Error(result.message || "Unable to submit review.");
+            }
+
+            message.textContent = "Review submitted successfully!";
+            message.classList.add("success-message");
+
+            setTimeout(() => {
+                window.location.href =
+                    "<%= backUrl || '/user/orders' %>";
+            }, 1000);
+
+        } catch (error) {
+            message.textContent = error.message;
+            message.classList.remove("success-message");
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Review";
+        }
+    });
+</script>
+
+</body>
+</html>

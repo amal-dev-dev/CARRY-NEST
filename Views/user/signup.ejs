@@ -32,7 +32,7 @@
             </a>
         </div>
         
-        <form class="login-form" action="/user/signup" method="POST">
+        <form class="login-form" action="/user/signup" method="POST" id="signupForm" novalidate>
 
             <div class="input-group">
                 <label>Name</label>
@@ -41,7 +41,7 @@
 
             <div class="input-group">
                 <label>Email</label>
-                <input type="email" name="email" placeholder="example@gmail.com" >
+                <input type="email" name="email" placeholder="example@gmail.com">
             </div>
 
             <div class="input-group">
@@ -67,13 +67,14 @@
 
             <div class="input-group">
                 <label>Referral Code</label>
-                <input type="text" name="referralCode" placeholder="Optional">
+                <input type="hidden" name="referralCode" value="<%= referralCode || '' %>">
             </div>
 
             <!-- Terms -->
             <div class="form-options">
                 <label>
-                    <input type="checkbox"> I agree to privacy policy & terms
+                    <input type="checkbox" name="terms" id="terms">
+                    I agree to privacy policy & terms
                 </label>
             </div>
 
@@ -122,118 +123,92 @@
     </div>
 </footer>
 
+
 <script>
+document.addEventListener("DOMContentLoaded", () => {
 
- const message = `<%= typeof message !== 'undefined' ? message : '' %>`;
+    // Show server-side validation errors
+    const message = <%- JSON.stringify(
+        typeof message !== "undefined" ? message : ""
+    ) %>;
 
-        if(message){
-            
-            Swal.fire({
+    if (message) {
+        Swal.fire({
             icon: "error",
-            title: "Error",
+            title: "Signup Error",
             text: message
         });
     }
 
-const signupForm = document.querySelector("form");
+    const signupForm = document.getElementById("signupForm");
 
-signupForm.addEventListener("submit", (e) => {
+    signupForm.addEventListener("submit", (e) => {
+        const name = signupForm.querySelector('[name="name"]').value.trim();
+        const email = signupForm.querySelector('[name="email"]').value.trim();
+        const phone = signupForm.querySelector('[name="phone"]').value.trim();
+        const password = signupForm.querySelector('[name="password"]').value;
+        const confirmPassword =
+            signupForm.querySelector('[name="confirmPassword"]').value;
+        const terms = signupForm.querySelector('[name="terms"]').checked;
 
-    const name = document.querySelector('input[name="name"]').value.trim();
-    const email = document.querySelector('input[name="email"]').value.trim();
-    const phone = document.querySelector('input[name="phone"]').value.trim();
-    const password = document.querySelector('input[name="password"]').value.trim();
-    const confirmPassword = document.querySelector('input[name="confirmPassword"]').value.trim();
+        let errorTitle = "";
+        let errorMessage = "";
 
-    if(!name && !email && !password && !confirmPassword){
-        e.preventDefault();
-        Swal.fire({
-            icon: "warning",
-            title: "Missing Fields",
-            text: "Please fill all fields"
-        });
+        if (!name || !email || !phone || !password || !confirmPassword) {
+            errorTitle = "Missing Fields";
+            errorMessage = "Please fill in all required fields.";
+        } else if (!/^[A-Za-z ]{2,50}$/.test(name)) {
+            errorTitle = "Invalid Name";
+            errorMessage = "Name must contain 2–50 letters and spaces.";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errorTitle = "Invalid Email";
+            errorMessage = "Please enter a valid email address.";
+        } else if (!/^[6-9]\d{9}$/.test(phone)) {
+            errorTitle = "Invalid Phone";
+            errorMessage = "Enter a valid 10-digit Indian mobile number.";
+        } else if (
+            !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s])\S{8,}$/.test(password)
+        ) {
+            errorTitle = "Weak Password";
+            errorMessage =
+                "Password must be at least 8 characters with uppercase, lowercase, a number and a special character.";
+        } else if (password !== confirmPassword) {
+            errorTitle = "Password Mismatch";
+            errorMessage = "Passwords do not match.";
+        } else if (!terms) {
+            errorTitle = "Terms Required";
+            errorMessage = "Please agree to the privacy policy and terms.";
+        }
 
-        return;
-    }
-    
-    if(!name){
-        e.preventDefault();
-        Swal.fire({
-            icon: "warning",
-            title: "Name Required",
-            text: "Please enter your name"
-        });
+        if (errorMessage) {
+            e.preventDefault();
 
-        return;
-    }
+            Swal.fire({
+                icon: "warning",
+                title: errorTitle,
+                text: errorMessage,
+                confirmButtonText: "OK"
+            });
 
-    if(!email){
-        e.preventDefault();
-        Swal.fire({
-            icon: "warning",
-            title: "Email Required",
-            text: "Please enter your email"
-        });
-
-        return;
-    }
-
-
-    if(!phone){
-        e.preventDefault();
-        Swal.fire({
-            icon: "warning",
-            title: "Phone Required",
-            text: "Please enter your phone number"
-        });
-
-        return;
-    }
-
-    if(!password){
-        e.preventDefault();
-        Swal.fire({
-            icon: "warning",
-            title: "Password Required",
-            text: "Please enter your password"
-        });
-
-        return;
-    }
-
-
-    if(!confirmPassword){
-        e.preventDefault();
-        Swal.fire({
-            icon: "warning",
-            title: "Confirm Password",
-            text: "Please confirm your password"
-        });
-
-        return;
-    }
-
-    if(password !== confirmPassword){
-        e.preventDefault();
-        Swal.fire({
-            icon: "error",
-            title: "Password Error",
-            text: "Passwords do not match"
-        });
-
-        return;
-    }
-});
-
-
-document.querySelectorAll(".fa-eye").forEach(icon => {
-    icon.addEventListener("click", () => {
-        const input = icon.previousElementSibling;
-        input.type = input.type === "password"? "text": "password";
+            return;
+        }
     });
-});
 
+    // Show/hide password
+    document.querySelectorAll(".fa-eye").forEach(icon => {
+        icon.addEventListener("click", () => {
+            const input = icon.previousElementSibling;
+
+            input.type = input.type === "password" ? "text" : "password";
+
+            icon.classList.toggle("fa-eye");
+            icon.classList.toggle("fa-eye-slash");
+        });
+    });
+
+});
 </script>
+
 
 </body>
 </html>

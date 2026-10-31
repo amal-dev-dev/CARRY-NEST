@@ -1,5 +1,6 @@
 import Product from "../../Model/productModel.js";
 import Category from "../../Model/categoryModel.js";
+import Brand from "../../Model/brandModel.js";
 
 const loadProducts = async (req, res) => {
 
@@ -106,15 +107,18 @@ const loadAddProduct = async(req,res)=>{
     try{
 
         const categories = await Category.find({
-
             isListed:true
+        });  
 
-        });
+        const brands = await Brand.find({
+            isActive: true
+        }).sort({ name: 1 }).lean();
+
 
         res.render("admin/add-product",{
-
-            categories
-
+            categories,
+            brands,
+            message: null
         });
 
     }catch(error){
@@ -128,112 +132,165 @@ const loadAddProduct = async(req,res)=>{
 };
 
 
-const addProduct = async(req,res)=>{
 
-    try{
-        
-        const images = req.files ? req.files.map(file => file.path) : [];
+const addProduct = async (req, res) => {
+    try {
+        const categories = await Category.find({
+            isListed: true
+        });
 
-        let variants = req.body.sizes.map((size, index) => ({
-            size: size.trim(),
-            stock: Number(req.body.stocks[index]),
-            regularPrice: Number(req.body.regularPrices[index]),
-            salePrice: Number(req.body.salePrices[index]),
+        const brands = await Brand.find({
+            isActive: true
+        }).sort({ name: 1 }).lean();
+
+        // Helper to render the form with all required data
+        const renderAddProduct = (message) => {
+            return res.status(400).render("admin/add-product", {
+                categories,
+                brands,
+                message
+            });
+        };
+
+        // Validate brand
+        const selectedBrand = await Brand.findOne({
+            name: req.body.brand,
+            isActive: true
+        });
+
+        if (!selectedBrand) {
+            return renderAddProduct(
+                "Please select a valid active brand"
+            );
+        }
+
+        // Validate product name
+        if (!req.body.productName?.trim()) {
+            return renderAddProduct("Product name is required");
+        }
+
+        // Validate description
+        if (!req.body.description?.trim()) {
+            return renderAddProduct("Description is required");
+        }
+
+        // Validate colors
+        const colors = Array.isArray(req.body.colors)
+            ? req.body.colors
+            : req.body.colors
+                ? [req.body.colors]
+                : [];
+
+        if (!colors.some(color => color?.trim())) {
+            return renderAddProduct(
+                "At least one color is required"
+            );
+        }
+
+        // Safely handle variant fields
+        const sizes = Array.isArray(req.body.sizes)
+            ? req.body.sizes
+            : req.body.sizes
+                ? [req.body.sizes]
+                : [];
+
+        const stocks = Array.isArray(req.body.stocks)
+            ? req.body.stocks
+            : req.body.stocks !== undefined
+                ? [req.body.stocks]
+                : [];
+
+        const regularPrices = Array.isArray(req.body.regularPrices)
+            ? req.body.regularPrices
+            : req.body.regularPrices !== undefined
+                ? [req.body.regularPrices]
+                : [];
+
+        const salePrices = Array.isArray(req.body.salePrices)
+            ? req.body.salePrices
+            : req.body.salePrices !== undefined
+                ? [req.body.salePrices]
+                : [];
+
+        let variants = sizes.map((size, index) => ({
+            size: (size || "").trim(),
+            stock: Number(stocks[index]),
+            regularPrice: Number(regularPrices[index]),
+            salePrice: Number(salePrices[index])
         }));
 
         // Remove empty variants
-        variants = variants.filter(variant =>
-            variant.size !== ""
-        );
+        variants = variants.filter(variant => variant.size !== "");
 
-        const categories = await Category.find({ isListed: true });
-
-        if(!req.body.productName?.trim()){
-
-            return res.render("admin/add-product",{
-                categories,
-                message:"Product name is required"
-            });
-
+        if (variants.length === 0) {
+            return renderAddProduct(
+                "At least one product size is required"
+            );
         }
 
-        if(!req.body.description?.trim()){
-
-            return res.render("admin/add-product",{
-                categories,
-                message:"Description is required"
-            });
-
-        }
-
-        if(!req.body.colors?.[0]?.trim()){
-
-            return res.render("admin/add-product",{
-                categories,
-                message:"At least one color is required"
-            });
-
-        }
-
-        for(const variant of variants){
-
-            if(variant.stock < 0){
-
-                return res.render("admin/add-product",{
-                    categories,
-                    message:"Stock cannot be negative"
-                });
-
+        // Validate variant values
+        for (const variant of variants) {
+            if (
+                !Number.isFinite(variant.stock) ||
+                !Number.isFinite(variant.regularPrice) ||
+                !Number.isFinite(variant.salePrice)
+            ) {
+                return renderAddProduct(
+                    "Please enter valid stock and price values"
+                );
             }
 
-        }
-
-        for(const variant of variants){
-
-            if(variant.salePrice > variant.regularPrice){
-
-                return res.render("admin/add-product",{
-                    categories,
-                    message:"Sale price cannot be greater than original price"
-                });
-
+            if (
+                variant.stock < 0 ||
+                variant.regularPrice <= 0 ||
+                variant.salePrice < 0
+            ) {
+                return renderAddProduct(
+                    "Stock cannot be negative, original price must be positive, and sale price cannot be negative"
+                );
             }
 
+            if (variant.salePrice > variant.regularPrice) {
+                return renderAddProduct(
+                    "Sale price cannot be greater than original price"
+                );
+            }
         }
 
+        // Upload images already handled by your upload middleware
+        const images = req.files
+            ? req.files.map(file => file.path)
+            : [];
 
+        if (images.length < 3) {
+            return renderAddProduct(
+                "Please upload at least 3 product images"
+            );
+        }
+
+        // Create product
         const newProduct = new Product({
-
-            colors:req.body.colors,
-
-            productName:req.body.productName,
-
-            brand:req.body.brand,
-
-            category:req.body.category,
-
-            description:req.body.description,
-
+            colors: colors.filter(color => color?.trim()),
+            productName: req.body.productName.trim(),
+            brand: selectedBrand.name,
+            category: req.body.category,
+            description: req.body.description.trim(),
             variants,
-
-            offer:req.body.offer,
-
-            productImage:images
-
+            offer: req.body.offer,
+            productImage: images
         });
 
-        await newProduct.save()
+        await newProduct.save();
 
-        res.redirect("/admin/products");
+        return res.redirect("/admin/products");
 
-    }catch(error){
+    } catch (error) {
+        console.error("ADD PRODUCT ERROR:", error);
 
-        console.log("ADD PRODUCT ERROR:", error);
-        res.redirect("/admin/add-product");
-
+        return res.redirect("/admin/add-product");
     }
+};
 
-}
 
 
 const loadEditProduct = async(req,res)=>{
@@ -250,10 +307,15 @@ const loadEditProduct = async(req,res)=>{
 
         });
 
+        const brands = await Brand.find({
+            isActive: true
+        }).sort({ name: 1 }).lean();
+
         res.render("admin/edit-product",{
 
             product,
-            categories
+            categories,
+            brands
 
         });
 
@@ -270,19 +332,37 @@ const loadEditProduct = async(req,res)=>{
 
 
 const editProduct = async (req, res) => {
-
     try {
-
         const id = req.params.id;
 
         const product = await Product.findById(id);
+
+        if (!product) {
+            return res.redirect("/admin/products");
+        }
 
         const categories = await Category.find({
             isListed: true
         });
 
-        const {
+        // Get active brands from MongoDB
+        const brands = await Brand.find({
+            isActive: true
+        }).sort({ name: 1 }).lean();
 
+        // Keep the current brand visible if it is now inactive
+        const currentBrandExists = brands.some(
+            brand => brand.name === product.brand
+        );
+
+        if (product.brand && !currentBrandExists) {
+            brands.unshift({
+                name: product.brand,
+                isActive: false
+            });
+        }
+
+        const {
             productName,
             offer,
             description,
@@ -290,105 +370,146 @@ const editProduct = async (req, res) => {
             brand,
             colors,
             removedImages
-
         } = req.body;
 
-        let variants = req.body.size.map((size, index) => ({
-            size,
-            stock: Number(req.body.stock[index]),
-            regularPrice: Number(req.body.regularPrice[index]),
-            salePrice: Number(req.body.salePrice[index])
-        }));
-
-        // Remove empty rows
-        variants = variants.filter(v =>
-            v.stock !== 0 ||
-            v.regularPrice !== 0 ||
-            v.salePrice !== 0
-        );
-
-        
-    for (const variant of variants) {
-
-    if (variant.stock < 0) {
-
-        const categories = await Category.find({ isListed: true });
-
-        return res.render("admin/edit-product", {
-            product,
-            categories,
-            message: "Stock cannot be less than 0."
+        // Validate the selected brand
+        const selectedBrand = await Brand.findOne({
+            name: brand,
+            isActive: true
         });
 
-    }
-
-    if (variant.regularPrice <= variant.salePrice) {
-
-            const categories = await Category.find({ isListed: true });
-
-            return res.render("admin/edit-product", {
+        if (!selectedBrand) {
+            return res.status(400).render("admin/edit-product", {
                 product,
                 categories,
-                message: "Regular price must be greater than sale price."
+                brands,
+                message: "Please select a valid active brand."
             });
-
         }
 
-    }
+        // Normalize variant fields because a single input may arrive as a string
+        const sizes = Array.isArray(req.body.size)
+            ? req.body.size
+            : req.body.size
+                ? [req.body.size]
+                : [];
+
+        const stocks = Array.isArray(req.body.stock)
+            ? req.body.stock
+            : req.body.stock !== undefined
+                ? [req.body.stock]
+                : [];
+
+        const regularPrices = Array.isArray(req.body.regularPrice)
+            ? req.body.regularPrice
+            : req.body.regularPrice !== undefined
+                ? [req.body.regularPrice]
+                : [];
+
+        const salePrices = Array.isArray(req.body.salePrice)
+            ? req.body.salePrice
+            : req.body.salePrice !== undefined
+                ? [req.body.salePrice]
+                : [];
+
+        let variants = sizes
+            .map((size, index) => ({
+                size: String(size).trim(),
+                stock: Number(stocks[index]),
+                regularPrice: Number(regularPrices[index]),
+                salePrice: Number(salePrices[index])
+            }))
+            .filter(variant => variant.size !== "");
+
+        // Validate variants
+        if (variants.length === 0) {
+            return res.status(400).render("admin/edit-product", {
+                product,
+                categories,
+                brands,
+                message: "Please add at least one product variant."
+            });
+        }
+
+        for (const variant of variants) {
+            if (
+                !Number.isFinite(variant.stock) ||
+                !Number.isFinite(variant.regularPrice) ||
+                !Number.isFinite(variant.salePrice)
+            ) {
+                return res.status(400).render("admin/edit-product", {
+                    product,
+                    categories,
+                    brands,
+                    message: "Please enter valid variant values."
+                });
+            }
+
+            if (variant.stock < 0) {
+                return res.status(400).render("admin/edit-product", {
+                    product,
+                    categories,
+                    brands,
+                    message: "Stock cannot be less than 0."
+                });
+            }
+
+            if (
+                variant.regularPrice <= 0 ||
+                variant.salePrice < 0 ||
+                variant.regularPrice <= variant.salePrice
+            ) {
+                return res.status(400).render("admin/edit-product", {
+                    product,
+                    categories,
+                    brands,
+                    message: "Regular price must be greater than sale price."
+                });
+            }
+        }
 
         // Existing images
         let updatedImages = [...product.productImage];
 
         // Remove selected images
         if (removedImages) {
-
-            const removedIndexes = removedImages.split(",");
+            const removedIndexes = removedImages
+                .split(",")
+                .map(Number);
 
             updatedImages = updatedImages.filter(
-                (_, index) =>
-                !removedIndexes.includes(
-                    index.toString()
-                )
+                (_, index) => !removedIndexes.includes(index)
             );
-
         }
 
-        // Add new uploaded images
+        // Add newly uploaded images
         if (req.files && req.files.length > 0) {
-
             const newImages = req.files.map(file => file.path);
-
             updatedImages.push(...newImages);
-
         }
 
-        await Product.findByIdAndUpdate(id, {
+        // Update product
+        product.productName = productName;
+        product.offer = offer;
+        product.description = description;
+        product.category = category;
+        product.brand = selectedBrand.name;
+        product.variants = variants;
+        product.colors = Array.isArray(colors)
+            ? colors
+            : colors
+                ? [colors]
+                : [];
+        product.productImage = updatedImages;
 
-            productName,
-            offer,
-            description,
-            category,
-            brand,
-            variants,
-            colors,
-            productImage: updatedImages
+        await product.save();
 
-        });
-        
-
-        res.redirect("/admin/products");
+        return res.redirect("/admin/products");
 
     } catch (error) {
-
-        console.log(
-            "EDIT PRODUCT ERROR:",
-            error
-        );
-
-        res.redirect("/admin/pageerror");
-
+        console.log("EDIT PRODUCT ERROR:", error);
+        return res.redirect("/admin/pageerror");
     }
-
 };
 
 

@@ -16,7 +16,7 @@
             <p>Please provide accurate delivery details for your order.</p>
         </header>
 
-        <form class="main-form" action="/user/address/edit/<%= address._id %>" method="POST">
+        <form class="main-form" action="/user/address/edit/<%= address._id %>?_method=PATCH" method="POST">
             <div class="section-title">
                 Contact Details
             </div>

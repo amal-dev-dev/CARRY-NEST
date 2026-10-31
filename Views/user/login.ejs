@@ -27,28 +27,42 @@
                 </a>
             </div>
 
-            <form class="login-form" action="/user/login" method="POST">
+
+            <form class="login-form" action="/user/login" method="POST" id="loginForm" novalidate>
                 <div class="input-group">
                     <label>Email / Phone</label>
-                    <input type="email" name="email" placeholder="example@gmail.com" >
+                    <input
+                        type="text"
+                        name="email"
+                        placeholder="Enter email or phone number"
+                        autocomplete="username"
+                    >
                 </div>
+
                 <div class="input-group">
                     <label>Password</label>
                     <div class="password-wrapper">
-                        <input type="password"  name="password" placeholder="••••••••" >
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                        >
                         <i class="far fa-eye"></i>
                     </div>
                 </div>
 
                 <div class="form-options">
                     <label class="remember-me">
-                        <input type="checkbox"> Remember Me
+                        <input type="checkbox" name="rememberMe">
+                        Remember Me
                     </label>
                     <a href="/user/forgot-password" class="forgot-link">Forgot Password?</a>
                 </div>
 
                 <button type="submit" class="btn-primary">SIGN IN</button>
             </form>
+
 
             <p class="signup-prompt">Don't have an account? <a href="/user/signup">Sign up</a></p>
         </div>
@@ -99,65 +113,84 @@
             </div>
         </div>
     </footer>
-
+ 
     <script>
+    document.addEventListener("DOMContentLoaded", () => {
 
-        const message = `<%= typeof message !== 'undefined' ? message : '' %>`;
+        // Display server-side error messages safely
+        const message = <%- JSON.stringify(
+            typeof message !== "undefined" ? message : ""
+        ) %>;
 
-        if(message){
-
+        if (message) {
             Swal.fire({
                 icon: "error",
-                title: "Error",
-                text: message
+                title: "Login Failed",
+                text: message,
+                confirmButtonText: "OK"
             });
         }
 
+        const loginForm = document.getElementById("loginForm");
 
-        const loginForm = document.querySelector("form");
         loginForm.addEventListener("submit", (e) => {
-            const email = document.querySelector('input[name="email"]').value.trim();
-            const password = document.querySelector('input[name="password"]').value.trim();
+            const emailOrPhone =
+                loginForm.querySelector('[name="email"]').value.trim();
 
-            if(!email && !password){
-                e.preventDefault();
-                Swal.fire({
-                    icon: "warning",
-                    title: "Missing Fields",
-                    text: "Please enter your email and password"
-                });
-                return;
+            const password =
+                loginForm.querySelector('[name="password"]').value;
+
+            let title = "";
+            let errorMessage = "";
+
+            if (!emailOrPhone && !password) {
+                title = "Missing Fields";
+                errorMessage = "Please enter your email/phone and password.";
+            } else if (!emailOrPhone) {
+                title = "Email / Phone Required";
+                errorMessage = "Please enter your email address or phone number.";
+            } else if (!password) {
+                title = "Password Required";
+                errorMessage = "Please enter your password.";
+            } else if (
+                emailOrPhone.includes("@") &&
+                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone)
+            ) {
+                title = "Invalid Email";
+                errorMessage = "Please enter a valid email address.";
+            } else if (
+                !emailOrPhone.includes("@") &&
+                !/^[6-9]\d{9}$/.test(emailOrPhone)
+            ) {
+                title = "Invalid Phone Number";
+                errorMessage = "Enter a valid 10-digit Indian mobile number.";
             }
 
-            if(!email){
+            if (errorMessage) {
                 e.preventDefault();
-                Swal.fire({
-                    icon: "warning",
-                    title: "Email Required",
-                    text: "Please enter your email"
-                });
-                return;
-            }
 
-            if(!password){
-                e.preventDefault();
                 Swal.fire({
                     icon: "warning",
-                    title: "Password Required",
-                    text: "Please enter your password"
+                    title: title,
+                    text: errorMessage,
+                    confirmButtonText: "OK"
                 });
-                return;
             }
         });
 
+        // Show/hide password
+        document.querySelectorAll(".password-wrapper .fa-eye").forEach(icon => {
+            icon.addEventListener("click", () => {
+                const input = icon.previousElementSibling;
 
-        document.querySelectorAll(".far.fa-eye").forEach(icon => {
-        icon.addEventListener("click", () => {
-            const input = icon.previousElementSibling;
-            input.type = input.type === "password" ? "text" : "password";
+                input.type = input.type === "password" ? "text" : "password";
+
+                icon.classList.toggle("fa-eye");
+                icon.classList.toggle("fa-eye-slash");
             });
         });
 
+    });
     </script>
 
 </body>

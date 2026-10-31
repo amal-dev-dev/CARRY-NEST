@@ -1,26 +1,37 @@
-import  Product from  "../../Model/productModel.js";
+import Product from  "../../Model/productModel.js";
 import Category from "../../Model/categoryModel.js";
 import Review from "../../Model/reviewModel.js";
+import User from "../../Model/userModel.js";
 import Wishlist from "../../Model/wishlistModel.js";
 import Cart from "../../Model/cartModel.js";
+import Offer from "../../Model/offerModel.js";
+import Brand from "../../Model/brandModel.js";
 
 
 const loadProducts = async (req, res) => {
     try {
-
-        const page = Number(req.query.page) || 1;
+        const page = Math.max(1, Number(req.query.page) || 1);
         const limit = 8;
         const skip = (page - 1) * limit;
 
         const search = req.query.search || "";
         const category = req.query.category || "";
         const brand = req.query.brand || "";
+        const color = req.query.color || "";
         const price = req.query.price || "";
         const sort = req.query.sort || "";
         const message = req.query.message || "";
 
+        // Get only active/listed categories
+        const activeCategoryIds = await Category.find({
+            isListed: true,
+            isBlocked: { $ne: true }
+        }).distinct("_id");
+
+        // Exclude blocked products and products from blocked categories
         let query = {
-            isBlocked: false
+            isBlocked: false,
+            category: { $in: activeCategoryIds }
         };
 
         // Search
@@ -31,61 +42,73 @@ const loadProducts = async (req, res) => {
             };
         }
 
-        // Category
+        // Category filter (must also be an active category)
         if (category) {
-            query.category = category;
+            query.category = {
+                $eq: category,
+                $in: activeCategoryIds
+            };
         }
 
-        // Brand
+        // Brand filter
         if (brand) {
             query.brand = brand;
         }
 
-        // Price Filter
+        // Color filter
+        if (color) {
+            query.colors = {
+                $regex: `^${color}$`,
+                $options: "i"
+            };
+        }
+
+
+        // Price filter
         if (price) {
-
             const [min, max] = price.split("-");
+            const priceQuery = {};
 
-            query["variants.0.salePrice"] = {};
-
-            if (min) {
-                query["variants.0.salePrice"].$gte = Number(min);
+            if (min !== "") {
+                priceQuery.$gte = Number(min);
             }
 
-            if (max) {
-                query["variants.0.salePrice"].$lte = Number(max);
+            if (max !== undefined && max !== "") {
+                priceQuery.$lte = Number(max);
             }
+
+            query["variants.0.salePrice"] = priceQuery;
         }
 
         // Sorting
         let sortOption = {};
 
         switch (sort) {
-
-            case "oldest" :
-                sortOption = { createdAt: 1};
+            case "oldest":
+                sortOption = { createdAt: 1 };
                 break;
 
             case "low-high":
-                sortOption["variants.0.salePrice"] = 1;
+                sortOption = { "variants.0.salePrice": 1 };
                 break;
 
             case "high-low":
-                sortOption["variants.0.salePrice"] = -1;
+                sortOption = { "variants.0.salePrice": -1 };
                 break;
 
             case "a-z":
-                sortOption.productName = 1;
+                sortOption = { productName: 1 };
                 break;
 
             case "z-a":
-                sortOption.productName = -1;
+                sortOption = { productName: -1 };
                 break;
 
             default:
-                sortOption.createdAt = -1;
+                sortOption = { createdAt: -1 };
         }
 
+        // Count only products that match all filters
         const totalProducts = await Product.countDocuments(query);
 
         const products = await Product.find(query)
@@ -97,38 +120,71 @@ const loadProducts = async (req, res) => {
         const totalPages = Math.ceil(totalProducts / limit);
 
         const categories = await Category.find({
-            isListed: true
+            isListed: true,
+            isBlocked: { $ne: true }
         });
 
-        res.render("user/products", {
+        const brands = await Brand.find({
+            isActive: true
+        }).sort({ name: 1 }).lean();
+
+
+        let wishlistProductIds = [];
+
+        if (req.session.user) {
+            const wishlist = await Wishlist.findOne({
+                userId: req.session.user
+            }).lean();
+
+            if (wishlist) {
+                wishlistProductIds = wishlist.items.map(item =>
+                    item.productId.toString()
+                );
+            }
+        }
+
+        return res.render("user/products", {
             products,
             message,
             categories,
+            brands,
             currentPage: page,
             totalPages,
             search,
             category,
             brand,
+            color,
             price,
             sort,
+            wishlistProductIds,
             user: req.session.user || null
         });
 
     } catch (error) {
         console.log("LOAD PRODUCTS ERROR:", error);
+        return res.status(500).send("Unable to load products");
     }
 };
+
 
 const loadProductDetails = async (req, res) => {
     try {
         const id = req.params.id;
         const userId = req.session.user;
+        const productId = req.params.id;
 
         const product = await Product.findById(id).populate("category");
 
-
-        if (!product || product.isBlocked) {
-            return res.redirect("/user/products?message=Product%20is%20currently%20unavailable");
+        if (
+            !product ||
+            product.isBlocked ||
+            !product.category ||
+            product.category.isListed !== true ||
+            product.category.isBlocked === true
+        ) {
+            return res.redirect(
+                "/user/products?message=Product%20is%20currently%20unavailable"
+            );
         }
 
         // only valid variants
@@ -140,6 +196,70 @@ const loadProductDetails = async (req, res) => {
         );
 
         const defaultVariant = filteredVariants.length > 0 ? filteredVariants[0] : null;
+
+        // Find active offers
+        const now = new Date();
+
+        const today = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+        const activeOffers = await Offer.find({
+            isActive: true,
+            validFrom: { $lte: now },
+            validTo: { $gte: today }
+        })
+            .populate("productId", "_id")
+            .populate("categoryId", "_id")
+            .lean();
+
+        // Find offers applicable to this product
+        const applicableOffers = activeOffers.filter(offer => {
+            if (offer.offerType === "product") {
+                return (
+                    String(offer.productId?._id) ===
+                    String(product._id)
+                );
+            }
+
+            if (offer.offerType === "category") {
+                return (
+                    String(offer.categoryId?._id) ===
+                    String(product.category?._id)
+                );
+            }
+
+            return false;
+        });
+
+        // Choose the highest discount percentage
+        const appliedOffer = applicableOffers.reduce(
+            (best, current) => {
+                if (
+                    !best ||
+                    current.discountPercentage > best.discountPercentage
+                ) {
+                    return current;
+                }
+
+                return best;
+            },
+            null
+        );
+
+        const offerDiscountPercentage =
+            appliedOffer?.discountPercentage || 0;
+
+        // Calculate offer price for the default variant
+        const basePrice = Number(
+            defaultVariant?.salePrice ?? 0
+        );
+
+        const offerPrice = Math.round(
+            basePrice * (1 - offerDiscountPercentage / 100)
+        );
 
         let wishlistExists = false;
 
@@ -169,9 +289,10 @@ const loadProductDetails = async (req, res) => {
             _id: { $ne: product._id }
         }).limit(4);
 
-        const reviews = await Review.find({
-            productId: product._id
-        }).populate("userId");
+        const reviews = await Review.find({ productId })
+            .populate("userId", "name")
+            .sort({ createdAt: -1 })
+            .lean();
 
         const averageRating =
             reviews.length > 0
@@ -179,16 +300,16 @@ const loadProductDetails = async (req, res) => {
                 : 0;
 
         let discountPercentage = 0;
+
         if (
-            defaultVariant &&
-            defaultVariant.regularPrice &&
-            defaultVariant.salePrice &&
-            defaultVariant.regularPrice > defaultVariant.salePrice
+            defaultVariant?.regularPrice &&
+            defaultVariant.regularPrice > 0
         ) {
             discountPercentage = Math.round(
-                ((defaultVariant.regularPrice - defaultVariant.salePrice) /
-                    defaultVariant.regularPrice) *
-                    100
+                (
+                    (defaultVariant.regularPrice - offerPrice) /
+                    defaultVariant.regularPrice
+                ) * 100
             );
         }
 
@@ -202,7 +323,10 @@ const loadProductDetails = async (req, res) => {
             averageRating,
             discountPercentage,
             cartCount,
-            user: userId || null
+            user: userId || null,
+            offerPrice,
+            offerDiscountPercentage,
+            appliedOffer,
         });
 
     } catch (error) {

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brands - Carry Nest</title>
+
+    <link rel="stylesheet" href="/styles/admin/brands.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div>
+            <div class="logo-section">
+                <div class="logo-box">C</div>
+                <h2>CARRY NEST</h2>
+            </div>
+
+            <nav class="menu-wrapper">
+                <a href="/admin/dashboard" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-dashboard-line"></i>
+                        <span>Dashboard</span>
+                    </span>
+                </a>
+
+                <div class="dropdown-wrapper active">
+                    <button type="button" class="dropdown-btn">
+                        <span class="menu-left">
+                            <i class="ri-shopping-bag-line"></i>
+                            Products
+                        </span>
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+                    </button>
+
+                    <div class="dropdown-menu show">
+                        <a href="/admin/products">All Products</a>
+                        <a href="/admin/add-product">Add Product</a>
+                        <a href="/admin/category">Categories</a>
+                        <a href="/admin/brands" class="submenu-active">Brands</a>
+                    </div>
+                </div>
+
+                <div class="dropdown-wrapper">
+                    <button type="button" class="dropdown-btn">
+                        <span class="menu-left">
+                            <i class="ri-shopping-cart-line"></i>
+                            Orders
+                        </span>
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="/admin/orders">All Orders</a>
+                        <a href="#">Pending</a>
+                        <a href="#">Processing</a>
+                        <a href="#">Shipped</a>
+                    </div>
+                </div>
+
+                <div class="dropdown-wrapper">
+                    <button type="button" class="dropdown-btn">
+                        <span class="menu-left">
+                            <i class="ri-arrow-go-back-line"></i>
+                            Returns
+                        </span>
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="/admin/return-requests">Requests</a>
+                    </div>
+                </div>
+
+                <a href="/admin/customers" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-group-line"></i>
+                        Customers
+                    </span>
+                </a>
+
+                <a href="/admin/wallet" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-wallet-3-line"></i>
+                        Wallet & Payments
+                    </span>
+                </a>
+
+                <a href="/admin/coupons" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-price-tag-3-line"></i>
+                        Promotions
+                    </span>
+                </a>
+
+                <a href="#" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-bar-chart-box-line"></i>
+                        Reports
+                    </span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="logout-section">
+            <a href="/admin/logout" class="logout-btn">
+                <i class="ri-logout-box-r-line"></i>
+                Logout
+            </a>
+        </div>
+    </aside>
+
+    <main class="brands-main">
+        <div class="brands-topbar">
+            <div class="breadcrumbs">
+                <span>Admin</span>
+                <i class="ri-arrow-right-s-line"></i>
+                <strong>Brands</strong>
+            </div>
+
+            <div class="topbar-right">
+                <div class="search-box">
+                    <i class="ri-search-line"></i>
+                    <input type="search" placeholder="Search..." aria-label="Search">
+                </div>
+                <button type="button" class="notification-btn" aria-label="Notifications">
+                    <i class="ri-notification-3-line"></i>
+                    <span></span>
+                </button>
+                <div class="admin-profile">
+                    <div class="admin-avatar">AD</div>
+                    <div>
+                        <strong>Admin User</strong>
+                        <small>Super Admin</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="brands-page">
+            <div class="brands-heading">
+                <div>
+                    <h1>Brands</h1>
+                    <p>Manage your product brands</p>
+                </div>
+
+                <button type="button" class="add-brand-btn" id="openAddBrand">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add Brand</span>
+                </button>
+            </div>
+
+            <div class="brands-table-card">
+                <div class="brands-table-wrapper">
+                    <table class="brands-table">
+                        <thead>
+                            <tr>
+                                <th>Logo</th>
+                                <th>Brand Name</th>
+                                <th>Products</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="brandsTableBody">
+                            <% if (brands && brands.length > 0) { %>
+                                <% brands.forEach(brand => { %>
+                                    <tr data-brand-id="<%= brand._id %>">
+                                        <td>
+                                            <div class="brand-logo-box">
+                                                <img
+                                                    src="<%= brand.logo %>"
+                                                    alt="<%= brand.name %> logo"
+                                                    class="brand-logo"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                                >
+                                                <span class="brand-logo-fallback" style="display:none">
+                                                    <%= brand.name.charAt(0).toUpperCase() %>
+                                                </span>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <span class="brand-name"><%= brand.name %></span>
+                                        </td>
+
+                                        <td>
+                                            <strong class="product-count">
+                                                <%= brand.productCount || 0 %> products
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            <div class="brand-status">
+                                                <label class="status-switch">
+                                                    <input
+                                                        type="checkbox"
+                                                        class="brand-status-toggle"
+                                                        data-id="<%= brand._id %>"
+                                                        <%= brand.isActive ? "checked" : "" %>
+                                                        aria-label="Toggle <%= brand.name %> status"
+                                                    >
+                                                    <span class="status-slider"></span>
+                                                </label>
+
+                                                <span class="status-text <%= brand.isActive ? 'active' : 'inactive' %>">
+                                                    <%= brand.isActive ? "Active" : "Inactive" %>
+                                                </span>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="edit-brand-btn"
+                                                data-id="<%= brand._id %>"
+                                                data-name="<%= brand.name %>"
+                                                data-logo="<%= brand.logo %>"
+                                                aria-label="Edit <%= brand.name %>"
+                                                title="Edit brand"
+                                            >
+                                                <i class="fa-regular fa-pen-to-square"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            <% } else { %>
+                                <tr id="emptyBrandsRow">
+                                    <td colspan="5" class="empty-brands">
+                                        <i class="fa-solid fa-tags"></i>
+                                        <h3>No brands found</h3>
+                                        <p>Click Add Brand to create your first brand.</p>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- ADD BRAND MODAL -->
+<div class="brand-modal-overlay" id="addBrandModal">
+    <div class="brand-modal" role="dialog" aria-modal="true" aria-labelledby="addBrandTitle">
+        <div class="brand-modal-header">
+            <div>
+                <h2 id="addBrandTitle">Add Brand</h2>
+                <p>Add a new brand to your store</p>
+            </div>
+            <button type="button" class="modal-close-btn" data-close-modal="addBrandModal" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="addBrandForm">
+            <div class="brand-form-group">
+                <label for="newBrandName">Brand Name</label>
+                <input type="text" id="newBrandName" name="name" placeholder="Enter brand name" maxlength="50" required>
+            </div>
+
+            <div class="brand-form-group">
+                <label for="newBrandLogo">Brand Logo URL</label>
+                <input type="url" id="newBrandLogo" name="logo" placeholder="https://example.com/logo.png" required>
+                <small>Enter a publicly accessible logo URL.</small>
+            </div>
+
+            <div class="brand-logo-preview">
+                <img id="newBrandLogoPreview" alt="New brand logo preview">
+                <span id="newBrandPreviewPlaceholder">
+                    <i class="fa-regular fa-image"></i> Logo preview
+                </span>
+            </div>
+
+            <div class="brand-modal-actions">
+                <button type="button" class="cancel-brand-btn" data-close-modal="addBrandModal">Cancel</button>
+                <button type="submit" class="save-brand-btn">Add Brand</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- EDIT BRAND MODAL -->
+<div class="brand-modal-overlay" id="editBrandModal">
+    <div class="brand-modal" role="dialog" aria-modal="true" aria-labelledby="editBrandTitle">
+        <div class="brand-modal-header">
+            <div>
+                <h2 id="editBrandTitle">Edit Brand</h2>
+                <p>Update brand information</p>
+            </div>
+            <button type="button" class="modal-close-btn" data-close-modal="editBrandModal" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="editBrandForm">
+            <input type="hidden" id="editBrandId">
+
+            <div class="brand-form-group">
+                <label for="editBrandName">Brand Name</label>
+                <input type="text" id="editBrandName" name="name" maxlength="50" required>
+            </div>
+
+            <div class="brand-form-group">
+                <label for="editBrandLogo">Brand Logo URL</label>
+                <input type="url" id="editBrandLogo" name="logo" placeholder="https://example.com/logo.png" required>
+            </div>
+
+            <div class="brand-logo-preview">
+                <img id="editBrandLogoPreview" alt="Updated brand logo preview">
+                <span id="editBrandPreviewPlaceholder">
+                    <i class="fa-regular fa-image"></i> Logo preview
+                </span>
+            </div>
+
+            <div class="brand-modal-actions">
+                <button type="button" class="cancel-brand-btn" data-close-modal="editBrandModal">Cancel</button>
+                <button type="submit" class="save-brand-btn">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+(() => {
+    const addModal = document.getElementById("addBrandModal");
+    const editModal = document.getElementById("editBrandModal");
+    const addForm = document.getElementById("addBrandForm");
+    const editForm = document.getElementById("editBrandForm");
+
+    function showMessage(type, message) {
+        Swal.fire({
+            icon: type,
+            title: type === "success" ? "Success" : "Notice",
+            text: message
+        });
+    }
+
+    function openModal(modal) {
+        modal.classList.add("show");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeModal(modal) {
+        modal.classList.remove("show");
+
+        if (!document.querySelector(".brand-modal-overlay.show")) {
+            document.body.style.overflow = "";
+        }
+    }
+
+    function resetPreview(imageId, placeholderId) {
+        const image = document.getElementById(imageId);
+        image.removeAttribute("src");
+        image.style.display = "none";
+        document.getElementById(placeholderId).style.display = "flex";
+    }
+
+    function setupPreview(inputId, imageId, placeholderId) {
+        const input = document.getElementById(inputId);
+        const image = document.getElementById(imageId);
+        const placeholder = document.getElementById(placeholderId);
+
+        input.addEventListener("input", () => {
+            const value = input.value.trim();
+            image.style.display = "none";
+            placeholder.style.display = "flex";
+
+            if (!value) return;
+
+            image.onload = () => {
+                image.style.display = "block";
+                placeholder.style.display = "none";
+            };
+
+            image.onerror = () => resetPreview(imageId, placeholderId);
+            image.src = value;
+        });
+    }
+
+    async function sendRequest(url, method, body) {
+        const options = {
+            method,
+            headers: { "Content-Type": "application/json" }
+        };
+
+        if (body) options.body = JSON.stringify(body);
+
+        const response = await fetch(url, options);
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Request failed");
+        }
+
+        return data;
+    }
+
+    document.getElementById("openAddBrand").addEventListener("click", () => {
+        addForm.reset();
+        resetPreview("newBrandLogoPreview", "newBrandPreviewPlaceholder");
+        openModal(addModal);
+    });
+
+    document.querySelectorAll("[data-close-modal]").forEach(button => {
+        button.addEventListener("click", () => {
+            const modal = document.getElementById(button.dataset.closeModal);
+            if (modal) closeModal(modal);
+        });
+    });
+
+    [addModal, editModal].forEach(modal => {
+        modal.addEventListener("click", event => {
+            if (event.target === modal) closeModal(modal);
+        });
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            [addModal, editModal].forEach(modal => {
+                if (modal.classList.contains("show")) closeModal(modal);
+            });
+        }
+    });
+
+    setupPreview("newBrandLogo", "newBrandLogoPreview", "newBrandPreviewPlaceholder");
+    setupPreview("editBrandLogo", "editBrandLogoPreview", "editBrandPreviewPlaceholder");
+
+    addForm.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        const button = addForm.querySelector('[type="submit"]');
+        button.disabled = true;
+
+        try {
+            await sendRequest("/admin/brands/add", "POST", {
+                name: document.getElementById("newBrandName").value.trim(),
+                logo: document.getElementById("newBrandLogo").value.trim()
+            });
+
+            closeModal(addModal);
+            await showMessage("success", "Brand added successfully.");
+            window.location.reload();
+        } catch (error) {
+            showMessage("error", error.message);
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    document.querySelectorAll(".edit-brand-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            document.getElementById("editBrandId").value = button.dataset.id;
+            document.getElementById("editBrandName").value = button.dataset.name;
+            document.getElementById("editBrandLogo").value = button.dataset.logo;
+
+            const image = document.getElementById("editBrandLogoPreview");
+            const placeholder = document.getElementById("editBrandPreviewPlaceholder");
+
+            image.onload = () => {
+                image.style.display = "block";
+                placeholder.style.display = "none";
+            };
+
+            image.onerror = () => resetPreview("editBrandLogoPreview", "editBrandPreviewPlaceholder");
+            image.src = button.dataset.logo;
+
+            openModal(editModal);
+        });
+    });
+
+    editForm.addEventListener("submit", async event => {
+        event.preventDefault();
+
+        const button = editForm.querySelector('[type="submit"]');
+        button.disabled = true;
+
+        try {
+            const id = document.getElementById("editBrandId").value;
+
+            await sendRequest(`/admin/brands/edit/${encodeURIComponent(id)}`, "PATCH", {
+                name: document.getElementById("editBrandName").value.trim(),
+                logo: document.getElementById("editBrandLogo").value.trim()
+            });
+
+            closeModal(editModal);
+            await showMessage("success", "Brand updated successfully.");
+            window.location.reload();
+        } catch (error) {
+            showMessage("error", error.message);
+        } finally {
+            button.disabled = false;
+        }
+    });
+
+    document.querySelectorAll(".brand-status-toggle").forEach(toggle => {
+        toggle.addEventListener("change", async () => {
+            const previousState = !toggle.checked;
+            toggle.disabled = true;
+
+            try {
+                const data = await sendRequest(
+                    `/admin/brands/toggle-status/${encodeURIComponent(toggle.dataset.id)}`,
+                    "PATCH"
+                );
+
+                const row = toggle.closest("tr");
+                const statusText = row.querySelector(".status-text");
+
+                statusText.textContent = data.isActive ? "Active" : "Inactive";
+                statusText.classList.toggle("active", data.isActive);
+                statusText.classList.toggle("inactive", !data.isActive);
+            } catch (error) {
+                toggle.checked = previousState;
+                showMessage("error", error.message);
+            } finally {
+                toggle.disabled = false;
+            }
+        });
+    });
+
+    document.querySelectorAll(".dropdown-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const menu = button.nextElementSibling;
+            if (menu) menu.classList.toggle("show");
+        });
+    });
+})();
+</script>
+
+<% if (typeof message !== "undefined" && message) { %>
+<script>
+    Swal.fire({
+        icon: "error",
+        title: "Notice",
+        text: <%- JSON.stringify(message) %>
+    });
+</script>
+<% } %>
+
+</body>
+</html>

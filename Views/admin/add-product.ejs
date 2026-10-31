@@ -95,7 +95,7 @@
                             Categories
                         </a>
 
-                        <a href="#">
+                        <a href="/admin/brands">
                             Brands
                         </a>
 
@@ -163,12 +163,8 @@
 
                     <div class="dropdown-menu">
 
-                        <a href="#">
+                        <a href="/admin/return-requests">
                             Requests
-                        </a>
-
-                        <a href="#">
-                            Refunds
                         </a>
 
                     </div>
@@ -192,7 +188,7 @@
 
                 <!-- WALLET -->
 
-                <a href="#"
+                <a href="/admin/wallet"
                 class="menu-item">
 
                     <span class="menu-left">
@@ -207,7 +203,7 @@
 
                 <!-- PROMOTIONS -->
 
-                <a href="#"
+                <a href="/admin/coupons"
                 class="menu-item">
 
                     <span class="menu-left">
@@ -372,19 +368,25 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="brand">Brand</label>
 
-                        <label>Brand</label>
+                        <select name="brand" id="brand" required>
+                            <option value="">Select Brand</option>
 
-                        <select name="brand">
-
-                            <option>American Tourister</option>
-
-                            <option>Skybags</option>
-
-                            <option>Safari</option>
-
+                            <% if (brands && brands.length > 0) { %>
+                                <% brands.forEach((brand) => { %>
+                                    <option value="<%= brand.name %>">
+                                        <%= brand.name %>
+                                    </option>
+                                <% }) %>
+                            <% } %>
                         </select>
 
+                        <% if (!brands || brands.length === 0) { %>
+                            <small class="error-message">
+                                No active brands available. Please add a brand first.
+                            </small>
+                        <% } %>
                     </div>
 
                 </div>
@@ -821,6 +823,7 @@ document.getElementById("closeCropBtn").addEventListener("click", () => {
     croppedFiles = [];
     currentIndex = 0;
 });
+
 
 </script>
 

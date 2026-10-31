@@ -31,9 +31,24 @@ const orderSchema = new mongoose.Schema({
                 required: true
             },
 
+            regularPrice: {
+                type: Number,
+                required: true
+            },
+
             price: {
                 type: Number,
                 required: true
+            },
+
+            productDiscount: {
+                type: Number,
+                default: 0
+            },
+
+            offerDiscount: {
+                type: Number,
+                default: 0
             },
 
             status: {
@@ -76,6 +91,22 @@ const orderSchema = new mongoose.Schema({
                 type: String,
                 enum: ["none", "requested", "approved", "rejected", "returned"],
                 default: "none"
+            },
+            
+            refundStatus: {
+                type: String,
+                enum: ["not_applicable", "pending", "completed"],
+                default: "not_applicable"
+            },
+
+            refundAmount: {
+                type: Number,
+                default: 0
+            },
+
+            refundedAt: {
+                type: Date,
+                default: null
             }
         }
     ],
@@ -84,6 +115,26 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Coupon",
         default: null
+    },
+
+    subtotal: {
+        type: Number,
+        default: 0
+    },
+
+    productDiscount: {
+        type: Number,
+        default: 0
+    },
+
+    offerDiscount: {
+        type: Number,
+        default: 0
+    },
+
+    deliveryFee: {
+        type: Number,
+        default: 0
     },
 
     discountApplied: {
@@ -108,10 +159,21 @@ const orderSchema = new mongoose.Schema({
         default: "pending"
     },
 
+    razorpayOrderId: {
+        type: String,
+        default: null
+    },
+
+    razorpayPaymentId: {
+        type: String,
+        default: null
+    },
+
     orderStatus: {
         type: String,
         enum: [
             "pending",
+            "payment_failed",
             "shipped",
             "out_for_delivery",
             "delivered",

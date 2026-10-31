@@ -78,8 +78,7 @@
                     </div>
 
                     <div class="submenu">
-                        <a href="#">Requests</a>
-                        <a href="#">Refunds</a>
+                        <a href="/admin/return-requests">Requests</a>
                     </div>
                 </div>
 
@@ -90,21 +89,21 @@
                     </span>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="/admin/wallet" class="menu-item">
                     <span class="menu-left">
                         <i class="ri-wallet-3-line"></i>
                         Wallet & Payments
                     </span>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="/admin/coupons" class="menu-item">
                     <span class="menu-left">
                         <i class="ri-price-tag-3-line"></i>
                         Promotions
                     </span>
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="/admin/sales-report" class="menu-item">
                     <span class="menu-left">
                         <i class="ri-bar-chart-box-line"></i>
                         Reports
@@ -301,13 +300,69 @@
 
                                     <% } %>
 
+                                    <%
+                                        const paymentCollected =
+                                            ["completed", "paid"].includes(order.paymentStatus);
+
+                                        const refundAmount = Number(item.refundAmount || 0);
+                                    %>
+
+                                    <% if (item.refundStatus === "pending" && paymentCollected && refundAmount > 0) { %>
+
+                                        <div class="refund-section">
+
+                                            <p class="refund-status pending">
+                                                <strong>Refund Pending</strong>
+                                            </p>
+
+                                            <p>
+                                                Refund Amount:
+                                                <strong>₹<%= refundAmount.toFixed(2) %></strong>
+                                            </p>
+
+                                            <form
+                                                action="/admin/orders/<%= order._id %>/items/<%= item._id %>/refund"
+                                                method="POST">
+
+                                                <button type="submit" class="refund-btn">
+                                                    Process Refund
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    <% } else if (item.refundStatus === "completed") { %>
+
+                                        <div class="refund-section">
+
+                                            <p class="refund-status completed">
+                                                <strong>Refund Completed</strong>
+                                            </p>
+
+                                            <p>
+                                                Refunded Amount:
+                                                <strong>₹<%= refundAmount.toFixed(2) %></strong>
+                                            </p>
+
+                                            <% if (item.refundedAt) { %>
+                                                <p>
+                                                    Refunded On:
+                                                    <%= new Date(item.refundedAt).toLocaleDateString("en-GB") %>
+                                                </p>
+                                            <% } %>
+
+                                        </div>
+
+                                    <% } %>
+
                                 </div>
 
                             </div>
 
                             <div class="item-price">
 
-                                ₹<%= item.price * item.quantity %>
+                                ₹<%= (Number(item.price || 0) * Number(item.quantity || 0)).toFixed(2) %>
 
                             </div>
 
@@ -352,7 +407,7 @@
                             <span>Total</span>
 
                             <span>
-                                ₹<%= order.totalAmount %>
+                                ₹<%= Number(order.totalAmount || 0).toFixed(2) %>
                             </span>
 
                         </div>

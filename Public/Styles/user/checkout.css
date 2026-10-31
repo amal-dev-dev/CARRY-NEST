@@ -319,6 +319,491 @@ img{
 }
 
 /* ===================================
+   SECTION HEADER
+=================================== */
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.section-header h3 {
+    margin-bottom: 5px;
+}
+
+.section-subtitle {
+    color: #777;
+    font-size: 13px;
+}
+
+
+/* ===================================
+   ADD ADDRESS BUTTON
+=================================== */
+
+.add-address-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    border: 1px solid #111;
+    background: #fff;
+    color: #111;
+
+    padding: 10px 15px;
+
+    border-radius: 9px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    transition: .2s ease;
+}
+
+.add-address-btn:hover {
+    background: #111;
+    color: #fff;
+}
+
+
+/* ===================================
+   ADDRESS LIST
+=================================== */
+
+.address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+
+/* ===================================
+   ADDRESS CARD
+=================================== */
+
+.address-card {
+    border: 1px solid #e1e1e1;
+    border-radius: 12px;
+    padding: 18px;
+
+    background: #fff;
+
+    transition: .2s ease;
+}
+
+.address-card:hover {
+    border-color: #999;
+}
+
+.address-card.active {
+    border: 2px solid #111;
+    background: #fafafa;
+}
+
+
+/* ===================================
+   ADDRESS TOP
+=================================== */
+
+.address-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 15px;
+}
+
+.address-select {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    cursor: pointer;
+}
+
+.address-select input {
+    width: 18px;
+    height: 18px;
+
+    accent-color: #111;
+}
+
+.address-type {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.address-type i {
+    margin-right: 4px;
+}
+
+
+/* ===================================
+   DEFAULT BADGE
+=================================== */
+
+.default-badge {
+    background: #111;
+    color: #fff;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    padding: 4px 8px;
+
+    border-radius: 20px;
+}
+
+
+/* ===================================
+   EDIT ADDRESS
+=================================== */
+
+.edit-address {
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+}
+
+.edit-address:hover {
+    color: #000;
+}
+
+
+/* ===================================
+   ADDRESS DETAILS
+=================================== */
+
+.address-details {
+    padding-left: 27px;
+}
+
+.address-details h4 {
+    font-size: 15px;
+    margin-bottom: 7px;
+}
+
+.address-details p {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 3px;
+}
+
+.address-mobile {
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.address-mobile i {
+    margin-right: 5px;
+}
+
+
+/* ===================================
+   NO ADDRESS
+=================================== */
+
+.no-address {
+    text-align: center;
+
+    border: 1px dashed #ccc;
+    border-radius: 12px;
+
+    padding: 35px 20px;
+
+    color: #777;
+}
+
+.no-address i {
+    font-size: 30px;
+    margin-bottom: 12px;
+}
+
+.no-address h4 {
+    color: #222;
+    margin-bottom: 5px;
+}
+
+/* ===================================
+   ADDRESS MODAL
+=================================== */
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 2000;
+}
+
+
+/* Show modal */
+
+.modal.show {
+    display: flex;
+}
+
+
+/* Dark background */
+
+.modal-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    backdrop-filter: blur(3px);
+}
+
+
+/* Modal box */
+
+.modal-content {
+    position: relative;
+
+    width: 92%;
+    max-width: 650px;
+
+    max-height: 90vh;
+
+    overflow-y: auto;
+
+    background: #fff;
+
+    border-radius: 18px;
+
+    padding: 28px;
+
+    box-shadow: 0 25px 60px rgba(0, 0, 0, .2);
+
+    z-index: 2;
+
+    animation: modalOpen .2s ease;
+}
+
+
+@keyframes modalOpen {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+/* ===================================
+   MODAL HEADER
+=================================== */
+
+.modal-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    margin-bottom: 25px;
+}
+
+.modal-header h2 {
+
+    font-size: 22px;
+
+    margin-bottom: 4px;
+}
+
+.modal-header p {
+
+    color: #777;
+
+    font-size: 13px;
+}
+
+
+/* Close */
+
+.close-modal {
+
+    border: none;
+
+    background: #f3f3f3;
+
+    width: 36px;
+    height: 36px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 16px;
+
+    transition: .2s;
+}
+
+.close-modal:hover {
+
+    background: #111;
+
+    color: #fff;
+}
+
+
+/* ===================================
+   MODAL FORM
+=================================== */
+
+.form-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 17px;
+}
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.form-group.full-width {
+
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+
+    width: 100%;
+
+    border: 1px solid #ddd;
+
+    border-radius: 9px;
+
+    padding: 12px 13px;
+
+    outline: none;
+
+    font-size: 13px;
+
+    font-family: inherit;
+
+    background: #fff;
+
+    transition: .2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+
+    border-color: #111;
+
+    box-shadow: 0 0 0 3px rgba(0,0,0,.05);
+}
+
+.form-group textarea {
+
+    min-height: 85px;
+
+    resize: vertical;
+}
+
+
+/* ===================================
+   MODAL ACTIONS
+=================================== */
+
+.modal-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 25px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #eee;
+}
+
+.cancel-btn,
+.save-address-btn {
+
+    border: none;
+
+    padding: 11px 18px;
+
+    border-radius: 9px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.cancel-btn {
+
+    background: #f1f1f1;
+
+    color: #333;
+}
+
+.cancel-btn:hover {
+
+    background: #e5e5e5;
+}
+
+.save-address-btn {
+
+    background: #111;
+
+    color: #fff;
+}
+
+.save-address-btn:hover {
+
+    background: #333;
+}
+
+/* ===================================
    PAYMENT METHOD
 =================================== */
 
@@ -458,6 +943,35 @@ img{
     font-size:16px;
 }
 
+.original-price {
+    color: #777;
+    text-decoration: line-through;
+    font-size: 13px;
+    margin: 5px 0;
+}
+
+.offer-price {
+    color: #16753b;
+    font-size: 16px;
+}
+
+.offer-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 4px 7px;
+    background: #e8f7ed;
+    color: #16753b;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.offer-title {
+    color: #16753b;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
 /* ===================================
    PRICE DETAILS
 =================================== */
@@ -491,52 +1005,258 @@ img{
     margin:20px 0;
 }
 
-/* ===================================
-   COUPON
-=================================== */
 
-.coupon-box{
 
-    display:flex;
+/* ==========================
+   COUPON SECTION
+========================== */
 
-    gap:10px;
-
-    margin:30px 0;
+.coupon-box {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 15px;
 }
 
-.coupon-box input{
-
-    flex:1;
-
-    border:1px solid #ddd;
-
-    outline:none;
-
-    border-radius:10px;
-
-    padding:12px 15px;
-
-    font-size:14px;
+.coupon-box input {
+    flex: 1;
+    min-width: 0;
+    padding: 13px 15px;
+    border: 1px solid #d9dee7;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s ease;
 }
 
-.coupon-box button{
-
-    border:none;
-
-    background:#000;
-
-    color:#fff;
-
-    padding:0 22px;
-
-    border-radius:10px;
-
-    transition:.3s;
+.coupon-box input:focus {
+    border-color: #111827;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
 }
 
-.coupon-box button:hover{
+.coupon-box input:disabled {
+    background: #f3f4f6;
+    cursor: not-allowed;
+}
 
-    background:#222;
+
+/* APPLY BUTTON */
+
+#applyCouponBtn {
+    border: none;
+    background: #111827;
+    color: white;
+    padding: 0 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#applyCouponBtn:hover {
+    background: #000000;
+    transform: translateY(-1px);
+}
+
+#applyCouponBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* ==========================
+   COUPON MESSAGE
+========================== */
+
+#couponMessage {
+    font-size: 13px;
+    color: #16a34a;
+    margin-bottom: 12px;
+}
+
+
+/* ==========================
+   APPLIED COUPON
+========================== */
+
+#appliedCouponBox {
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+#appliedCouponCode {
+    color: #15803d;
+    font-weight: 700;
+}
+
+
+/* REMOVE BUTTON */
+
+#removeCouponBtn {
+    border: none;
+    background: transparent;
+    color: #dc2626;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 6px;
+}
+
+#removeCouponBtn:hover {
+    background: #fee2e2;
+}
+
+
+/* ==========================
+   AVAILABLE COUPONS BUTTON
+========================== */
+
+.available-coupons-btn {
+    width: 100%;
+    margin-top: 12px;
+    margin-bottom: 15px;
+    padding: 12px 16px;
+    border: 1px solid #d9dee7;
+    background: white;
+    color: #111827;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.available-coupons-btn:hover {
+    background: #f8fafc;
+    border-color: #111827;
+}
+
+
+/* ==========================
+   COUPON LIST
+========================== */
+
+.coupon-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+
+/* SINGLE COUPON */
+
+.available-coupon {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+.available-coupon strong {
+    display: block;
+    color: #111827;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.available-coupon p {
+    margin: 0 0 5px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.available-coupon small {
+    color: #64748b;
+    font-size: 11px;
+}
+
+
+/* APPLY FROM COUPON LIST */
+
+.use-coupon-btn {
+    flex-shrink: 0;
+    border: none;
+    background: #111827;
+    color: white;
+    padding: 9px 15px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.use-coupon-btn:hover {
+    background: #000000;
+    transform: translateY(-1px);
+}
+
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media (max-width: 600px) {
+
+    .coupon-box {
+        gap: 8px;
+    }
+
+    .coupon-box input {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    #applyCouponBtn {
+        padding: 0 16px;
+        font-size: 13px;
+    }
+
+    .available-coupon {
+        align-items: flex-start;
+    }
+
+    .use-coupon-btn {
+        padding: 8px 12px;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .coupon-box {
+        flex-direction: column;
+    }
+
+    #applyCouponBtn {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .available-coupon {
+        flex-direction: column;
+    }
+
+    .use-coupon-btn {
+        width: 100%;
+    }
+
 }
 
 /* ===================================
@@ -844,4 +1564,53 @@ footer button:hover {
 
         gap:25px;
     }
+}
+
+@media (max-width: 600px) {
+
+    .section-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .add-address-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .address-top {
+        align-items: flex-start;
+    }
+
+    .address-select {
+        flex-wrap: wrap;
+    }
+
+    .address-details {
+        padding-left: 0;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: auto;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        border-radius: 14px;
+    }
+
+    .modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .cancel-btn,
+    .save-address-btn {
+        width: 100%;
+    }
+
 }

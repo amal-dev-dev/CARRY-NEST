@@ -212,8 +212,24 @@ body {
     margin: 15px 0;
 }
 
+.logout-form {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
 .logout-btn {
     color: #ef4444;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 /* =========================
@@ -527,11 +543,35 @@ body {
    ORDER BOTTOM
 ========================= */
 .order-bottom {
-    margin-top: 18px;
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
     gap: 12px;
     flex-wrap: wrap;
+}
+
+.retry-payment-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #111827;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.retry-payment-btn:hover {
+    background: #374151;
+}
+
+.retry-payment-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .track-btn,

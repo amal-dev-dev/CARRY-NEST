@@ -1,0 +1,470 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Retry Payment | CARRY NEST</title>
+
+    <link rel="stylesheet" href="/Styles/user/retry-payment.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="/user/home" class="logo">CARRY NEST</a>
+
+        <div class="nav-icons">
+            <a href="/user/cart" aria-label="Cart">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+
+            <a href="/user/wishlist" aria-label="Wishlist">
+                <i class="fa-regular fa-heart"></i>
+            </a>
+
+            <a href="/user/profile" aria-label="Profile">
+                <i class="fa-regular fa-user"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="retry-section">
+        <div class="retry-container">
+
+            <!-- PAGE HEADING -->
+            <div class="page-heading">
+                <a href="/user/orders" class="back-link">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to My Orders
+                </a>
+
+                <h1>Retry Payment</h1>
+                <p>Complete your payment to confirm your order.</p>
+            </div>
+
+            <!-- PAYMENT STATUS -->
+            <section class="status-card">
+                <div class="status-icon">
+                    <i class="fa-solid fa-exclamation"></i>
+                </div>
+
+                <div class="status-content">
+                    <span class="status-label">PAYMENT NOT COMPLETED</span>
+                    <h2>We couldn't complete your payment</h2>
+                    <p>
+                        Your order is saved. You can try paying again securely
+                        using Razorpay.
+                    </p>
+                </div>
+
+                <span class="failed-badge">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    Failed
+                </span>
+            </section>
+
+            <div class="retry-layout">
+
+                <!-- LEFT: ORDER DETAILS -->
+                <section class="retry-left">
+
+                    <div class="content-card order-info-card">
+                        <div class="card-heading">
+                            <div>
+                                <h3>Order Details</h3>
+                                <p>Review your order before making payment.</p>
+                            </div>
+
+                            <i class="fa-solid fa-receipt heading-icon"></i>
+                        </div>
+
+                        <div class="order-meta">
+                            <div class="meta-item">
+                                <span>Order ID</span>
+                                <strong>
+                                    <%= order.orderId %>
+                                </strong>
+                            </div>
+
+                            <div class="meta-item">
+                                <span>Payment Method</span>
+                                <strong>
+                                    <i class="fa-regular fa-credit-card"></i>
+                                    Razorpay
+                                </strong>
+                            </div>
+
+                            <div class="meta-item">
+                                <span>Payment Status</span>
+                                <strong class="text-failed">Failed</strong>
+                            </div>
+
+                            <div class="meta-item">
+                                <span>Order Status</span>
+                                <strong>Payment Failed</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCTS -->
+                    <div class="content-card products-card">
+                        <div class="card-heading">
+                            <div>
+                                <h3>Ordered Products</h3>
+                                <p>
+                                    <%= order.products.length %>
+                                    item(s) in this order
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="product-list">
+                            <% order.products.forEach(item => {
+                                const product = item.productId;
+                                const image =
+                                    product &&
+                                    product.productImage &&
+                                    product.productImage.length
+                                        ? product.productImage[0]
+                                        : null;
+                            %>
+
+                                <div class="product-item">
+                                    <div class="product-image">
+                                        <% if (image) { %>
+                                            <img
+                                                src="<%= image %>"
+                                                alt="<%= product.productName %>"
+                                            >
+                                        <% } else { %>
+                                            <div class="image-placeholder">
+                                                <i class="fa-solid fa-bag-shopping"></i>
+                                            </div>
+                                        <% } %>
+                                    </div>
+
+                                    <div class="product-details">
+                                        <h4>
+                                            <%= product
+                                                ? product.productName
+                                                : "Product unavailable" %>
+                                        </h4>
+
+                                        <p>
+                                            Quantity:
+                                            <strong><%= item.quantity %></strong>
+                                        </p>
+
+                                        <% if (item.variantId) { %>
+                                            <p class="variant-text">
+                                                Variant:
+                                                <%= item.variantId.size || "Standard" %>
+                                            </p>
+                                        <% } %>
+                                    </div>
+
+                                    <div class="product-price">
+                                        ₹<%= (
+                                            Number(item.price || 0) *
+                                            Number(item.quantity || 0)
+                                        ).toFixed(2) %>
+                                    </div>
+                                </div>
+
+                            <% }); %>
+                        </div>
+                    </div>
+
+                    <!-- SECURITY INFORMATION -->
+                    <div class="security-card">
+                        <div class="security-icon">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+
+                        <div>
+                            <h4>Secure Online Payment</h4>
+                            <p>
+                                Your payment is processed through Razorpay.
+                                Do not refresh the page while payment verification
+                                is in progress.
+                            </p>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- RIGHT: PAYMENT SUMMARY -->
+                <aside class="retry-right">
+
+                    <div class="summary-card">
+                        <h3>Payment Summary</h3>
+
+                        <div class="summary-order-id">
+                            <span>Order ID</span>
+                            <strong><%= order.orderId %></strong>
+                        </div>
+
+                        <hr>
+
+                        <div class="summary-row">
+                            <span>Items</span>
+                            <span><%= order.products.length %></span>
+                        </div>
+
+                        <% if (Number(order.discountApplied || 0) > 0) { %>
+                            <div class="summary-row">
+                                <span>Discount</span>
+                                <span class="discount-value">
+                                    - ₹<%= Number(
+                                        order.discountApplied
+                                    ).toFixed(2) %>
+                                </span>
+                            </div>
+                        <% } %>
+
+                        <hr>
+
+                        <div class="summary-total">
+                            <span>Total to Pay</span>
+                            <strong>
+                                ₹<%= Number(order.totalAmount || 0).toFixed(2) %>
+                            </strong>
+                        </div>
+
+                        <p class="amount-note">
+                            <i class="fa-solid fa-circle-info"></i>
+                            You will be charged this amount when payment succeeds.
+                        </p>
+
+                        <button type="button" id="retryPaymentBtn"
+                                class="retry-button">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>Retry Payment</span>
+                        </button>
+
+                        <a href="/user/orders" class="secondary-button">
+                            Return to My Orders
+                        </a>
+
+                        <div id="paymentMessage" class="payment-message"
+                             role="status" aria-live="polite"></div>
+
+                        <div class="payment-method-note">
+                            <i class="fa-solid fa-lock"></i>
+                            Secure payment powered by Razorpay
+                        </div>
+                    </div>
+
+                    <div class="help-card">
+                        <i class="fa-regular fa-circle-question"></i>
+
+                        <div>
+                            <h4>Need help?</h4>
+                            <p>
+                                If money was deducted but this order still shows
+                                failed, check your payment status before trying again.
+                            </p>
+                        </div>
+                    </div>
+
+                </aside>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div>
+                <h3>CARRY NEST</h3>
+                <p>Premium Bags &amp; Travel Accessories.</p>
+            </div>
+
+            <div>
+                <h4>Service</h4>
+                <p>Shipping</p>
+                <p>Returns</p>
+                <p>Support</p>
+            </div>
+
+            <div>
+                <h4>Company</h4>
+                <p>About</p>
+                <p>Contact</p>
+                <p>Blog</p>
+            </div>
+
+            <div>
+                <h4>Contact Us</h4>
+                <p>We're here to help with your order.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const retryButton =
+                document.getElementById("retryPaymentBtn");
+
+            const paymentMessage =
+                document.getElementById("paymentMessage");
+
+            let paymentInProgress = false;
+
+            function showMessage(message, type = "error") {
+                paymentMessage.textContent = message;
+                paymentMessage.className = `payment-message ${type}`;
+            }
+
+            function resetButton() {
+                paymentInProgress = false;
+                retryButton.disabled = false;
+                retryButton.innerHTML =
+                    '<i class="fa-solid fa-rotate-right"></i>' +
+                    '<span>Retry Payment</span>';
+            }
+
+            retryButton.addEventListener("click", async () => {
+                if (paymentInProgress) return;
+
+                if (typeof Razorpay === "undefined") {
+                    showMessage(
+                        "Payment service could not load. Please refresh and try again."
+                    );
+                    return;
+                }
+
+                paymentInProgress = true;
+                retryButton.disabled = true;
+                retryButton.innerHTML =
+                    '<i class="fa-solid fa-spinner fa-spin"></i>' +
+                    '<span>Opening payment...</span>';
+
+                paymentMessage.textContent = "";
+                paymentMessage.className = "payment-message";
+
+                try {
+                    /*
+                     * The controller should generate a fresh Razorpay order
+                     * for this existing failed order and render it as
+                     * `razorpayOrder`.
+                     */
+                    const razorpayOrder = <%- JSON.stringify(razorpayOrder) %>;
+
+                    const options = {
+                        key: <%- JSON.stringify(razorpayKeyId) %>,
+                        amount: razorpayOrder.amount,
+                        currency: razorpayOrder.currency || "INR",
+                        name: "CARRY NEST",
+                        description: "Retry payment for order <%= order.orderId %>",
+                        order_id: razorpayOrder.id,
+
+                        handler: async function (paymentResponse) {
+                            retryButton.disabled = true;
+                            retryButton.innerHTML =
+                                '<i class="fa-solid fa-spinner fa-spin"></i>' +
+                                '<span>Verifying payment...</span>';
+
+                            showMessage("Payment received. Verifying securely...", "info");
+
+                            try {
+                                const response = await fetch(
+                                    "/user/verify-retry-payment",
+                                    {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            orderId: <%- JSON.stringify(String(order._id)) %>,
+                                            razorpay_order_id:
+                                                paymentResponse.razorpay_order_id,
+                                            razorpay_payment_id:
+                                                paymentResponse.razorpay_payment_id,
+                                            razorpay_signature:
+                                                paymentResponse.razorpay_signature
+                                        })
+                                    }
+                                );
+
+                                const result = await response.json();
+
+                                if (!response.ok || !result.success) {
+                                    throw new Error(
+                                        result.message ||
+                                        "Payment verification failed."
+                                    );
+                                }
+
+                                window.location.href =
+                                    `/user/order-success/${encodeURIComponent(result.orderId)}`;
+
+                            } catch (error) {
+                                console.error("Retry verification error:", error);
+
+                                showMessage(
+                                    error.message ||
+                                    "Unable to verify payment. Please check your order status before retrying."
+                                );
+
+                                resetButton();
+                            }
+                        },
+
+                        modal: {
+                            ondismiss: function () {
+                                showMessage(
+                                    "Payment window closed. You can retry whenever you're ready.",
+                                    "info"
+                                );
+                                resetButton();
+                            }
+                        },
+
+                        theme: {
+                            color: "#111111"
+                        }
+                    };
+
+                    const razorpay = new Razorpay(options);
+
+                    razorpay.on("payment.failed", function (response) {
+                        console.error(
+                            "Retry payment failed:",
+                            response.error
+                        );
+
+                        showMessage(
+                            response.error?.description ||
+                            "Payment failed. Please try again."
+                        );
+
+                        resetButton();
+                    });
+
+                    razorpay.open();
+
+                } catch (error) {
+                    console.error("Retry payment error:", error);
+
+                    showMessage(
+                        error.message ||
+                        "Unable to start payment. Please try again."
+                    );
+
+                    resetButton();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

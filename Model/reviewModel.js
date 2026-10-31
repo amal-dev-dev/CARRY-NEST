@@ -1,70 +1,56 @@
+
 import mongoose from "mongoose";
 
-const reviewSchema = new mongoose.Schema({
+const reviewSchema = new mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Users",
+            required: true
+        },
 
-    userId:{
+        productId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Product",
+            required: true
+        },
 
-        type:mongoose.Schema.Types.ObjectId,
+        orderId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Order",
+            required: true
+        },
 
-        ref:"User",
+        rating: {
+            type: Number,
+            required: true,
+            min: 1,
+            max: 5
+        },
 
-        required:true
+        title: {
+            type: String,
+            required: true,
+            trim: true,
+            minlength: 3,
+            maxlength: 100
+        },
 
+        comment: {
+            type: String,
+            required: true,
+            trim: true,
+            minlength: 3,
+            maxlength: 1000
+        }
     },
-
-    variantId:{
-
-        type:mongoose.Schema.Types.ObjectId,
-
-        ref:"Product",  
-
-        required:true
-
-    },
-
-    rating:{
-
-        type:Number,
-
-        required:true,
-
-        min:1,
-
-        max:5
-
-    },
-
-    comment:{
-
-        type:String,
-
-        trim:true,
-
-        default:""
-
-    },
-
-    image:{
-
-        type:[String],
-
-        default:[]
-
-    },
-
-    createdAt:{
-
-        type:Date,
-
-        default:Date.now
-
-    }
-
-});
-
-const Review = mongoose.model(
-    "Review",
-    reviewSchema
+    { timestamps: true }
 );
 
-export default Review;
+// One review per customer per product
+reviewSchema.index(
+    { userId: 1, productId: 1 },
+    { unique: true }
+);
+
+export default mongoose.model("Review", reviewSchema);
