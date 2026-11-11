@@ -11,6 +11,9 @@
       href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
       rel="stylesheet"
     >
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
 
@@ -270,16 +273,6 @@
 
                 <div class="form-group">
 
-                    <% if(message){ %>
-
-                        <p class="text-danger">
-
-                            <%= message %>
-
-                        </p>
-
-                    <% } %>
-
                     <label>
 
                         Category Name *
@@ -370,21 +363,43 @@
 
 </div>
 
+
+<div
+    id="category-message"
+    data-message="<%= typeof message !== 'undefined' && message ? message : '' %>"
+></div>
+
 <script>
 
-const dropdowns = document.querySelectorAll(".dropdown-btn");
+    const dropdowns = document.querySelectorAll(".dropdown-btn");
 
-dropdowns.forEach((btn)=>{
+    dropdowns.forEach((btn)=>{
 
-    btn.addEventListener("click",()=>{
+        btn.addEventListener("click",()=>{
 
-        btn.parentElement.classList.toggle("active");
+            btn.parentElement.classList.toggle("active");
 
-        btn.nextElementSibling.classList.toggle("show");
+            btn.nextElementSibling.classList.toggle("show");
+
+        });
 
     });
 
-});
+
+    //ALERT MESSAGE
+    const messageElement = document.getElementById("category-message");
+
+    const message = messageElement.dataset.message;
+
+    if (message) {
+        Swal.fire({
+            icon: "error",
+            title: "Validation Error",
+            text: message,
+            confirmButtonText: "OK",
+            confirmButtonColor: "#dc2626"
+        });
+    }
 
 </script>
 

@@ -42,12 +42,19 @@ const loadProducts = async (req, res) => {
             };
         }
 
-        // Category filter (must also be an active category)
+        // Category filter
         if (category) {
-            query.category = {
-                $eq: category,
-                $in: activeCategoryIds
-            };
+            const selectedCategory = await Category.findOne({
+                name: category,
+                isListed: true,
+                isBlocked: { $ne: true }
+            });
+
+            if (!selectedCategory) {
+                query.category = null;
+            } else {
+                query.category = selectedCategory._id;
+            }
         }
 
         // Brand filter

@@ -68,129 +68,191 @@
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="container footer-grid">
+
+    <footer>
+        <div class="footer-container">
+
+            <!-- Brand -->
             <div class="footer-col">
                 <h3>CARRY NEST</h3>
-                <p>Lorem ipsum dolor sit amet consectetur. Purus in etiam risus ut sem eu urna. Massa feugiat consequat nec libero.</p>
+                <p class="footer-tagline">
+                    Carry Your World. Your Style, Your Journey.
+                </p>
+                <p>
+                    Discover stylish, durable and functional bags
+                    designed for everyday life, work and travel.
+                </p>
             </div>
+
+            <!-- Shop -->
             <div class="footer-col">
-                <h4>Service</h4>
-                <ul>
-                    <li><a href="#">Laptop Bags</a></li>
-                    <li><a href="#">Trekking Bags</a></li>
-                    <li><a href="#">School Bags</a></li>
-                </ul>
+                <h4>Shop</h4>
+
+                <a href="/user/products">All Products</a>
+                <a href="/user/products?category=Laptop%20Bags">Laptop Bags</a>
+                <a href="/user/products?category=Office%20Bags">Office Bags</a>
+                <a href="/user/products?category=Travel%20Bags">Travel Bags</a>
+                <a href="/user/products?category=School%20Bags">School Bags</a>
+                <a href="/user/products?category=Trekking%20Bags">Trekking Bags</a>
             </div>
+
+            <!-- Quick Links -->
             <div class="footer-col">
-                <h4>Company</h4>
-                <ul>
-                    <li><a href="#">Service</a></li>
-                    <li><a href="#">Features</a></li>
-                    <li><a href="#">Our Team</a></li>
-                </ul>
+                <h4>Quick Links</h4>
+                <a href="/user/home">Home</a>
+                <a href="/user/about">About Us</a>
+                <a href="/user/profile">My Account</a>
+                <a href="/user/orders">My Orders</a>
+                <a href="/user/contact">Contact Us</a>
             </div>
-            <div class="footer-col">
+
+            <!-- Contact -->
+            <div class="footer-col footer-contact">
                 <h4>Contact Us</h4>
-                <div class="contact-form">
-                    <input type="text" placeholder="Your Email/Phone no.">
-                    <button>Send</button>
-                </div>
+
+                <p>
+                    <i class="fa-regular fa-envelope"></i>
+                    support@yourdomain.com
+                </p>
+
+                <p>
+                    <i class="fa-solid fa-phone"></i>
+                    +91 XXXXX XXXXX
+                </p>
+
+                <p>
+                    <i class="fa-solid fa-location-dot"></i>
+                    Kerala, India
+                </p>
+
                 <div class="social-icons">
-                    <i class="fab fa-facebook"></i>
-                    <i class="fab fa-instagram"></i>
-                    <i class="fab fa-whatsapp"></i>
-                    <i class="fab fa-linkedin"></i>
+                    <a href="#" aria-label="Facebook">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </a>
+                    <a href="#" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="#" aria-label="WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
                 </div>
             </div>
+
         </div>
-        <div class="container bottom-bar">
-            <p>Copyright Tanah Air Studio</p>
-            <div class="contact-info">
-                <span><i class="fas fa-map-marker-alt"></i> 8819 Ohio St, South Gate, CA 90280</span>
-                <span><i class="fas fa-envelope"></i> CrossLine@hello.com</span>
-                <span><i class="fas fa-phone"></i> +91 386-688-3295</span>
+
+        <div class="footer-bottom">
+            <p>© 2026 CARRY NEST. All Rights Reserved.</p>
+
+            <div class="footer-bottom-info">
+                <a href="/user/privacy-policy">Privacy Policy</a>
+                <a href="/user/terms">Terms & Conditions</a>
+                <a href="/user/return-policy">Return Policy</a>
             </div>
         </div>
     </footer>
+
  
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
 
-        // Display server-side error messages safely
+        document.addEventListener("DOMContentLoaded", () => {
+
+        // Display server-side messages safely
         const message = <%- JSON.stringify(
-            typeof message !== "undefined" ? message : ""
+            typeof message !== "undefined" ? message : null
         ) %>;
 
         if (message) {
-            Swal.fire({
-                icon: "error",
-                title: "Login Failed",
-                text: message,
-                confirmButtonText: "OK"
-            });
-        }
 
-        const loginForm = document.getElementById("loginForm");
-
-        loginForm.addEventListener("submit", (e) => {
-            const emailOrPhone =
-                loginForm.querySelector('[name="email"]').value.trim();
-
-            const password =
-                loginForm.querySelector('[name="password"]').value;
-
-            let title = "";
-            let errorMessage = "";
-
-            if (!emailOrPhone && !password) {
-                title = "Missing Fields";
-                errorMessage = "Please enter your email/phone and password.";
-            } else if (!emailOrPhone) {
-                title = "Email / Phone Required";
-                errorMessage = "Please enter your email address or phone number.";
-            } else if (!password) {
-                title = "Password Required";
-                errorMessage = "Please enter your password.";
-            } else if (
-                emailOrPhone.includes("@") &&
-                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone)
-            ) {
-                title = "Invalid Email";
-                errorMessage = "Please enter a valid email address.";
-            } else if (
-                !emailOrPhone.includes("@") &&
-                !/^[6-9]\d{9}$/.test(emailOrPhone)
-            ) {
-                title = "Invalid Phone Number";
-                errorMessage = "Enter a valid 10-digit Indian mobile number.";
-            }
-
-            if (errorMessage) {
-                e.preventDefault();
+            // Signup success message (object)
+            if (typeof message === "object") {
 
                 Swal.fire({
-                    icon: "warning",
-                    title: title,
-                    text: errorMessage,
-                    confirmButtonText: "OK"
+                    icon: message.type || "success",
+                    title: message.title || "Success",
+                    text: message.text || "",
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#000",
+                    timer: 3000,
+                    timerProgressBar: true
                 });
+
             }
-        });
 
-        // Show/hide password
-        document.querySelectorAll(".password-wrapper .fa-eye").forEach(icon => {
-            icon.addEventListener("click", () => {
-                const input = icon.previousElementSibling;
+            // Login validation error (string)
+            else if (typeof message === "string") {
 
-                input.type = input.type === "password" ? "text" : "password";
+                Swal.fire({
+                    icon: "error",
+                    title: "Login Failed",
+                    text: message,
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#000"
+                });
 
-                icon.classList.toggle("fa-eye");
-                icon.classList.toggle("fa-eye-slash");
+            }
+        }
+
+            const loginForm = document.getElementById("loginForm");
+
+            loginForm.addEventListener("submit", (e) => {
+                const emailOrPhone =
+                    loginForm.querySelector('[name="email"]').value.trim();
+
+                const password =
+                    loginForm.querySelector('[name="password"]').value;
+
+                let title = "";
+                let errorMessage = "";
+
+                if (!emailOrPhone && !password) {
+                    title = "Missing Fields";
+                    errorMessage = "Please enter your email/phone and password.";
+                } else if (!emailOrPhone) {
+                    title = "Email / Phone Required";
+                    errorMessage = "Please enter your email address or phone number.";
+                } else if (!password) {
+                    title = "Password Required";
+                    errorMessage = "Please enter your password.";
+                } else if (
+                    emailOrPhone.includes("@") &&
+                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailOrPhone)
+                ) {
+                    title = "Invalid Email";
+                    errorMessage = "Please enter a valid email address.";
+                } else if (
+                    !emailOrPhone.includes("@") &&
+                    !/^[6-9]\d{9}$/.test(emailOrPhone)
+                ) {
+                    title = "Invalid Phone Number";
+                    errorMessage = "Enter a valid 10-digit Indian mobile number.";
+                }
+
+                if (errorMessage) {
+                    e.preventDefault();
+
+                    Swal.fire({
+                        icon: "warning",
+                        title: title,
+                        text: errorMessage,
+                        confirmButtonText: "OK"
+                    });
+                }
             });
+
+            // Show/hide password
+            document.querySelectorAll(".password-wrapper .fa-eye").forEach(icon => {
+                icon.addEventListener("click", () => {
+                    const input = icon.previousElementSibling;
+
+                    input.type = input.type === "password" ? "text" : "password";
+
+                    icon.classList.toggle("fa-eye");
+                    icon.classList.toggle("fa-eye-slash");
+                });
+            });
+
         });
 
-    });
     </script>
 
 </body>

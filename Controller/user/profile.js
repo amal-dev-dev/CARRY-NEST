@@ -19,6 +19,31 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// NAME VALIDATION
+const isValidName = (name) => {
+    return (
+        typeof name === "string" &&
+        name.trim().length >= 2 &&
+        name.trim().length <= 50 &&
+        /^[A-Za-z][A-Za-z\s.'-]*$/.test(name.trim())
+    );
+};
+
+// PHONE VALIDATION
+const isValidPhone = (phone) => {
+    return /^[6-9]\d{9}$/.test(phone);
+};
+
+// EMAIL VALIDATION
+const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+};
+
+// OTP VALIDATION
+const isValidOTP = (otp) => {
+    return /^\d{6}$/.test(String(otp || ""));
+};
+
 // LOAD PROFILE
 const loadProfile = async (req, res) => {
     try {
@@ -57,10 +82,19 @@ const loadProfile = async (req, res) => {
 const loadEditProfile = async (req, res) => {
     try {
         const user = await Users.findById(req.session.user);
-        res.render('user/edit-profile', { user });
+
+        if (!user) {
+            return res.redirect("/user/login");
+        }
+
+        return res.render("user/edit-profile", {
+            user,
+            message: req.query.message || null
+        });
+
     } catch (error) {
         console.log(error);
-        res.redirect('/user/profile');
+        return res.redirect('/user/profile');
     }
 };
 
@@ -73,86 +107,61 @@ const updateProfile = async (req, res) => {
             return res.redirect("/user/login");
         }
 
-        const {
-            name,
-            phone,
-            email
-        } = req.body;
-
-        const image = req.file
-            ? req.file.path
-            : undefined;
-
-        // Get current user
         const user = await Users.findById(userId);
 
         if (!user) {
             return res.redirect("/user/login");
         }
 
-        // -----------------------------
+        const { name, phone, email } = req.body;
+
         // NAME VALIDATION
-        // -----------------------------
-
-        if (!name || name.trim() === "") {
+        if (!isValidName(name)) {
             return res.render("user/edit-profile", {
                 user,
-                message: "Name is required"
+                message: "Name must be 2-50 characters and contain valid letters"
             });
         }
 
-        const nameRegex = /^[A-Za-z\s]+$/;
-
-        if (!nameRegex.test(name.trim())) {
-            return res.render("user/edit-profile", {
-                user,
-                message: "Name should contain only letters"
-            });
-        }
-
-        // -----------------------------
         // PHONE VALIDATION
-        // -----------------------------
+        const normalizedPhone = (phone || "").trim();
 
-        if (phone && phone.trim().length !== 10) {
+        if (
+            normalizedPhone !== "" &&
+            !isValidPhone(normalizedPhone)
+        ) {
             return res.render("user/edit-profile", {
                 user,
-                message: "Phone number must be 10 digits"
+                message: "Enter a valid 10-digit Indian mobile number"
             });
         }
 
-        // -----------------------------
-        // EMAIL UPDATE VALIDATION
-        // -----------------------------
+        // EMAIL VALIDATION
+        const newEmail = (email || "").trim().toLowerCase();
+        const currentEmail = (user.email || "").trim().toLowerCase();
+
+        if (!isValidEmail(newEmail)) {
+            return res.render("user/edit-profile", {
+                user,
+                message: "Enter a valid email address"
+            });
+        }
 
         let emailUpdate = {};
 
-        const newEmail = email
-            ? email.trim().toLowerCase()
-            : user.email.toLowerCase();
-
-        const currentEmail = user.email
-            .trim()
-            .toLowerCase();
-
-        // Check whether user is trying to change email
+        // CHECK IF EMAIL CHANGED
         if (newEmail !== currentEmail) {
 
-            // Check server-side verified email
-            const verifiedEmail =
-                req.session.verifiedNewEmail;
+            const verifiedEmail = req.session.verifiedNewEmail;
 
-            if (
-                !verifiedEmail ||
-                verifiedEmail !== newEmail
-            ) {
+            if (verifiedEmail !== newEmail) {
                 return res.render("user/edit-profile", {
                     user,
                     message: "Please verify your new email first"
                 });
             }
 
-            // Check duplicate email again
+            // CHECK DUPLICATE EMAIL
             const existingUser = await Users.findOne({
                 email: newEmail,
                 _id: { $ne: userId }
@@ -170,51 +179,73 @@ const updateProfile = async (req, res) => {
             emailUpdate.email = newEmail;
         }
 
-        // -----------------------------
-        // UPDATE USER
-        // -----------------------------
+        // PROFILE IMAGE VALIDATION (SECONDARY CHECK)
+        let imageUpdate = {};
 
+        if (req.file) {
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+            if (!allowedTypes.includes(req.file.mimetype)) {
+                return res.render("user/edit-profile", {
+                    user,
+                    message: "Only JPG, PNG and WEBP images are allowed"
+                });
+            }
+
+            if (req.file.size > 2 * 1024 * 1024) {
+                return res.render("user/edit-profile", {
+                    user,
+                    message: "Profile image must be less than 2 MB"
+                });
+            }
+
+            imageUpdate.profileImage = req.file.path;
+        }
+
+        // UPDATE PROFILE
         await Users.findByIdAndUpdate(
             userId,
             {
                 name: name.trim(),
-
-                phone: phone
-                    ? phone.trim()
-                    : "",
-
+                phone: normalizedPhone,
                 ...emailUpdate,
-
-                ...(image && {
-                    profileImage: image
-                })
+                ...imageUpdate
+            },
+            {
+                runValidators: true
             }
         );
 
-        // Email verification is now consumed
+        // CLEAR VERIFIED EMAIL AFTER SUCCESS
         delete req.session.verifiedNewEmail;
-
-        // -----------------------------
-        // SUCCESS
-        // -----------------------------
 
         return res.redirect("/user/profile");
 
     } catch (error) {
-
-        console.error(
-            "UPDATE PROFILE ERROR:",
-            error
-        );
+        console.error("UPDATE PROFILE ERROR:", error);
 
         return res.redirect("/user/profile");
     }
 };
 
-const loadEmailChangePage = (req, res) => {
-    res.render("user/change-email", {
-        user: req.user
-    });
+const loadEmailChangePage = async (req, res) => {
+    try {
+        const user = await Users.findById(req.session.user);
+
+        if (!user) {
+            return res.redirect("/user/login");
+        }
+
+        return res.render("user/change-email", { user });
+
+    } catch (error) {
+        console.error("LOAD EMAIL CHANGE PAGE ERROR:", error);
+        return res.redirect("/user/profile");
+    }
 };
 
 const sendEmailOTP = async (req, res) => {
@@ -239,7 +270,12 @@ const sendEmailOTP = async (req, res) => {
         // Validate input
         // -----------------------------------------
 
-        if (!newEmail || !currentPassword) {
+        if (
+            typeof newEmail !== "string" ||
+            typeof currentPassword !== "string" ||
+            !newEmail.trim() ||
+            !currentPassword
+        ) {
             return res.status(400).json({
                 success: false,
                 message: "Email and current password are required"
@@ -371,12 +407,20 @@ const verifyEmailOTP = async (req, res) => {
         }
 
 
-        const normalizedEmail =
-            newEmail.trim().toLowerCase();
+        const normalizedEmail =  newEmail.trim().toLowerCase();
 
+        if (
+            typeof newEmail !== "string" ||
+            !isValidEmail(newEmail.trim()) ||
+            !isValidOTP(otp)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter a valid email and 6-digit OTP"
+            });
+        }
 
-        const storedData =
-            otpStore[normalizedEmail];
+        const storedData = otpStore[normalizedEmail];
 
 
         // -----------------------------------------

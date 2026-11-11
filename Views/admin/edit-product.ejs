@@ -472,126 +472,44 @@
 
                                 </thead>
 
+
                                 <tbody>
+                                    <% product.variants.forEach((variant) => { %>
+                                        <tr>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    name="size[]"
+                                                    value="<%= variant.size %>"
+                                                >
+                                            </td>
 
-                                    <%
-                                    const standard = product.variants.find(v => v.size === "Standard");
-                                    const professional = product.variants.find(v => v.size === "Professional");
-                                    const travel = product.variants.find(v => v.size === "Travel");
-                                    %>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    name="stock[]"
+                                                    value="<%= variant.stock ?? '' %>"
+                                                >
+                                            </td>
 
-                                    <tr>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    name="regularPrice[]"
+                                                    value="<%= variant.regularPrice ?? '' %>"
+                                                >
+                                            </td>
 
-                                        <td>
-
-                                            <input type="text"
-                                            name="size[]"
-                                            value="Standard">
-
-                                        </td>
-
-                                        <td>
-
-                                            <input
-                                                type="number"
-                                                name="stock[]"
-                                                value="<%= standard?.stock || '' %>">
-
-                                        </td>
-
-                                        <td>
-
-                                            <input
-                                            type="number"
-                                            name="regularPrice[]"
-                                            value="<%= standard?.regularPrice || '' %>">
-
-
-                                        </td>
-
-                                        <td>
-
-                                            <input
-                                                type="number"
-                                                name="salePrice[]"
-                                                value="<%= standard?.salePrice || '' %>">
-
-                                        </td>
-
-                                    </tr>
-
-                                    <tr>
-
-                                        <td>
-
-                                            <input type="text"
-                                            name="size[]"
-                                            value="Professional">
-
-                                        </td>
-
-                                        <td>
-
-                                            <input type="number"
-                                            name="stock[]"
-                                            value="<%= professional?.stock || '' %>">
-
-                                        </td>
-
-                                        <td>
-
-                                            <input type="number"
-                                            name="regularPrice[]"
-                                            value="<%= professional?.regularPrice || '' %>">
-
-                                        </td>
-
-                                        <td>
-
-                                            <input type="number"
-                                            name="salePrice[]"
-                                            value="<%= professional?.salePrice || '' %>">
-
-                                        </td>
-
-                                    </tr>
-
-                                    <tr>
-
-                                        <td>
-
-                                            <input type="text"
-                                            name="size[]"
-                                            value="Travel">
-
-                                        </td>
-
-                                        <td>
-
-                                            <input type="number"
-                                            name="stock[]"
-                                            value="<%= travel?.stock || '' %>">
-
-                                        </td>
-
-                                        <td>
-
-                                            <input type="number"
-                                            name="regularPrice[]"
-                                            value="<%= travel?.regularPrice || '' %>">
-
-                                        </td>
-
-                                        <td>
-
-                                            <input type="number"
-                                            name="salePrice[]"
-                                            value="<%= travel?.salePrice || '' %>">
-
-                                        </td>
-
-                                    </tr>
-
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    name="salePrice[]"
+                                                    value="<%= variant.salePrice ?? '' %>"
+                                                >
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                    
                                 </tbody>
 
                             </table>

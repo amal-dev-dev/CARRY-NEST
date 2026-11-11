@@ -2,6 +2,32 @@ import Product from "../../Model/productModel.js";
 import Category from "../../Model/categoryModel.js";
 import Brand from "../../Model/brandModel.js";
 
+
+
+const validateProductName = (name) => {
+
+    if (typeof name !== "string" || !name.trim()) {
+        return "Product name is required.";
+    }
+
+    const trimmedName = name.trim();
+
+    if (trimmedName.length < 3 || trimmedName.length > 50) {
+        return "Product name must be between 3 and 50 characters.";
+    }
+
+    if (!/[A-Za-z]/.test(trimmedName)) {
+        return "Product name must contain at least one letter.";
+    }
+
+    if (!/^[A-Za-z0-9\s&'()-]+$/.test(trimmedName)) {
+        return "Product name contains invalid characters.";
+    }
+
+    return null;
+};
+
+
 const loadProducts = async (req, res) => {
 
     try {
@@ -165,8 +191,10 @@ const addProduct = async (req, res) => {
         }
 
         // Validate product name
-        if (!req.body.productName?.trim()) {
-            return renderAddProduct("Product name is required");
+        const nameError = validateProductName(req.body.productName);
+
+        if (nameError) {
+            return renderAddProduct(nameError);
         }
 
         // Validate description
@@ -372,6 +400,17 @@ const editProduct = async (req, res) => {
             removedImages
         } = req.body;
 
+        const nameError = validateProductName(productName);
+
+        if (nameError) {
+            return res.status(400).render("admin/edit-product", {
+                product,
+                categories,
+                brands,
+                message: nameError
+            });
+        }
+
         // Validate the selected brand
         const selectedBrand = await Brand.findOne({
             name: brand,
@@ -421,52 +460,64 @@ const editProduct = async (req, res) => {
             }))
             .filter(variant => variant.size !== "");
 
-        // Validate variants
-        if (variants.length === 0) {
-            return res.status(400).render("admin/edit-product", {
-                product,
-                categories,
-                brands,
-                message: "Please add at least one product variant."
-            });
+        // Validate variants only when variant fields are submitted
+        const variantFieldsSubmitted =
+            req.body.size !== undefined ||
+            req.body.stock !== undefined ||
+            req.body.regularPrice !== undefined ||
+            req.body.salePrice !== undefined;
+
+        if (variantFieldsSubmitted) {
+
+            if (variants.length === 0) {
+                return res.status(400).render("admin/edit-product", {
+                    product,
+                    categories,
+                    brands,
+                    message: "Please add at least one product variant."
+                });
+            }
+
+            for (const variant of variants) {
+
+                if (
+                    !Number.isFinite(variant.stock) ||
+                    !Number.isFinite(variant.regularPrice) ||
+                    !Number.isFinite(variant.salePrice)
+                ) {
+                    return res.status(400).render("admin/edit-product", {
+                        product,
+                        categories,
+                        brands,
+                        message: "Please enter valid variant values."
+                    });
+                }
+
+                if (variant.stock < 0) {
+                    return res.status(400).render("admin/edit-product", {
+                        product,
+                        categories,
+                        brands,
+                        message: "Stock cannot be less than 0."
+                    });
+                }
+
+                if (
+                    variant.regularPrice <= 0 ||
+                    variant.salePrice < 0 ||
+                    variant.regularPrice <= variant.salePrice
+                ) {
+                    return res.status(400).render("admin/edit-product", {
+                        product,
+                        categories,
+                        brands,
+                        message: "Regular price must be greater than sale price."
+                    });
+                }
+            }
+
         }
 
-        for (const variant of variants) {
-            if (
-                !Number.isFinite(variant.stock) ||
-                !Number.isFinite(variant.regularPrice) ||
-                !Number.isFinite(variant.salePrice)
-            ) {
-                return res.status(400).render("admin/edit-product", {
-                    product,
-                    categories,
-                    brands,
-                    message: "Please enter valid variant values."
-                });
-            }
-
-            if (variant.stock < 0) {
-                return res.status(400).render("admin/edit-product", {
-                    product,
-                    categories,
-                    brands,
-                    message: "Stock cannot be less than 0."
-                });
-            }
-
-            if (
-                variant.regularPrice <= 0 ||
-                variant.salePrice < 0 ||
-                variant.regularPrice <= variant.salePrice
-            ) {
-                return res.status(400).render("admin/edit-product", {
-                    product,
-                    categories,
-                    brands,
-                    message: "Regular price must be greater than sale price."
-                });
-            }
-        }
 
         // Existing images
         let updatedImages = [...product.productImage];
@@ -489,12 +540,14 @@ const editProduct = async (req, res) => {
         }
 
         // Update product
-        product.productName = productName;
+        product.productName = productName.trim();
         product.offer = offer;
         product.description = description;
         product.category = category;
         product.brand = selectedBrand.name;
-        product.variants = variants;
+        if (variantFieldsSubmitted) {
+            product.variants = variants;
+        }
         product.colors = Array.isArray(colors)
             ? colors
             : colors
@@ -508,7 +561,10 @@ const editProduct = async (req, res) => {
 
     } catch (error) {
         console.log("EDIT PRODUCT ERROR:", error);
-        return res.redirect("/admin/pageerror");
+
+        req.session.message = "Unable to update product. Please try again.";
+
+        return res.redirect("/admin/products");
     }
 };
 

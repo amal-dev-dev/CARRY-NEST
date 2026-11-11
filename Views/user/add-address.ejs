@@ -7,6 +7,9 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/Styles/user/add-address.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
 
@@ -166,6 +169,25 @@
                 </div>
 
                 <div class="form-group full-width">
+                    <label>House / Building Name or Number
+                        <span class="optional">(Optional)</span>
+                    </label>
+
+                    <input
+                        type="text"
+                        name="houseName"
+                        value="<%= formData?.houseName || '' %>"
+                        placeholder="Enter house name or building number"
+                    >
+
+                    <% if (errors?.houseName) { %>
+                        <small class="input-error">
+                            <%= errors.houseName %>
+                        </small>
+                    <% } %>
+                </div>
+
+                <div class="form-group full-width">
                     <label>Landmark <span class="optional">(Optional)</span></label>
 
                     <input type="text" name="landmark" 
@@ -239,6 +261,29 @@
     } 
 
     </style>
+
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const message = <%- JSON.stringify(
+                typeof message !== "undefined" ? message : null
+            ) %>;
+
+            if (message) {
+                Swal.fire({
+                    icon: message.type || "success",
+                    title: message.title || "Success",
+                    text: message.text || "",
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#000"
+                });
+            }
+
+        });
+
+    </script>
 
 </body>
 </html>

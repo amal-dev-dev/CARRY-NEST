@@ -90,63 +90,73 @@ const loadAddCategory = async (req, res) => {
 
 };
 
+
 const addCategory = async (req, res) => {
-
     try {
-
         const { name, description } = req.body;
 
-        if (!name || name.trim() === "") {
-            return res.render("admin/add-category", { message: "Category name required" });
-        }
+        const categoryName = typeof name === "string"
+            ? name.trim()
+            : "";
 
-
-        if (name.length < 2 || name.length > 30) {
-            return res.status(400).render("admin/category", {
-                error: "Category name must be between 2 and 30 characters."
-            });
-        }
-
-        if (!/[a-zA-Z0-9]/.test(name)) {
+        if (!categoryName) {
             return res.status(400).render("admin/add-category", {
-                message: "Category name must contain at least one letter or number."
+                message: "Category name is required."
             });
         }
 
-        if (!/^[a-zA-Z0-9 -]+$/.test(name)) {
+        if (categoryName.length < 2 || categoryName.length > 30) {
+            return res.status(400).render("admin/add-category", {
+                message: "Category name must be between 2 and 30 characters."
+            });
+        }
+
+        // Reject names containing only numbers
+        if (!/[a-zA-Z]/.test(categoryName)) {
+            return res.status(400).render("admin/add-category", {
+                message: "Category name must contain at least one letter."
+            });
+        }
+
+        if (!/^[a-zA-Z0-9 -]+$/.test(categoryName)) {
             return res.status(400).render("admin/add-category", {
                 message: "Only letters, numbers, spaces, and hyphens are allowed."
             });
         }
 
-        // CHECK DUPLICATE
         const existingCategory = await Category.findOne({
             name: {
-                $regex: new RegExp("^" + name + "$", "i")
+                $regex: new RegExp(
+                    "^" + categoryName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$",
+                    "i"
+                )
             }
         });
 
         if (existingCategory) {
-            return res.render("admin/add-category", { message: "Category already exists"});
+            return res.status(400).render("admin/add-category", {
+                message: "Category already exists."
+            });
         }
 
-
-        // CREATE CATEGORY
         const newCategory = new Category({
-            name,
-            description
+            name: categoryName,
+            description: description?.trim() || ""
         });
 
-
         await newCategory.save();
-        res.redirect("/admin/category");
+
+        return res.redirect("/admin/category");
 
     } catch (error) {
-        console.log(error);
-        res.redirect("/admin/pageerror");
+        console.log("ADD CATEGORY ERROR:", error);
 
+        return res.status(500).render("admin/add-category", {
+            message: "Unable to add category. Please try again."
+        });
     }
 };
+
 
 const loadEditCategory = async (req, res) => {
 
@@ -170,45 +180,80 @@ const loadEditCategory = async (req, res) => {
     }
 };
 
+
 const editCategory = async (req, res) => {
-
     try {
-
         const id = req.params.id;
         const { name, description } = req.body;
+
+        const category = await Category.findById(id);
+
+        if (!category) {
+            return res.redirect("/admin/category");
+        }
+
+        const categoryName = typeof name === "string"
+            ? name.trim()
+            : "";
+
+        if (!categoryName) {
+            return res.status(400).render("admin/edit-category", {
+                category,
+                message: "Category name is required."
+            });
+        }
+
+        if (categoryName.length < 2 || categoryName.length > 30) {
+            return res.status(400).render("admin/edit-category", {
+                category,
+                message: "Category name must be between 2 and 30 characters."
+            });
+        }
+
+        if (!/[a-zA-Z]/.test(categoryName)) {
+            return res.status(400).render("admin/edit-category", {
+                category,
+                message: "Category name must contain at least one letter."
+            });
+        }
+
+        if (!/^[a-zA-Z0-9 -]+$/.test(categoryName)) {
+            return res.status(400).render("admin/edit-category", {
+                category,
+                message: "Only letters, numbers, spaces, and hyphens are allowed."
+            });
+        }
 
         const existingCategory = await Category.findOne({
             _id: { $ne: id },
             name: {
-                $regex: new RegExp("^" + name + "$", "i")
+                $regex: new RegExp(
+                    "^" + categoryName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$",
+                    "i"
+                )
             }
         });
 
-
         if (existingCategory) {
-
-            return res.render("admin/edit-category", {
-                category: await Category.findById(id),
-                message: "Category already exists"
-
+            return res.status(400).render("admin/edit-category", {
+                category,
+                message: "Category already exists."
             });
-
         }
 
+        category.name = categoryName;
+        category.description = description?.trim() || "";
 
-        await Category.findByIdAndUpdate(id, {
-            name,
-            description
+        await category.save();
 
-        });
-
-
-        res.redirect("/admin/category");
+        return res.redirect("/admin/category");
 
     } catch (error) {
-        console.log(error);
+        console.log("EDIT CATEGORY ERROR:", error);
+        return res.redirect("/admin/category");
     }
 };
+
 
 const unlistCategory = async (req, res) => {
 

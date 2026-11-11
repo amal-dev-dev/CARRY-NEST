@@ -118,7 +118,7 @@ const loadLogin = (req, res) => {
     res.set('Expires', '0');
 
     return res.render('user/login', {
-        message: message || ''
+        message: message || null
     });
 };
 
@@ -581,7 +581,22 @@ const verifyOTP = async (req, res) => {
             }
         }
 
-        res.redirect('/user/login');
+        req.session.message = {
+            type: "success",
+            title: "Signup Successful!",
+            text: "Your account has been created successfully. Please login to continue."
+        };
+
+        delete req.session.tempUser;
+
+        req.session.save((err) => {
+            if (err) {
+                console.log("Session save error:", err);
+                return res.redirect("/user/login");
+            }
+
+            return res.redirect("/user/login");
+        });
 
     } catch (error) {
         console.log(error);

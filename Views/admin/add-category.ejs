@@ -11,6 +11,8 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <body>
 
@@ -209,7 +211,7 @@
 
                 <!-- REPORTS -->
 
-                <a href="#"
+                <a href="/admin/sales-report"
                 class="menu-item">
 
                     <span class="menu-left">
@@ -265,10 +267,6 @@
                 <!-- CATEGORY NAME -->
 
                   <div class="form-group">
-
-                    <% if(typeof message !== 'undefined' && message){ %>
-                        <p class="text-danger" style="color: red;text-align: center;"><%= message %></p>
-                    <% } %>
 
                     <label>Category Name *</label>
 
@@ -352,25 +350,48 @@
 
 </div>
 
+
+
+<div
+    id="category-message"
+    data-message="<%= typeof message !== 'undefined' && message ? message : '' %>"
+></div>
+
 <script>
 
-const dropdowns = document.querySelectorAll(".dropdown-btn");
+    const dropdowns = document.querySelectorAll(".dropdown-btn");
 
-dropdowns.forEach((dropdown)=>{
+    dropdowns.forEach((dropdown)=>{
 
-    dropdown.addEventListener("click",()=>{
+        dropdown.addEventListener("click",()=>{
 
-        const menu = dropdown.nextElementSibling;
+            const menu = dropdown.nextElementSibling;
 
-        if(menu){
-            menu.classList.toggle("show");
-        }
+            if(menu){
+                menu.classList.toggle("show");
+            }
+
+        });
 
     });
 
-});
+    //ALERT MESSAGE
+    const messageElement = document.getElementById("category-message");
+
+    const message = messageElement.dataset.message;
+
+    if (message) {
+        Swal.fire({
+            icon: "error",
+            title: "Validation Error",
+            text: message,
+            confirmButtonText: "OK",
+            confirmButtonColor: "#dc2626"
+        });
+    }
 
 </script>
+
 
 </body>
 </html>

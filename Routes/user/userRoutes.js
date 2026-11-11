@@ -16,6 +16,7 @@ import paymentController from "../../Controller/user/payment.js";
 import walletController from "../../Controller/user/wallet.js";
 import referralController from "../../Controller/user/referral.js";
 import reviewController from "../../Controller/user/review.js";
+import multer from 'multer';
 
 
 router.get('/login', isLoggedIn, userAuth.loadLogin);
@@ -44,7 +45,33 @@ router.get('/profile', requireAuth, profileController.loadProfile);
 
 //EDIT PROFILE
 router.get('/profile/edit', requireAuth, profileController.loadEditProfile);
-router.post('/profile/edit', requireAuth, upload.single('profileImage'), profileController.updateProfile);
+router.post('/profile/edit', requireAuth, (req, res, next) => {
+
+        upload.single('profileImage')(req, res, (err) => {
+
+            if (err) {
+                let message = "Unable to upload profile image";
+
+                if (err instanceof multer.MulterError) {
+
+                    if (err.code === "LIMIT_FILE_SIZE") {
+                        message = "Profile image must not exceed 2 MB";
+                    }
+
+                } else if (err.message?.includes("not allowed")) {
+                    message = "Only JPG, JPEG, PNG and WEBP images are allowed";
+                }
+
+                return res.redirect(
+                    `/user/profile/edit?message=${encodeURIComponent(message)}`
+                );
+            }
+
+            next();
+        });
+    },
+    profileController.updateProfile
+);
 
 // EMAIL UPDATE OTP
 router.get("/change-email", profileController.loadEmailChangePage);

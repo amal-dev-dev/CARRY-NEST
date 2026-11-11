@@ -640,44 +640,45 @@ const updateCoupon = async (req, res) => {
 
 const toggleCouponStatus = async (req, res) => {
     try {
-
         const { id } = req.params;
 
         const coupon = await Coupon.findById(id);
 
         if (!coupon) {
-
-            req.session.message =
-                "Coupon not found";
-
+            req.session.message = "Coupon not found";
             return res.redirect("/admin/coupons");
         }
 
+        const newStatus = !coupon.isActive;
 
-        coupon.isActive =
-            !coupon.isActive;
+        const updatedCoupon = await Coupon.findByIdAndUpdate(
+            id,
+            {
+                $set: {
+                    isActive: newStatus
+                }
+            },
+            {
+                returnDocument: "after",
+                runValidators: true
+            }
+        );
 
-        await coupon.save();
+        if (!updatedCoupon) {
+            req.session.message = "Unable to update coupon status";
+            return res.redirect("/admin/coupons");
+        }
 
-
-        req.session.message =
-            coupon.isActive
-                ? "Coupon activated successfully"
-                : "Coupon deactivated successfully";
-
+        req.session.message = newStatus
+            ? "Coupon activated successfully"
+            : "Coupon deactivated successfully";
 
         return res.redirect("/admin/coupons");
 
-
     } catch (error) {
+        console.error("TOGGLE COUPON STATUS ERROR:", error);
 
-        console.log(
-            "TOGGLE COUPON STATUS ERROR:",
-            error
-        );
-
-        req.session.message =
-            "Unable to update coupon status";
+        req.session.message = "Unable to update coupon status";
 
         return res.redirect("/admin/coupons");
     }

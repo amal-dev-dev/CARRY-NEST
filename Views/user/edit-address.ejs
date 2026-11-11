@@ -16,7 +16,11 @@
             <p>Please provide accurate delivery details for your order.</p>
         </header>
 
-        <form class="main-form" action="/user/address/edit/<%= address._id %>?_method=PATCH" method="POST">
+        <form class="main-form"
+            action="/user/address/edit/<%= address._id %>?_method=PATCH"
+            method="POST">
+            <input type="hidden" name="from" value="address">
+
             <div class="section-title">
                 Contact Details
             </div>
@@ -28,7 +32,7 @@
                 </div>
                 <div class="input-group">
                     <label>Phone Number <span class="required">*</span></label>
-                    <input type="text" name="phone" value="<%= address.mobile %>" placeholder="+91 90673 82638" >
+                    <input type="text" name="mobile" value="<%= address.mobile %>" placeholder="+91 90673 82638" >
                 </div>
                 
                 <div class="input-group full-width">
@@ -50,8 +54,8 @@
                 </div>
 
                 <div class="input-group full-width">
-                    <label>Detailed Address <span class="required">*</span></label>
-                    <textarea name="detailedAddress" placeholder="House No., Building Name, Street, Area"><%= address.detailAddress %></textarea>
+                    <label>House / Building Name or Number<span class="optional">(Optional)</span></label>
+                    <input type="text" name="houseName" value="<%= address.houseName || '' %>" placeholder="Enter house name or building number">
                 </div>
 
                 <div class="input-group full-width">
