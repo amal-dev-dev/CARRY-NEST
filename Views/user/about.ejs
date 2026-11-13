@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carry Nest - Contact page</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="/Styles/user/about.css">
+
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <a href="/" class="logo">
+        CARRY NEST
+    </a>
+
+    <div class="nav-icons">
+
+        <% if (user) { %>
+
+            <!-- Cart Icon -->
+            <a href="/user/cart" class="cart-link">
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span
+                    id="cartCountBadge"
+                    class="cart-badge"
+                    style="<%= Number(cartCount || 0) > 0 ? '' : 'display: none;' %>"
+                ><%= Number(cartCount || 0) %></span>
+            </a>
+
+            <!-- Wishlist Icon -->
+            <a href="/user/wishlist" class="wishlist-link">
+                <i class="fa-regular fa-heart"></i>
+
+                <span
+                    id="wishlistCountBadge"
+                    class="wishlist-badge"
+                    style="<%= (wishlistCount || 0) > 0 ? '' : 'display: none;' %>"
+                ><%= wishlistCount || 0 %></span>
+            </a>
+
+            <!-- Profile Icon -->
+            <a href="/user/profile" style="color: black;">
+                <i class="fa-regular fa-user"></i>
+            </a>
+
+        <% } else { %>
+
+            <a href="/user/login" class="login-btn">
+                Login
+            </a>
+
+            <a href="/user/signup" class="signup-btn">
+                Sign Up
+            </a>
+
+        <% } %>
+
+    </div>
+
+</nav>
+
+<main class="about-page">
+
+    <!-- HERO SECTION -->
+    <section class="about-hero">
+
+        <div class="about-hero-content">
+            <span class="about-label">ABOUT CARRY NEST</span>
+
+            <h1>Carry Your World.<br>Define Your Style.</h1>
+
+            <p>
+                We believe a bag is more than just an accessory.
+                It's a companion for every journey, every ambition
+                and every adventure.
+            </p>
+
+            <a href="/user/products" class="about-btn">
+                Explore Collection <span>→</span>
+            </a>
+        </div>
+
+        <div class="about-hero-image">
+            <img
+                src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1000"
+                alt="Premium backpack collection"
+            >
+        </div>
+
+    </section>
+
+
+    <!-- OUR STORY -->
+    <section class="about-story">
+
+        <div class="story-image">
+            <img
+                src="https://images.unsplash.com/photo-1622560480654-d96214fdc887?w=900"
+                alt="Modern backpack"
+            >
+        </div>
+
+        <div class="story-content">
+
+            <span class="about-label">OUR STORY</span>
+
+            <h2>Designed for Every Journey</h2>
+
+            <p>
+                CARRY NEST was created with a simple idea:
+                everyone deserves a bag that combines style,
+                comfort and functionality.
+            </p>
+
+            <p>
+                From everyday essentials to weekend adventures,
+                we bring together thoughtfully selected bags
+                designed to fit your lifestyle.
+            </p>
+
+            <p>
+                Our goal is to make every journey more comfortable
+                and every experience more meaningful.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- MISSION AND VISION -->
+    <section class="about-purpose">
+
+        <div class="purpose-heading">
+            <span class="about-label">WHAT DRIVES US</span>
+            <h2>Our Mission & Vision</h2>
+        </div>
+
+        <div class="purpose-cards">
+
+            <div class="purpose-card">
+                <span class="purpose-number">01</span>
+
+                <h3>Our Mission</h3>
+
+                <p>
+                    To provide stylish, reliable and functional bags
+                    that make everyday life easier while offering
+                    a comfortable shopping experience.
+                </p>
+            </div>
+
+
+            <div class="purpose-card">
+                <span class="purpose-number">02</span>
+
+                <h3>Our Vision</h3>
+
+                <p>
+                    To become a trusted destination for bags,
+                    bringing together quality, convenience
+                    and timeless style for every journey.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- WHY CHOOSE US -->
+    <section class="about-benefits">
+
+        <div class="benefits-heading">
+            <span class="about-label">THE CARRY NEST DIFFERENCE</span>
+
+            <h2>Why Choose Us?</h2>
+
+            <p>
+                Everything we do is focused on making your
+                shopping experience better.
+            </p>
+        </div>
+
+
+        <div class="benefits-grid">
+
+            <div class="benefit-card">
+                <div class="benefit-icon">✦</div>
+
+                <h3>Quality Products</h3>
+
+                <p>
+                    Carefully selected bags designed for
+                    everyday use and convenience.
+                </p>
+            </div>
+
+
+            <div class="benefit-card">
+                <div class="benefit-icon">◇</div>
+
+                <h3>Modern Style</h3>
+
+                <p>
+                    Discover bags that combine modern design
+                    with practical functionality.
+                </p>
+            </div>
+
+
+            <div class="benefit-card">
+                <div class="benefit-icon">♡</div>
+
+                <h3>Customer First</h3>
+
+                <p>
+                    Your satisfaction matters to us.
+                    We aim to make shopping simple and enjoyable.
+                </p>
+            </div>
+
+
+            <div class="benefit-card">
+                <div class="benefit-icon">✓</div>
+
+                <h3>Secure Shopping</h3>
+
+                <p>
+                    Enjoy a convenient shopping experience
+                    with secure payment options.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CLOSING SECTION -->
+    <section class="about-closing">
+
+        <span class="about-label">YOUR JOURNEY STARTS HERE</span>
+
+        <h2>Find Your Perfect Companion.</h2>
+
+        <p>
+            Wherever life takes you, CARRY NEST is ready
+            to go along for the journey.
+        </p>
+
+        <a href="/user/products" class="about-btn">
+            Shop Now <span>→</span>
+        </a>
+
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-container">
+
+        <!-- Brand -->
+        <div class="footer-col">
+            <h3>CARRY NEST</h3>
+            <p class="footer-tagline">
+                Carry Your World. Your Style, Your Journey.
+            </p>
+            <p>
+                Discover stylish, durable and functional bags
+                designed for everyday life, work and travel.
+            </p>
+        </div>
+
+        <!-- Shop -->
+        <div class="footer-col">
+            <h4>Shop</h4>
+
+            <a href="/user/products">All Products</a>
+            <a href="/user/products?category=Laptop%20Bags">Laptop Bags</a>
+            <a href="/user/products?category=Office%20Bags">Office Bags</a>
+            <a href="/user/products?category=Travel%20Bags">Travel Bags</a>
+            <a href="/user/products?category=School%20Bags">School Bags</a>
+            <a href="/user/products?category=Trekking%20Bags">Trekking Bags</a>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <a href="/user/home">Home</a>
+            <a href="/user/about">About Us</a>
+            <a href="/user/profile">My Account</a>
+            <a href="/user/orders">My Orders</a>
+            <a href="/user/contact">Contact Us</a>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-col footer-contact">
+            <h4>Contact Us</h4>
+
+            <p>
+                <i class="fa-regular fa-envelope"></i>
+                support@yourdomain.com
+            </p>
+
+            <p>
+                <i class="fa-solid fa-phone"></i>
+                +91 XXXXX XXXXX
+            </p>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                Kerala, India
+            </p>
+
+            <div class="social-icons">
+                <a href="#" aria-label="Facebook">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="#" aria-label="WhatsApp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 CARRY NEST. All Rights Reserved.</p>
+
+        <div class="footer-bottom-info">
+            <a href="/user/privacy-policy">Privacy Policy</a>
+            <a href="/user/terms">Terms & Conditions</a>
+            <a href="/user/return-policy">Return Policy</a>
+        </div>
+    </div>
+</footer>
+
+
+</body>
+</html>

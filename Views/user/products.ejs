@@ -380,11 +380,12 @@
             <h4>Shop</h4>
 
             <a href="/user/products">All Products</a>
-            <a href="/user/products?category=Laptop%20Bags">Laptop Bags</a>
-            <a href="/user/products?category=Office%20Bags">Office Bags</a>
-            <a href="/user/products?category=Travel%20Bags">Travel Bags</a>
-            <a href="/user/products?category=School%20Bags">School Bags</a>
-            <a href="/user/products?category=Trekking%20Bags">Trekking Bags</a>
+
+            <% categories.forEach(cat => { %>
+                <a href="/user/products?category=<%= cat._id %>">
+                    <%= cat.name %>
+                </a>
+            <% }) %>
         </div>
 
         <!-- Quick Links -->
@@ -466,6 +467,7 @@
     const colorInput = document.getElementById("colorInput");
 
     const sidebar = document.getElementById("sidebar");
+    const filterBtn = document.getElementById("filterBtn");
 
     if (filterBtn && sidebar) {
         filterBtn.addEventListener("click", () => {

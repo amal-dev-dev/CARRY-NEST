@@ -581,6 +581,19 @@ body{
     background:#000;
 }
 
+.refund-btn {
+    height:28px;
+    padding:0 10px;
+    border:none;
+    border-radius:12px;
+    background:#111827;
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.25s ease;
+}
+
 /* =========================
    SIDE INFO
 ========================= */

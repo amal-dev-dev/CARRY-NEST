@@ -16,6 +16,7 @@ import paymentController from "../../Controller/user/payment.js";
 import walletController from "../../Controller/user/wallet.js";
 import referralController from "../../Controller/user/referral.js";
 import reviewController from "../../Controller/user/review.js";
+import { loadContact, loadAbout } from "../../Controller/user/contact.js";
 import multer from 'multer';
 
 
@@ -163,6 +164,11 @@ router.post("/reviews/:reviewId/edit", requireAuth, reviewController.editReview)
 router.get("/write-review/:orderId/:productId", requireAuth, reviewController.loadReviewForm);
 router.get("/reviews/:reviewId/edit", requireAuth, reviewController.loadEditReview);
 router.delete("/reviews/:reviewId", requireAuth, reviewController.deleteReview);
+
+//CONTACT
+router.get("/contact", loadContact);
+//ABOUT
+router.get("/about", loadAbout);
 
 
 

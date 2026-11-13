@@ -1,0 +1,752 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f8f8f8;
+}
+
+/* NAVBAR */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 10px;
+    position: sticky;
+    top: 0px;
+    z-index: 100;
+    background: rgb(255, 255, 255);
+    padding: 15px 5%;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #000;
+    text-decoration: none;
+}
+
+.nav-icons{
+    display:flex;
+    gap:15px;
+}
+
+.cart-link {
+    position: relative;
+    display: inline-block;
+    color: #000;
+    text-decoration: none;
+}
+
+.cart-link i {
+    color: #000;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    padding: 2px;
+}
+
+.wishlist-link{
+    position: relative;
+    color: black;
+}
+
+.wishlist-badge{
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    min-width: 18px;
+    height: 18px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Guest Buttons */
+
+.guest-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.login-btn,
+.signup-btn{
+    text-decoration:none;
+    padding:10px 22px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:600;
+    transition:0.3s ease;
+}
+
+/* Login */
+
+.login-btn{
+    background:#fff;
+    color:#111827;
+    border:2px solid #111827;
+}
+
+.login-btn:hover{
+    background:#111827;
+    color:#fff;
+}
+
+/* Sign Up */
+
+.signup-btn{
+    background:#fff;
+    color:#111827;
+    border:2px solid #111827;
+}
+
+.signup-btn:hover{
+    background:#111827;
+    color:#fff;
+}
+
+
+/* ==============================
+   CONTACT PAGE
+============================== */
+
+.contact-page {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 45px 6% 65px;
+    color: #111;
+}
+
+
+/* ==============================
+   HERO SECTION
+============================== */
+
+.contact-hero {
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto 45px;
+}
+
+.contact-subtitle {
+    font-size: 9px;
+    color: #888;
+    letter-spacing: 0.5px;
+}
+
+.contact-hero h1 {
+    font-size: 38px;
+    font-weight: 500;
+    margin: 14px 0;
+}
+
+.contact-hero p {
+    font-size: 12px;
+    line-height: 1.8;
+    color: #777;
+}
+
+
+/* ==============================
+   CONTACT CARDS
+============================== */
+
+.contact-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 620px;
+    margin: 0 auto 70px;
+}
+
+.contact-card {
+    background: #fafafa;
+    border: 1px solid #eee;
+    padding: 25px 20px;
+    min-height: 150px;
+    transition: 0.3s ease;
+}
+
+.contact-card:hover {
+    border-color: #bbb;
+    transform: translateY(-3px);
+}
+
+.contact-icon {
+    font-size: 17px;
+    color: #888;
+    margin-bottom: 12px;
+}
+
+.contact-card h3 {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.contact-card p {
+    font-size: 10px;
+    color: #777;
+    line-height: 1.7;
+    margin-bottom: 12px;
+}
+
+.contact-card a {
+    display: inline-block;
+    font-size: 10px;
+    color: #111;
+    text-decoration: none;
+    border-bottom: 1px solid #111;
+    padding-bottom: 3px;
+}
+
+.contact-card a span {
+    margin-left: 5px;
+}
+
+
+/* ==============================
+   FAQ SECTION
+============================== */
+
+.contact-faq {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 55px;
+    padding: 0 0 65px;
+    border-bottom: 1px solid #eee;
+}
+
+.faq-intro h2 {
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+
+.faq-intro p {
+    max-width: 250px;
+    font-size: 11px;
+    color: #777;
+    line-height: 1.8;
+    margin-bottom: 15px;
+}
+
+.faq-intro a {
+    font-size: 10px;
+    color: #111;
+    text-decoration: none;
+    border-bottom: 1px solid #111;
+    padding-bottom: 4px;
+}
+
+.faq-intro a span {
+    margin-left: 10px;
+}
+
+
+/* FAQ ITEMS */
+
+.faq-list {
+    width: 100%;
+}
+
+.faq-item {
+    border-bottom: 1px solid #eee;
+    padding: 16px 0;
+}
+
+.faq-item:first-child {
+    padding-top: 0;
+}
+
+.faq-item summary {
+    position: relative;
+    list-style: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    padding-right: 25px;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item summary::after {
+    content: "+";
+    position: absolute;
+    right: 0;
+    top: -3px;
+    font-size: 18px;
+    font-weight: 300;
+    color: #888;
+}
+
+.faq-item[open] summary::after {
+    content: "−";
+}
+
+.faq-item p {
+    font-size: 11px;
+    color: #777;
+    line-height: 1.8;
+    margin-top: 12px;
+    max-width: 550px;
+}
+
+
+/* ==============================
+   LOCATION SECTION
+============================== */
+
+.contact-location {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 30px 0 5px;
+}
+
+.location-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.location-icon {
+    font-size: 14px;
+    color: #777;
+    padding-top: 2px;
+}
+
+.location-box h3 {
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.location-box p {
+    font-size: 10px;
+    line-height: 1.8;
+    color: #777;
+}
+
+
+/* ==============================
+   TABLET RESPONSIVE
+============================== */
+
+@media (max-width: 768px) {
+
+    .contact-page {
+        padding: 40px 5%;
+    }
+
+    .contact-hero h1 {
+        font-size: 32px;
+    }
+
+    .contact-cards {
+        max-width: 100%;
+        margin-bottom: 55px;
+    }
+
+    .contact-faq {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .faq-intro p {
+        max-width: 400px;
+    }
+
+}
+
+
+/* ==============================
+   MOBILE RESPONSIVE
+============================== */
+
+@media (max-width: 480px) {
+
+    .contact-page {
+        padding: 30px 5% 40px;
+    }
+
+    .contact-hero {
+        margin-bottom: 30px;
+    }
+
+    .contact-hero h1 {
+        font-size: 27px;
+    }
+
+    .contact-hero p {
+        font-size: 11px;
+    }
+
+    .contact-cards {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 45px;
+    }
+
+    .contact-card {
+        padding: 20px;
+        min-height: auto;
+    }
+
+    .contact-faq {
+        gap: 25px;
+        padding-bottom: 40px;
+    }
+
+    .faq-intro h2 {
+        font-size: 19px;
+    }
+
+    .faq-item {
+        padding: 15px 0;
+    }
+
+    .faq-item summary {
+        font-size: 11px;
+    }
+
+    .faq-item p {
+        font-size: 10px;
+    }
+
+    .contact-location {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        padding-top: 25px;
+    }
+
+}
+
+/* ===================================
+   FOOTER
+=================================== */
+
+footer {
+    background: #050505;
+    color: #fff;
+    padding: 60px 5% 25px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1.4fr;
+    gap: 40px;
+    padding-bottom: 35px;
+    border-bottom: 1px solid rgba(255, 255, 255, .12);
+}
+
+.footer-col {
+    min-width: 0;
+}
+
+.footer-col h3,
+.footer-col h4 {
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.footer-col h4 {
+    font-size: 20px;
+}
+
+.footer-col p {
+    color: #cfcfcf;
+    font-size: 14px;
+    line-height: 1.9;
+    margin-bottom: 8px;
+}
+
+/* Contact input */
+
+.footer-input-box {
+    display: flex;
+    gap: 10px;
+    margin: 18px 0 20px;
+    width: 100%;
+}
+
+.footer-input-box input {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    padding: 14px 16px;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    background: #162033;
+    color: #fff;
+    font-size: 14px;
+}
+
+.footer-input-box input::placeholder {
+    color: #9aa5b1;
+}
+
+.footer-input-box button {
+    padding: 0 24px;
+    border: none;
+    border-radius: 8px;
+    background: #22314a;
+    color: #fff;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* Social icons */
+
+.social-icons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.social-icons a {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    text-decoration: none;
+    transition: .3s;
+}
+
+.social-icons a:nth-child(1) {
+    background: #1877f2;
+}
+
+.social-icons a:nth-child(2) {
+    background: #e1306c;
+}
+
+.social-icons a:nth-child(3) {
+    background: #25d366;
+}
+
+.social-icons a:nth-child(4) {
+    background: #0a66c2;
+}
+
+.social-icons a:hover {
+    transform: translateY(-4px);
+}
+
+/* Footer bottom */
+
+.footer-bottom {
+    padding-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.footer-bottom p {
+    font-size: 13px;
+    color: #cfcfcf;
+}
+
+.footer-bottom-info {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.footer-bottom-info span {
+    font-size: 13px;
+    color: #cfcfcf;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* Footer links */
+
+.footer-col a {
+    display: block;
+    color: #cfcfcf;
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 12px;
+    transition: .3s;
+}
+
+.footer-col a:hover,
+.footer-bottom-info a:hover {
+    color: #fff;
+    padding-left: 5px;
+}
+
+.footer-tagline {
+    color: #fff !important;
+    font-weight: 600;
+}
+
+.footer-contact p {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-wrap: anywhere;
+}
+
+.footer-contact p i {
+    min-width: 16px;
+}
+
+.footer-bottom-info a {
+    color: #cfcfcf;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+
+/* ===================================
+   TABLET RESPONSIVE
+=================================== */
+
+@media (max-width: 992px) {
+
+    footer {
+        padding: 45px 4% 20px;
+    }
+
+    .footer-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 35px 30px;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .footer-bottom-info {
+        gap: 15px 25px;
+    }
+}
+
+/* ===================================
+   MOBILE RESPONSIVE
+=================================== */
+
+@media (max-width: 576px) {
+
+    footer {
+        padding: 35px 20px 20px;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding-bottom: 25px;
+    }
+
+    .footer-col h3,
+    .footer-col h4 {
+        font-size: 19px;
+        margin-bottom: 14px;
+    }
+
+    .footer-col p {
+        font-size: 13px;
+    }
+
+    .footer-input-box {
+        gap: 8px;
+    }
+
+    .footer-input-box input {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+
+    .footer-input-box button {
+        padding: 0 16px;
+        font-size: 13px;
+    }
+
+    .social-icons {
+        gap: 10px;
+    }
+
+    .social-icons a {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .footer-bottom {
+        padding-top: 20px;
+        gap: 15px;
+    }
+
+    .footer-bottom-info {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .footer-bottom-info span {
+        font-size: 12px;
+        align-items: flex-start;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    .footer-bottom p {
+        font-size: 12px;
+    }
+}
+
+/* ===================================
+   SMALL MOBILE
+=================================== */
+
+@media (max-width: 360px) {
+
+    footer {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .footer-input-box button {
+        padding: 0 12px;
+    }
+}

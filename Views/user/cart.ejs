@@ -155,7 +155,7 @@
                             <% } %>
 
                             <h4 id="itemTotal-<%= item.variantId %>">
-                                ₹<%= item.itemTotal ?? (item.variant.salePrice * item.quantity) %>
+                                ₹<%= Number(item.itemTotal ?? (item.variant.salePrice * item.quantity)).toFixed(2) %>
                             </h4>
 
                             <% if (item.offerDiscountPercentage > 0) { %>
@@ -241,13 +241,15 @@
 
         <div class="summary-row">
             <span>Subtotal</span>
-            <span id="subtotalValue">₹<%= subtotal %></span>
+            <span id="subtotalValue">
+                ₹<%= Number(subtotal || 0).toFixed(2) %>
+            </span>
         </div>
 
         <div class="summary-row">
             <span>Discount</span>
             <span class="discount" id="discountValue">
-                -₹<%= discount %>
+                -₹<%= Number(discount || 0).toFixed(2) %>
             </span>
         </div>
 
@@ -256,7 +258,7 @@
         <div class="summary-row total">
             <span>Total</span>
             <span id="grandTotalValue">
-                ₹<%= grandTotal %>
+                ₹<%= Number(grandTotal || 0).toFixed(2) %>
             </span>
         </div>
 
@@ -387,6 +389,7 @@ Swal.fire({
 <% } %>
 
 <script>
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const subtotalValue = document.getElementById("subtotalValue");
@@ -396,6 +399,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const emptyCartBox = document.getElementById("emptyCartBox");
     const checkoutBtn = document.getElementById("checkoutBtn");
     const cartCountBadge = document.getElementById("cartCountBadge");
+
+    // Format currency to 2 decimal places
+    function formatMoney(amount) {
+        return Number(amount || 0).toFixed(2);
+    }
 
     async function updateCart(url) {
 
@@ -486,12 +494,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
                 if (itemTotalEl) {
-                    itemTotalEl.textContent =
-                        `₹${data.itemTotal}`;
+                    itemTotalEl.textContent = `₹${formatMoney(data.itemTotal)}`;
                 }
 
             }
-
 
             /*
             =====================================
@@ -501,17 +507,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (subtotalValue) {
                 subtotalValue.textContent =
-                    `₹${data.subtotal}`;
+                    `₹${formatMoney(data.subtotal)}`;
             }
 
             if (discountValue) {
                 discountValue.textContent =
-                    `-₹${data.discount}`;
+                    `-₹${formatMoney(data.discount)}`;
             }
 
             if (grandTotalValue) {
                 grandTotalValue.textContent =
-                    `₹${data.grandTotal}`;
+                    `₹${formatMoney(data.grandTotal)}`;
             }
 
 

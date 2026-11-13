@@ -297,14 +297,34 @@
         </div>
     </section>
 
-
     <!-- Customer Reviews -->
     <section class="testimonial-section">
-        <h2>WHAT OUR CUSTOMERS SAY</h2>
+
+        <div class="testimonial-heading">
+            <div>
+                <span class="testimonial-label">CUSTOMER EXPERIENCES</span>
+                <h2>WHAT OUR CUSTOMERS SAY</h2>
+                <p>Real experiences from people who carry CARRY NEST.</p>
+            </div>
+
+            <% if (recentReviews && recentReviews.length > 1) { %>
+                <div class="testimonial-controls">
+                    <button type="button" class="testimonial-arrow"
+                        id="reviewPrev" aria-label="Previous reviews">
+                        &#10094;
+                    </button>
+
+                    <button type="button" class="testimonial-arrow"
+                        id="reviewNext" aria-label="Next reviews">
+                        &#10095;
+                    </button>
+                </div>
+            <% } %>
+        </div>
 
         <% if (recentReviews && recentReviews.length > 0) { %>
 
-            <div class="testimonial-grid">
+            <div class="testimonial-slider" id="testimonialSlider">
 
                 <% recentReviews.forEach(review => { %>
 
@@ -329,7 +349,7 @@
 
                         <% if (review.productId?.productName) { %>
                             <p class="review-product-name">
-                                <%= review.productId.productName %>
+                                Purchased: <%= review.productId.productName %>
                             </p>
                         <% } %>
 
@@ -365,7 +385,9 @@
             </p>
 
         <% } %>
+
     </section>
+
 
  <!-- FOOTER -->
 
@@ -527,6 +549,34 @@ document.addEventListener("DOMContentLoaded", () => {
     showSlide(0);
     restartTimer();
 });
+
+
+
+// Customer Reviews Slider
+document.addEventListener("DOMContentLoaded", () => {
+
+    const reviewSlider = document.getElementById("testimonialSlider");
+    const reviewPrev = document.getElementById("reviewPrev");
+    const reviewNext = document.getElementById("reviewNext");
+
+    if (!reviewSlider || !reviewPrev || !reviewNext) return;
+
+    reviewNext.addEventListener("click", () => {
+        reviewSlider.scrollBy({
+            left: reviewSlider.clientWidth,
+            behavior: "smooth"
+        });
+    });
+
+    reviewPrev.addEventListener("click", () => {
+        reviewSlider.scrollBy({
+            left: -reviewSlider.clientWidth,
+            behavior: "smooth"
+        });
+    });
+
+});
+
 
 </script>
 

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carry Nest - Contact page</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="/Styles/user/contact.css">
+
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <a href="/" class="logo">
+        CARRY NEST
+    </a>
+
+    <div class="nav-icons">
+
+        <% if (user) { %>
+
+            <!-- Cart Icon -->
+            <a href="/user/cart" class="cart-link">
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span
+                    id="cartCountBadge"
+                    class="cart-badge"
+                    style="<%= Number(cartCount || 0) > 0 ? '' : 'display: none;' %>"
+                ><%= Number(cartCount || 0) %></span>
+            </a>
+
+            <!-- Wishlist Icon -->
+            <a href="/user/wishlist" class="wishlist-link">
+                <i class="fa-regular fa-heart"></i>
+
+                <span
+                    id="wishlistCountBadge"
+                    class="wishlist-badge"
+                    style="<%= (wishlistCount || 0) > 0 ? '' : 'display: none;' %>"
+                ><%= wishlistCount || 0 %></span>
+            </a>
+
+            <!-- Profile Icon -->
+            <a href="/user/profile" style="color: black;">
+                <i class="fa-regular fa-user"></i>
+            </a>
+
+        <% } else { %>
+
+            <a href="/user/login" class="login-btn">
+                Login
+            </a>
+
+            <a href="/user/signup" class="signup-btn">
+                Sign Up
+            </a>
+
+        <% } %>
+
+    </div>
+
+</nav>
+
+<main class="contact-page">
+
+    <!-- HERO SECTION -->
+    <section class="contact-hero">
+        <span class="contact-subtitle">CUSTOMER SERVICE</span>
+
+        <h1>How can we help?</h1>
+
+        <p>
+            Our dedicated team is here to ensure your experience is
+            seamless. From fit advice to shipping inquiries,
+            we're at your service.
+        </p>
+    </section>
+
+
+    <!-- CONTACT CARDS -->
+    <section class="contact-cards">
+
+        <div class="contact-card">
+            <div class="contact-icon">
+                <i class="fa-regular fa-envelope"></i>
+            </div>
+
+            <h3>Email Support</h3>
+
+            <p>
+                For general inquiries, order status, and returns.
+                We aim to respond within 24 hours.
+            </p>
+
+            <a href="mailto:support@carryn​​est.com">
+                Send an Email <span>→</span>
+            </a>
+        </div>
+
+
+        <div class="contact-card">
+            <div class="contact-icon">
+                <i class="fa-solid fa-phone"></i>
+            </div>
+
+            <h3>Phone Concierge</h3>
+
+            <p>
+                Speak directly with a style advisor for
+                immediate assistance with sizing and styling.
+            </p>
+
+            <a href="tel:+919876543210">
+                Call Us
+            </a>
+        </div>
+
+    </section>
+
+
+    <!-- FAQ SECTION -->
+    <section class="contact-faq" id="faq">
+
+        <div class="faq-intro">
+            <h2>Frequently Asked</h2>
+
+            <p>
+                Find quick answers to common questions about
+                our products, shipping, and returns policy.
+            </p>
+
+            <a href="#faq">
+                View All FAQs <span>→</span>
+            </a>
+        </div>
+
+
+        <div class="faq-list">
+
+            <details class="faq-item" open>
+                <summary>
+                    How do I find my perfect fit?
+                </summary>
+
+                <p>
+                    Our sizing is tailored for a contemporary fit.
+                    We recommend consulting our detailed Size Guide
+                    located on every product page. If you fall
+                    between sizes, we suggest sizing up for a more
+                    relaxed fit or sizing down for a sharper silhouette.
+                </p>
+            </details>
+
+
+            <details class="faq-item">
+                <summary>
+                    What is your return policy?
+                </summary>
+
+                <p>
+                    You can request a return for eligible products
+                    within the return period mentioned in our
+                    return policy. Products must meet the return
+                    conditions.
+                </p>
+            </details>
+
+
+            <details class="faq-item">
+                <summary>
+                    Do you ship internationally?
+                </summary>
+
+                <p>
+                    We currently provide shipping according to
+                    the locations available during checkout.
+                    Please check your delivery location before ordering.
+                </p>
+            </details>
+
+
+            <details class="faq-item">
+                <summary>
+                    Can I modify my order after placing it?
+                </summary>
+
+                <p>
+                    Please contact our customer support team
+                    immediately. Changes may not be possible
+                    once the order has been processed.
+                </p>
+            </details>
+
+
+            <details class="faq-item">
+                <summary>
+                    How should I care for my garments?
+                </summary>
+
+                <p>
+                    Follow the care instructions provided with
+                    each product. Store your bags in a clean,
+                    dry place and avoid excessive moisture.
+                </p>
+            </details>
+
+
+            <details class="faq-item">
+                <summary>
+                    Where is my order?
+                </summary>
+
+                <p>
+                    You can check your order status from the
+                    My Orders section in your account.
+                </p>
+            </details>
+
+        </div>
+
+    </section>
+
+
+    <!-- LOCATION INFORMATION -->
+    <section class="contact-location">
+
+        <div class="location-box">
+
+            <div class="location-icon">
+                <i class="fa-regular fa-clock"></i>
+            </div>
+
+            <div>
+                <h3>Operating Hours</h3>
+
+                <p>
+                    Monday – Friday: 9am – 8pm EST<br>
+                    Saturday: 10am – 6pm EST<br>
+                    Sunday: Closed
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="location-box">
+
+            <div class="location-icon">
+                <i class="fa-solid fa-location-dot"></i>
+            </div>
+
+            <div>
+                <h3>Headquarters</h3>
+
+                <p>
+                    123 Fashion District<br>
+                    New York, NY 10012
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-container">
+
+        <!-- Brand -->
+        <div class="footer-col">
+            <h3>CARRY NEST</h3>
+            <p class="footer-tagline">
+                Carry Your World. Your Style, Your Journey.
+            </p>
+            <p>
+                Discover stylish, durable and functional bags
+                designed for everyday life, work and travel.
+            </p>
+        </div>
+
+        <!-- Shop -->
+        <div class="footer-col">
+            <h4>Shop</h4>
+
+            <a href="/user/products">All Products</a>
+            <a href="/user/products?category=Laptop%20Bags">Laptop Bags</a>
+            <a href="/user/products?category=Office%20Bags">Office Bags</a>
+            <a href="/user/products?category=Travel%20Bags">Travel Bags</a>
+            <a href="/user/products?category=School%20Bags">School Bags</a>
+            <a href="/user/products?category=Trekking%20Bags">Trekking Bags</a>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <a href="/user/home">Home</a>
+            <a href="/user/about">About Us</a>
+            <a href="/user/profile">My Account</a>
+            <a href="/user/orders">My Orders</a>
+            <a href="/user/contact">Contact Us</a>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-col footer-contact">
+            <h4>Contact Us</h4>
+
+            <p>
+                <i class="fa-regular fa-envelope"></i>
+                support@yourdomain.com
+            </p>
+
+            <p>
+                <i class="fa-solid fa-phone"></i>
+                +91 XXXXX XXXXX
+            </p>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                Kerala, India
+            </p>
+
+            <div class="social-icons">
+                <a href="#" aria-label="Facebook">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a href="#" aria-label="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="#" aria-label="WhatsApp">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 CARRY NEST. All Rights Reserved.</p>
+
+        <div class="footer-bottom-info">
+            <a href="/user/privacy-policy">Privacy Policy</a>
+            <a href="/user/terms">Terms & Conditions</a>
+            <a href="/user/return-policy">Return Policy</a>
+        </div>
+    </div>
+</footer>
+
+
+</body>
+</html>

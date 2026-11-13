@@ -1,7 +1,6 @@
 import Product from  "../../Model/productModel.js";
 import Category from "../../Model/categoryModel.js";
 import Review from "../../Model/reviewModel.js";
-import User from "../../Model/userModel.js";
 import Wishlist from "../../Model/wishlistModel.js";
 import Cart from "../../Model/cartModel.js";
 import Offer from "../../Model/offerModel.js";
@@ -44,18 +43,37 @@ const loadProducts = async (req, res) => {
 
         // Category filter
         if (category) {
-            const selectedCategory = await Category.findOne({
-                name: category,
-                isListed: true,
-                isBlocked: { $ne: true }
-            });
 
-            if (!selectedCategory) {
-                query.category = null;
+            let selectedCategory = null;
+
+            // Check whether category is a MongoDB ObjectId
+            if (/^[0-9a-fA-F]{24}$/.test(category)) {
+
+                selectedCategory = await Category.findOne({
+                    _id: category,
+                    isListed: true,
+                    isBlocked: { $ne: true }
+                });
+
             } else {
+
+                // Support category name URLs also
+                selectedCategory = await Category.findOne({
+                    name: category,
+                    isListed: true,
+                    isBlocked: { $ne: true }
+                });
+
+            }
+
+            if (selectedCategory) {
                 query.category = selectedCategory._id;
+            } else {
+                // No products for invalid or unavailable category
+                query.category = { $in: [] };
             }
         }
+
 
         // Brand filter
         if (brand) {

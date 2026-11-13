@@ -1,4 +1,3 @@
-
 import Brand from "../../Model/brandModel.js";
 import Product from "../../Model/productModel.js";
 

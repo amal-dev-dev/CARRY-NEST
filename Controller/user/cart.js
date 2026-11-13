@@ -298,14 +298,18 @@ const increaseQuantity = async (req, res) => {
 
     } catch (error) {
 
+        if (error.message === "Maximum 5 quantity allowed") {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
+
         console.error("Increase quantity error:", error);
 
-        return res.status(400).json({
-
+        return res.status(500).json({
             success: false,
-
-            message: error.message
-
+            message: "Something went wrong. Please try again."
         });
     }
 };
