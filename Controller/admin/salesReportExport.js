@@ -1,5 +1,5 @@
 import Order from "../../Model/orderModel.js";
-import XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import PDFDocument from "pdfkit";
 
 const getSalesData = async (req) => {
@@ -356,41 +356,40 @@ const exportExcel = async (req, res) => {
             ])
         ];
 
-        const worksheet = XLSX.utils.aoa_to_sheet(reportRows);
+        // Create Excel workbook
+        const workbook = new ExcelJS.Workbook();
 
-        // Format the report title
-        worksheet["A1"].s = {
-            font: { bold: true, sz: 16 }
+        // Create worksheet
+        const worksheet = workbook.addWorksheet("Sales Report");
+
+        // Add report data
+        worksheet.addRows(reportRows);
+
+        // Format report title
+        worksheet.getCell("A1").font = {
+            bold: true,
+            size: 16
         };
 
         // Set readable column widths
-        worksheet["!cols"] = [
-            { wch: 18 },
-            { wch: 14 },
-            { wch: 24 },
-            { wch: 25 },
-            { wch: 20 },
-            { wch: 12 },
-            { wch: 14 },
-            { wch: 14 },
-            { wch: 16 },
-            { wch: 18 },
-            { wch: 18 }
+        worksheet.columns = [
+            { width: 18 },
+            { width: 14 },
+            { width: 24 },
+            { width: 25 },
+            { width: 20 },
+            { width: 12 },
+            { width: 14 },
+            { width: 14 },
+            { width: 16 },
+            { width: 18 },
+            { width: 18 }
         ];
 
-        const workbook = XLSX.utils.book_new();
+        // Generate Excel buffer
+        const buffer = await workbook.xlsx.writeBuffer();
 
-        XLSX.utils.book_append_sheet(
-            workbook,
-            worksheet,
-            "Sales Report"
-        );
-
-        const buffer = XLSX.write(workbook, {
-            type: "buffer",
-            bookType: "xlsx"
-        });
-
+        // Set download headers
         res.setHeader(
             "Content-Type",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -401,7 +400,7 @@ const exportExcel = async (req, res) => {
             'attachment; filename="sales-report.xlsx"'
         );
 
-        res.send(buffer);
+        res.send(Buffer.from(buffer));
 
     } catch (error) {
         console.error("Excel export error:", error);
