@@ -137,21 +137,10 @@
 
                     <div class="dropdown-menu">
 
-                        <a href="/admin/orders">
-                            All Orders
-                        </a>
-
-                        <a href="#">
-                            Pending
-                        </a>
-
-                        <a href="#">
-                            Processing
-                        </a>
-
-                        <a href="#">
-                            Shipped
-                        </a>
+                        <a href="/admin/orders">All Orders</a>
+                        <a href="/admin/orders?status=pending">Pending</a>
+                        <a href="/admin/orders?status=shipped">Shipped</a>
+                        <a href="/admin/orders?status=delivered">Delivered</a>
 
                     </div>
 
@@ -416,7 +405,7 @@
                                     <!-- ID -->
 
                                     <td>
-                                        <%= index + 1 %>
+                                        <%= (couponPage - 1) * 5 + index + 1 %>
                                     </td>
 
 
@@ -604,6 +593,31 @@
 
         </section>
 
+        <div class="pagination">
+
+            <% if (couponPage > 1) { %>
+                <a href="?couponPage=<%= couponPage - 1 %>&offerPage=<%= offerPage %>"
+                class="page-btn">
+                    Previous
+                </a>
+            <% } %>
+
+            <% for (let i = 1; i <= couponTotalPages; i++) { %>
+                <a href="?couponPage=<%= i %>&offerPage=<%= offerPage %>"
+                class="page-btn <%= couponPage === i ? 'active' : '' %>">
+                    <%= i %>
+                </a>
+            <% } %>
+
+            <% if (couponPage < couponTotalPages) { %>
+                <a href="?couponPage=<%= couponPage + 1 %>&offerPage=<%= offerPage %>"
+                class="page-btn">
+                    Next
+                </a>
+            <% } %>
+
+        </div>
+
 
 
         <!-- ================= ACTIVE OFFERS ================= -->
@@ -738,6 +752,31 @@
             </div>
 
         </section>
+
+        <div class="pagination">
+
+            <% if (offerPage > 1) { %>
+                <a href="?couponPage=<%= couponPage %>&offerPage=<%= offerPage - 1 %>"
+                class="page-btn">
+                    Previous
+                </a>
+            <% } %>
+
+            <% for (let i = 1; i <= offerTotalPages; i++) { %>
+                <a href="?couponPage=<%= couponPage %>&offerPage=<%= i %>"
+                class="page-btn <%= offerPage === i ? 'active' : '' %>">
+                    <%= i %>
+                </a>
+            <% } %>
+
+            <% if (offerPage < offerTotalPages) { %>
+                <a href="?couponPage=<%= couponPage %>&offerPage=<%= offerPage + 1 %>"
+                class="page-btn">
+                    Next
+                </a>
+            <% } %>
+
+        </div>
 
 
     </main>

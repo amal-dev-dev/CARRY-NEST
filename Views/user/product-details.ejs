@@ -160,21 +160,26 @@
                     <%= discountPercentage %>% OFF
                 </span>
 
-                <span
-                    id="offerBadge"
-                    class="offer-badge"
+                <div
+                    class="offer-details"
                     style="<%= appliedOffer ? '' : 'display:none;' %>"
                 >
-                    <%= appliedOffer ? `${offerDiscountPercentage}% OFFER` : '' %>
-                </span>
+                    <span
+                        id="offerBadge"
+                        class="offer-badge"
+                    >
+                        <%= appliedOffer ? `${offerDiscountPercentage}% OFFER` : '' %>
+                    </span>
 
-                <p
-                    id="offerTitle"
-                    class="offer-title"
-                    style="<%= appliedOffer ? '' : 'display:none;' %>"
-                >
-                    <%= appliedOffer ? appliedOffer.title : '' %>
-                </p>
+                    <span class="offer-separator">—</span>
+
+                    <span
+                        id="offerTitle"
+                        class="offer-title"
+                    >
+                        <%= appliedOffer ? appliedOffer.title : '' %>
+                    </span>
+                </div>
 
             </div>  
 

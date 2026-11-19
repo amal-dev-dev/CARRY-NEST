@@ -9,18 +9,69 @@ import Offer from "../../Model/offerModel.js";
 const loadCoupons = async (req, res) => {
     try {
 
-        const coupons = await Coupon.find()
-            .sort({ createdAt: -1 });
+        const ITEMS_PER_PAGE = 5;
 
+        // Get page numbers
+        let couponPage = Math.max(
+            1,
+            parseInt(req.query.couponPage) || 1
+        );
+
+        let offerPage = Math.max(
+            1,
+            parseInt(req.query.offerPage) || 1
+        );
+
+        // Count total coupons and offers
+        const [totalCoupons, totalOffers] = await Promise.all([
+            Coupon.countDocuments(),
+            Offer.countDocuments()
+        ]);
+
+        // Calculate total pages
+        const couponTotalPages = Math.max(
+            1,
+            Math.ceil(totalCoupons / ITEMS_PER_PAGE)
+        );
+
+        const offerTotalPages = Math.max(
+            1,
+            Math.ceil(totalOffers / ITEMS_PER_PAGE)
+        );
+
+        // Prevent invalid page numbers
+        couponPage = Math.min(couponPage, couponTotalPages);
+        offerPage = Math.min(offerPage, offerTotalPages);
+
+        // Fetch paginated coupons
+        const coupons = await Coupon.find()
+            .sort({ createdAt: -1 })
+            .skip((couponPage - 1) * ITEMS_PER_PAGE)
+            .limit(ITEMS_PER_PAGE)
+            .lean();
+
+        // Fetch paginated offers
         const offers = await Offer.find()
             .populate("productId", "productName")
             .populate("categoryId", "name")
             .sort({ createdAt: -1 })
+            .skip((offerPage - 1) * ITEMS_PER_PAGE)
+            .limit(ITEMS_PER_PAGE)
             .lean();
 
         return res.render("admin/coupons", {
+
             coupons,
-            offers
+            offers,
+
+            couponPage,
+            couponTotalPages,
+            totalCoupons,
+
+            offerPage,
+            offerTotalPages,
+            totalOffers
+
         });
 
     } catch (error) {
@@ -102,8 +153,7 @@ const addCoupon = async (req, res) => {
 
         if (Number(discountValue) <= 0) {
 
-            req.session.message =
-                "Discount value must be greater than 0";
+            req.session.message = "Discount value must be greater than 0";
 
             return res.redirect("/admin/coupons/add");
         }
@@ -118,8 +168,7 @@ const addCoupon = async (req, res) => {
             maxDiscountAmount !== "" &&
             Number(maxDiscountAmount) < 0
         ) {
-            req.session.message =
-                "Maximum discount amount cannot be negative";
+            req.session.message = "Maximum discount amount cannot be negative";
 
             return res.redirect("/admin/coupons/add");
         }
@@ -131,8 +180,7 @@ const addCoupon = async (req, res) => {
 
         if (Number(usageLimit) <= 0) {
 
-            req.session.message =
-                "Total usage limit must be greater than 0";
+            req.session.message = "Total usage limit must be greater than 0";
 
             return res.redirect("/admin/coupons/add");
         }
@@ -140,8 +188,7 @@ const addCoupon = async (req, res) => {
 
         if (Number(userLimit) <= 0) {
 
-            req.session.message =
-                "User usage limit must be greater than 0";
+            req.session.message = "User usage limit must be greater than 0";
 
             return res.redirect("/admin/coupons/add");
         }
@@ -149,8 +196,7 @@ const addCoupon = async (req, res) => {
 
         if (Number(userLimit) > Number(usageLimit)) {
 
-            req.session.message =
-                "User usage limit cannot exceed total usage limit";
+            req.session.message = "User usage limit cannot exceed total usage limit";
 
             return res.redirect("/admin/coupons/add");
         }
@@ -165,8 +211,13 @@ const addCoupon = async (req, res) => {
             minOrderDiscountAmount !== "" &&
             Number(minOrderDiscountAmount) < 0
         ) {
-            req.session.message =
-                "Minimum order amount cannot be negative";
+            req.session.message = "Minimum order amount cannot be negative";
+
+            return res.redirect("/admin/coupons/add");
+        }
+
+        if(minOrderDiscountAmount < discountValue) {
+            req.session.message = "Minimum order amount cannot be lessthan value";
 
             return res.redirect("/admin/coupons/add");
         }

@@ -1,18 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Carry Nest Admin Dashboard</title>
 
     <link rel="stylesheet" href="/Styles/admin/dashboard.css">
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
-    >
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -25,72 +24,38 @@
 
         <div>
 
-            <!-- LOGO -->
-
             <div class="logo-section">
-
-                <div class="logo-box">
-                    C
-                </div>
-
+                <div class="logo-box">C</div>
                 <h2>CARRY NEST</h2>
-
             </div>
-
-            <!-- MENU -->
 
             <div class="menu-wrapper">
 
-                <!-- DASHBOARD -->
-
                 <a href="/admin/dashboard" class="menu-item active">
-
                     <span class="menu-left">
-
                         <i class="ri-dashboard-line"></i>
-
                         Dashboard
-
                     </span>
-
                 </a>
 
                 <!-- PRODUCTS -->
 
-                <div class="dropdown-wrapper active">
+                <div class="dropdown-wrapper">
 
                     <button class="dropdown-btn">
-
                         <span class="menu-left">
-
                             <i class="ri-shopping-bag-line"></i>
-
                             Products
-
                         </span>
 
-                       <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
                     </button>
 
                     <div class="dropdown-menu">
-
-                        <a href="/admin/products">
-                            All Products
-                        </a>
-
-                        <a href="/admin/add-product">
-                            Add Product
-                        </a>
-
-                        <a href="/admin/category" class="submenu">
-                            Categories
-                        </a>
-
-                        <a href="/admin/brands">
-                            Brands
-                        </a>
-
+                        <a href="/admin/products">All Products</a>
+                        <a href="/admin/add-product">Add Product</a>
+                        <a href="/admin/category">Categories</a>
+                        <a href="/admin/brands">Brands</a>
                     </div>
 
                 </div>
@@ -100,37 +65,19 @@
                 <div class="dropdown-wrapper">
 
                     <button class="dropdown-btn">
-
                         <span class="menu-left">
-
                             <i class="ri-shopping-cart-line"></i>
-
                             Orders
-
                         </span>
 
                         <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-
                     </button>
 
                     <div class="dropdown-menu">
-
-                        <a href="/admin/orders">
-                            All Orders
-                        </a>
-
-                        <a href="#">
-                            Pending
-                        </a>
-
-                        <a href="#">
-                            Processing
-                        </a>
-
-                        <a href="#">
-                            Shipped
-                        </a>
-
+                        <a href="/admin/orders">All Orders</a>
+                        <a href="/admin/orders?status=pending">Pending</a>
+                        <a href="/admin/orders?status=shipped">Shipped</a>
+                        <a href="/admin/orders?status=delivered">Delivered</a>
                     </div>
 
                 </div>
@@ -140,101 +87,57 @@
                 <div class="dropdown-wrapper">
 
                     <button class="dropdown-btn">
-
                         <span class="menu-left">
-
                             <i class="ri-arrow-go-back-line"></i>
-
                             Returns
-
                         </span>
 
                         <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-
                     </button>
 
                     <div class="dropdown-menu">
-
-                        <a href="/admin/return-requests">
-                            Requests
-                        </a>
-
+                        <a href="/admin/return-requests">Requests</a>
                     </div>
 
                 </div>
 
-                <!-- CUSTOMERS -->
-
                 <a href="/admin/customers" class="menu-item">
-
                     <span class="menu-left">
-
                         <i class="ri-group-line"></i>
-
                         Customers
-
                     </span>
-
                 </a>
-
-                <!-- WALLET -->
 
                 <a href="/admin/wallet" class="menu-item">
-
                     <span class="menu-left">
-
                         <i class="ri-wallet-3-line"></i>
-
                         Wallet & Payments
-
                     </span>
-
                 </a>
-
-                <!-- PROMOTIONS -->
 
                 <a href="/admin/coupons" class="menu-item">
-
                     <span class="menu-left">
-
                         <i class="ri-price-tag-3-line"></i>
-
                         Promotions
-
                     </span>
-
                 </a>
 
-                <!-- REPORTS -->
-
                 <a href="/admin/sales-report" class="menu-item">
-
                     <span class="menu-left">
-
                         <i class="ri-bar-chart-box-line"></i>
-
                         Reports
-
                     </span>
-
                 </a>
 
             </div>
 
         </div>
 
-        <!-- LOGOUT -->
-
         <div class="logout-section">
-
             <a href="/admin/logout" class="logout-btn">
-
                 <i class="ri-logout-box-r-line"></i>
-
                 Logout
-
             </a>
-
         </div>
 
     </aside>
@@ -248,29 +151,18 @@
         <header class="topbar">
 
             <div>
-
-                <p class="breadcrumb">
-                    Admin / Dashboard
-                </p>
-
+                <p class="breadcrumb">Admin / Dashboard</p>
             </div>
 
             <div class="top-right">
 
                 <div class="admin-profile">
-
-                    <div class="admin-avatar">
-                        AD
-                    </div>
+                    <div class="admin-avatar">AD</div>
 
                     <div>
-
                         <h4>Admin User</h4>
-
                         <span>Super Admin</span>
-
                     </div>
-
                 </div>
 
             </div>
@@ -282,55 +174,46 @@
         <section class="dashboard-header">
 
             <div>
-
                 <h1>Dashboard Overview</h1>
 
                 <p>
-                    Welcome back, here's what's happening today.
+                    Welcome back, here's what's happening with Carry Nest.
                 </p>
-
             </div>
 
             <div class="dashboard-actions">
 
-                <button
-                    class="light-btn"
+                <button class="light-btn"
                     onclick="window.location.href='/admin/sales-report'">
-
-                    Download Report
-
+                    View Sales Report
                 </button>
 
-                <button class="dark-btn">
-                   <a href="/admin/add-product" style="text-decoration: none;color: white;">
+                <button class="dark-btn"
+                    onclick="window.location.href='/admin/add-product'">
                     + Add Product
-                   </a> 
                 </button>
 
             </div>
 
         </section>
 
-        <!-- STATS -->
+        <!-- STATISTICS -->
 
         <section class="stats-grid">
 
             <div class="stats-card">
 
                 <div class="stats-top">
-
                     <span>Total Revenue</span>
-
                     <i class="ri-money-dollar-circle-line"></i>
-
                 </div>
 
                 <h2>
-                    ₹<%= totalRevenue.toLocaleString("en-IN") %>
+                    ₹<%= Number(totalRevenue || 0).toLocaleString("en-IN") %>
                 </h2>
 
-                <p class="growth green">
-                    ↗ 20.1% vs last month
+                <p class="growth">
+                    Overall revenue
                 </p>
 
             </div>
@@ -338,17 +221,14 @@
             <div class="stats-card">
 
                 <div class="stats-top">
-
                     <span>Total Orders</span>
-
                     <i class="ri-shopping-bag-line"></i>
-
                 </div>
 
-                <h2><%= totalOrders %></h2>
+                <h2><%= Number(totalOrders || 0).toLocaleString("en-IN") %></h2>
 
-                <p class="growth green">
-                    ↗ 12.5% vs last month
+                <p class="growth">
+                    All orders
                 </p>
 
             </div>
@@ -356,17 +236,16 @@
             <div class="stats-card">
 
                 <div class="stats-top">
-
                     <span>Active Customers</span>
-
                     <i class="ri-group-line"></i>
-
                 </div>
 
-                <h2><%= activeCustomers %></h2>
+                <h2>
+                    <%= Number(activeCustomers || 0).toLocaleString("en-IN") %>
+                </h2>
 
-                <p class="growth green">
-                    ↗ 4.3% vs last month
+                <p class="growth">
+                    Registered customers
                 </p>
 
             </div>
@@ -374,41 +253,226 @@
             <div class="stats-card">
 
                 <div class="stats-top">
-
-                    <span>Pending Actions</span>
-
-                    <i class="ri-error-warning-line"></i>
-
+                    <span>Total Products</span>
+                    <i class="ri-shopping-bag-3-line"></i>
                 </div>
 
-                <h2><%= pendingActions %></h2>
+                <h2>
+                    <%= typeof totalProducts !== "undefined"
+                        ? Number(totalProducts || 0).toLocaleString("en-IN")
+                        : "0" %>
+                </h2>
 
-                <p class="growth green">
-                    ↗ 8 new vs last month
+                <p class="growth">
+                    Products in inventory
                 </p>
 
             </div>
 
         </section>
 
-        <!-- MIDDLE SECTION -->
+        <!-- SALES AND ORDER ANALYTICS -->
 
-        <section class="middle-grid">
+        <section class="analytics-grid">
 
-            <!-- ACTIONS -->
+            <!-- REVENUE CHART -->
+
+            <div class="analytics-card">
+
+                <div class="analytics-header">
+
+                    <h3>Sales Overview</h3>
+
+                    <form action="/admin/dashboard"
+                        method="GET"
+                        id="dashboardFilterForm"
+                        style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+
+                        <select name="period" id="dashboardPeriod">
+
+                            <option value="7" <%= period === "7" ? "selected" : "" %>>
+                                Last 7 Days
+                            </option>
+
+                            <option value="30" <%= period === "30" ? "selected" : "" %>>
+                                Last 30 Days
+                            </option>
+
+                            <option value="90" <%= period === "90" ? "selected" : "" %>>
+                                Last 90 Days
+                            </option>
+
+                            <option value="365" <%= period === "365" ? "selected" : "" %>>
+                                Current Year
+                            </option>
+
+                            <option value="custom" <%= period === "custom" ? "selected" : "" %>>
+                                Custom Date
+                            </option>
+
+                        </select>
+
+                        <input
+                            type="date"
+                            name="startDate"
+                            id="dashboardStartDate"
+                            value="<%= startDateInput || '' %>"
+                            style="display:none;"
+                        >
+
+                        <input
+                            type="date"
+                            name="endDate"
+                            id="dashboardEndDate"
+                            value="<%= endDateInput || '' %>"
+                            style="display:none;"
+                        >
+
+                        <button type="submit"
+                                id="applyDashboardFilter"
+                                style="display:none;">
+                            Apply
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div class="chart-container">
+
+                    <canvas id="revenueChart"></canvas>
+
+                </div>
+
+                <div id="revenueEmpty" class="empty-analytics"
+                    style="display:none;">
+                    No sales data available.
+                </div>
+
+            </div>
+
+            <!-- ORDER STATUS -->
+
+            <div class="analytics-card">
+
+                <div class="analytics-header">
+                    <h3>Order Status Overview</h3>
+                </div>
+
+                <div class="status-chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+
+                <div id="statusEmpty" class="empty-analytics"
+                    style="display:none;">
+                    No order status data available.
+                </div>
+
+                <div id="statusLegend" class="status-legend"></div>
+
+            </div>
+
+        </section>
+
+        <!-- BEST SELLING PRODUCTS -->
+
+        <section class="products-card">
+
+            <div class="products-header">
+
+                <h3>Best-Selling Products</h3>
+
+                <a href="/admin/sales-report">
+                    View Sales Report →
+                </a>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="products-table">
+
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Product</th>
+                            <th>Orders</th>
+                            <th>Units Sold</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <% if (typeof topProducts !== "undefined" &&
+                            topProducts && topProducts.length) { %>
+
+                            <% topProducts.slice(0, 5).forEach((product, index) => { %>
+
+                                <tr>
+
+                                    <td class="product-rank">
+                                        #<%= index + 1 %>
+                                    </td>
+
+                                    <td>
+                                        <%= product.productName || "Unknown Product" %>
+                                    </td>
+
+                                    <td>
+                                        <%= Number(product.orders || 0)
+                                            .toLocaleString("en-IN") %>
+                                    </td>
+
+                                    <td>
+                                        <%= Number(product.units || 0)
+                                            .toLocaleString("en-IN") %>
+                                    </td>
+
+                                    <td>
+                                        ₹<%= Number(product.revenue || 0)
+                                            .toLocaleString("en-IN") %>
+                                    </td>
+
+                                </tr>
+
+                            <% }) %>
+
+                        <% } else { %>
+
+                            <tr>
+                                <td colspan="5" class="empty-analytics">
+                                    No best-selling product data available.
+                                </td>
+                            </tr>
+
+                        <% } %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- ACTION REQUIRED AND RETURNS -->
+
+        <section class="middle-grid dashboard-section">
+
+            <!-- ACTION REQUIRED -->
 
             <div class="action-card">
 
                 <h3>Action Required</h3>
 
-                <div class="action-item">
+                <a href="/admin/orders?status=pending"
+                    class="action-item">
 
                     <div class="action-left">
 
                         <div class="action-icon blue">
-
                             <i class="ri-shopping-cart-line"></i>
-
                         </div>
 
                         <span>Pending Orders</span>
@@ -416,23 +480,19 @@
                     </div>
 
                     <div class="action-right">
-
-                        <span><%= pendingOrders %></span>
-
+                        <span><%= pendingOrders || 0 %></span>
                         <i class="ri-arrow-right-line"></i>
-
                     </div>
 
-                </div>
+                </a>
 
-                <div class="action-item">
+                <a href="/admin/return-requests"
+                    class="action-item">
 
                     <div class="action-left">
 
                         <div class="action-icon orange">
-
                             <i class="ri-arrow-go-back-line"></i>
-
                         </div>
 
                         <span>Return Requests</span>
@@ -440,23 +500,19 @@
                     </div>
 
                     <div class="action-right">
-
-                        <span><%= returnRequests %></span>
-
+                        <span><%= returnRequests || 0 %></span>
                         <i class="ri-arrow-right-line"></i>
-
                     </div>
 
-                </div>
+                </a>
 
-                <div class="action-item">
+                <a href="/admin/products"
+                    class="action-item">
 
                     <div class="action-left">
 
                         <div class="action-icon red">
-
                             <i class="ri-alert-line"></i>
-
                         </div>
 
                         <span>Low Stock Products</span>
@@ -464,18 +520,20 @@
                     </div>
 
                     <div class="action-right">
-
-                        <span><%= lowStockProducts.length %></span>
+                        <span>
+                            <%= lowStockProducts
+                                ? lowStockProducts.length
+                                : 0 %>
+                        </span>
 
                         <i class="ri-arrow-right-line"></i>
-
                     </div>
 
-                </div>
+                </a>
 
             </div>
 
-            <!-- RETURNS -->
+            <!-- RETURN SNAPSHOT -->
 
             <div class="returns-card">
 
@@ -484,44 +542,33 @@
                 <div class="returns-grid">
 
                     <div class="mini-card">
-
                         <span>Pending Requests</span>
-                        
-                        <h2><%= returnRequests %></h2>
-
+                        <h2><%= returnRequests || 0 %></h2>
                     </div>
 
                     <div class="mini-card">
-
                         <span>Refunds Pending</span>
-
-                        <h2><%= refundPending %></h2>
-
+                        <h2><%= refundPending || 0 %></h2>
                     </div>
 
                 </div>
 
                 <a href="/admin/return-requests">
-
-                <button class="process-btn">
-
-                    <i class="ri-refresh-line"></i>
-
-                    Process Returns
-
-                </button>
-
+                    <button class="process-btn">
+                        <i class="ri-refresh-line"></i>
+                        Process Returns
+                    </button>
                 </a>
 
             </div>
 
         </section>
 
-        <!-- BOTTOM SECTION -->
+        <!-- RECENT ORDERS AND STOCK ALERTS -->
 
         <section class="bottom-grid">
 
-            <!-- ORDERS -->
+            <!-- RECENT ORDERS -->
 
             <div class="recent-orders">
 
@@ -529,9 +576,7 @@
 
                     <h3>Recent Orders</h3>
 
-                    <a href="/admin/orders">
-                        View All
-                    </a>
+                    <a href="/admin/orders">View All</a>
 
                 </div>
 
@@ -540,30 +585,18 @@
                     <table>
 
                         <thead>
-
-                        <tr>
-
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Time</th>
-
-                        </tr>
-
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Time</th>
+                            </tr>
                         </thead>
 
                         <tbody>
 
-                            <% if (recentOrders.length === 0) { %>
-
-                                <tr>
-                                    <td colspan="5" style="text-align:center;">
-                                        No orders found
-                                    </td>
-                                </tr>
-
-                            <% } else { %>
+                            <% if (recentOrders && recentOrders.length) { %>
 
                                 <% recentOrders.forEach(order => { %>
 
@@ -574,26 +607,42 @@
                                         </td>
 
                                         <td>
-                                            <%= order.userId?.name || "Unknown Customer" %>
+                                            <%= order.userId?.name ||
+                                                "Unknown Customer" %>
                                         </td>
 
                                         <td>
-                                            ₹<%= order.totalAmount.toLocaleString("en-IN") %>
+                                            ₹<%= Number(order.totalAmount || 0)
+                                                .toLocaleString("en-IN") %>
                                         </td>
 
                                         <td>
+
                                             <span class="badge <%= order.orderStatus %>">
-                                                <%= order.orderStatus %>
+                                                <%= order.orderStatus
+                                                    .replace(/_/g, " ") %>
                                             </span>
+
                                         </td>
 
                                         <td>
-                                            <%= new Date(order.createdAt).toLocaleString("en-IN") %>
+                                            <%= order.createdAt
+                                                ? new Date(order.createdAt)
+                                                    .toLocaleString("en-IN")
+                                                : "N/A" %>
                                         </td>
 
                                     </tr>
 
                                 <% }) %>
+
+                            <% } else { %>
+
+                                <tr>
+                                    <td colspan="5" style="text-align:center;">
+                                        No orders found.
+                                    </td>
+                                </tr>
 
                             <% } %>
 
@@ -605,13 +654,13 @@
 
             </div>
 
-            <!-- ALERTS -->
+            <!-- STOCK ALERTS -->
 
             <div class="stock-alerts">
 
                 <h3>Stock Alerts</h3>
 
-                <% if (lowStockProducts.length === 0) { %>
+                <% if (!lowStockProducts || lowStockProducts.length === 0) { %>
 
                     <div class="alert-box">
 
@@ -633,11 +682,8 @@
                         <div class="alert-box">
 
                             <div class="alert-top">
-
                                 <i class="ri-error-warning-line"></i>
-
                                 <span>Low Stock Warning</span>
-
                             </div>
 
                             <p>
@@ -653,9 +699,37 @@
 
                 <% } %>
 
-                <button class="view-products-btn" onclick="window.location.href='/admin/products'">
+                <button class="view-products-btn"
+                    onclick="window.location.href='/admin/products'">
                     View Products
                 </button>
+
+            </div>
+
+        </section>
+
+        <!-- REPORT LINK -->
+
+        <section class="dashboard-section">
+
+            <div class="products-card">
+
+                <div class="products-header">
+
+                    <div>
+                        <h3>Detailed Sales Reports</h3>
+                        <p>
+                            View detailed revenue, payments, returns,
+                            products and customer analytics.
+                        </p>
+                    </div>
+
+                    <button class="dark-btn"
+                        onclick="window.location.href='/admin/sales-report'">
+                        View Full Report
+                    </button>
+
+                </div>
 
             </div>
 
@@ -665,27 +739,432 @@
 
 </div>
 
+
+<!-- SIDEBAR DROPDOWNS -->
+
 <script>
 
-const dropdowns = document.querySelectorAll(".dropdown-btn");
+    const dropdowns = document.querySelectorAll(".dropdown-btn");
 
-dropdowns.forEach(btn => {
+    dropdowns.forEach(btn => {
 
-    btn.addEventListener("click", () => {
+        btn.addEventListener("click", () => {
 
-        const wrapper = btn.parentElement;
+            const wrapper = btn.parentElement;
 
-        const menu = wrapper.querySelector(".dropdown-menu");
+            const menu = wrapper.querySelector(".dropdown-menu");
 
-        wrapper.classList.toggle("active");
+            wrapper.classList.toggle("active");
 
-        menu.classList.toggle("show");
+            menu.classList.toggle("show");
+
+        });
 
     });
 
-});
+</script>
+
+<script>
+    const dashboardPeriod = document.getElementById("dashboardPeriod");
+
+    const dashboardStartDate = document.getElementById("dashboardStartDate");
+
+    const dashboardEndDate = document.getElementById("dashboardEndDate");
+
+    const applyDashboardFilter = document.getElementById("applyDashboardFilter");
+
+    const dashboardFilterForm = document.getElementById("dashboardFilterForm");
+
+
+    function updateDashboardDateInputs() {
+
+        const isCustom = dashboardPeriod.value === "custom";
+
+        dashboardStartDate.style.display = isCustom ? "block" : "none";
+
+        dashboardEndDate.style.display = isCustom ? "block" : "none";
+
+        applyDashboardFilter.style.display = isCustom ? "block" : "none";
+
+        dashboardStartDate.required = isCustom;
+
+        dashboardEndDate.required = isCustom;
+    }
+
+
+    dashboardPeriod.addEventListener("change", function () {
+
+        updateDashboardDateInputs();
+
+        if (this.value !== "custom") {
+            dashboardFilterForm.submit();
+        }
+
+    });
+
+
+    updateDashboardDateInputs();
+</script>
+
+<script id="dashboardChartData" type="application/json">
+<%- JSON.stringify({
+    salesChart: typeof salesChart !== "undefined" ? salesChart : [],
+    ordersChart: typeof ordersChart !== "undefined" ? ordersChart : [],
+    statusOrders: typeof statusOrders !== "undefined" ? statusOrders : []
+}).replace(/</g, "\\u003c") %>
+</script>
+
+
+<script>
+
+    // =========================================
+    // 1. GET BACKEND DATA
+    // =========================================
+
+    const chartData = JSON.parse(
+        document.getElementById("dashboardChartData").textContent
+    );
+
+    const salesData = chartData.salesChart || [];
+
+    const statusOrders = chartData.statusOrders || [];
+
+
+    // =========================================
+    // 2. CHART VARIABLES
+    // =========================================
+
+    let revenueChartInstance = null;
+
+    let statusChartInstance = null;
+
+    const revenueCanvas = document.getElementById("revenueChart");
+
+    const revenueEmpty = document.getElementById("revenueEmpty");
+
+    const statusCanvas = document.getElementById("statusChart");
+
+    const statusEmpty = document.getElementById("statusEmpty");
+
+    const statusLegend = document.getElementById("statusLegend");
+
+
+    // =========================================
+    // 3. STATUS COLORS
+    // =========================================
+
+    const statusColors = {
+
+        pending: "#f59e0b",
+
+        processing: "#3b82f6",
+
+        shipped: "#8b5cf6",
+
+        out_for_delivery: "#06b6d4",
+
+        delivered: "#10b981",
+
+        cancelled: "#ef4444",
+
+        returned: "#64748b"
+
+    };
+
+
+    // =========================================
+    // 4. REVENUE CHART
+    // =========================================
+
+    function renderRevenueChart() {
+
+        if (revenueChartInstance) {
+            revenueChartInstance.destroy();
+        }
+
+
+        const sortedSales = [...salesData].sort(
+            (a, b) => a.date.localeCompare(b.date)
+        );
+
+
+        if (!sortedSales.length) {
+
+            revenueCanvas.style.display = "none";
+
+            revenueEmpty.style.display = "block";
+
+            return;
+
+        }
+
+
+        revenueCanvas.style.display = "block";
+
+        revenueEmpty.style.display = "none";
+
+
+        const labels = sortedSales.map(item => {
+
+            const [year, month, day] = item.date.split("-");
+
+            return new Date(
+                Number(year),
+                Number(month) - 1,
+                Number(day)
+            ).toLocaleDateString("en-IN", {
+
+                day: "2-digit",
+
+                month: "short"
+
+            });
+
+        });
+
+
+        const amounts = sortedSales.map(item =>
+            Number(item.amount) || 0
+        );
+
+
+        revenueChartInstance = new Chart(revenueCanvas, {
+
+            type: "line",
+
+            data: {
+
+                labels,
+
+                datasets: [{
+
+                    label: "Revenue",
+
+                    data: amounts,
+
+                    borderColor: "#2563eb",
+
+                    backgroundColor: "rgba(37, 99, 235, 0.10)",
+
+                    fill: true,
+
+                    tension: 0.4,
+
+                    borderWidth: 2,
+
+                    pointRadius: 3
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+
+                },
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true,
+
+                        ticks: {
+
+                            callback: value =>
+                                "₹" + Number(value).toLocaleString("en-IN")
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+    // =========================================
+    // 5. ORDER STATUS CHART
+    // =========================================
+
+    function renderStatusChart() {
+
+        if (statusChartInstance) {
+            statusChartInstance.destroy();
+        }
+
+        statusLegend.innerHTML = "";
+
+
+        // Orders are already filtered by the backend
+        const statusCounts = {};
+
+
+        statusOrders.forEach(order => {
+
+            const status = order.status || "unknown";
+
+            statusCounts[status] =
+                (statusCounts[status] || 0) + 1;
+
+        });
+
+
+        const statusData = Object.entries(statusCounts)
+
+            .map(([status, count]) => ({
+                status,
+                count
+            }))
+
+            .sort((a, b) => b.count - a.count);
+
+
+        if (!statusData.length) {
+
+            statusCanvas.style.display = "none";
+
+            statusEmpty.style.display = "block";
+
+            return;
+
+        }
+
+
+        statusCanvas.style.display = "block";
+
+        statusEmpty.style.display = "none";
+
+
+        const colors = statusData.map(item =>
+            statusColors[item.status] || "#94a3b8"
+        );
+
+
+        statusChartInstance = new Chart(statusCanvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: statusData.map(item =>
+                    item.status.replace(/_/g, " ")
+                ),
+
+                datasets: [{
+
+                    data: statusData.map(item =>
+                        Number(item.count) || 0
+                    ),
+
+                    backgroundColor: colors,
+
+                    borderWidth: 0,
+
+                    hoverOffset: 5
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "70%",
+
+                plugins: {
+
+                    legend: {
+                        display: false
+                    }
+
+                }
+
+            }
+
+        });
+
+
+        // UPDATE LEGEND
+        statusData.forEach((item, index) => {
+
+            const row = document.createElement("div");
+
+            row.className = "status-legend-item";
+
+
+            const name = document.createElement("span");
+
+            name.className = "legend-name";
+
+
+            const dot = document.createElement("span");
+
+            dot.className = "legend-dot";
+
+            dot.style.backgroundColor = colors[index];
+
+
+            const label = document.createElement("span");
+
+            label.textContent = item.status
+
+                .replace(/_/g, " ")
+
+                .replace(/\b\w/g, letter =>
+                    letter.toUpperCase()
+                );
+
+
+            name.appendChild(dot);
+
+            name.appendChild(label);
+
+
+            const count = document.createElement("strong");
+
+            count.textContent = Number(item.count)
+                .toLocaleString("en-IN");
+
+
+            row.appendChild(name);
+
+            row.appendChild(count);
+
+
+            statusLegend.appendChild(row);
+
+        });
+
+    }
+
+
+    // =========================================
+    // 6. INITIAL CHART RENDERING
+    // =========================================
+
+    renderRevenueChart();
+
+    renderStatusChart();
 
 </script>
+
 
 </body>
 </html>

@@ -215,7 +215,7 @@ const addProduct = async (req, res) => {
             );
         }
 
-        // Safely handle variant fields
+        // Normalize variant fields
         const sizes = Array.isArray(req.body.sizes)
             ? req.body.sizes
             : req.body.sizes
@@ -240,32 +240,45 @@ const addProduct = async (req, res) => {
                 ? [req.body.salePrices]
                 : [];
 
-        let variants = sizes.map((size, index) => ({
-            size: (size || "").trim(),
-            stock: Number(stocks[index]),
-            regularPrice: Number(regularPrices[index]),
-            salePrice: Number(salePrices[index])
-        }));
+        // Process only completely filled variants
+        let variants = sizes
+            .map((size, index) => ({
+                size: (size || "").trim(),
+                stock: stocks[index],
+                regularPrice: regularPrices[index],
+                salePrice: salePrices[index]
+            }))
+            .filter(variant => {
+                return (
+                    variant.size !== "" &&
+                    String(variant.stock ?? "").trim() !== "" &&
+                    String(variant.regularPrice ?? "").trim() !== "" &&
+                    String(variant.salePrice ?? "").trim() !== ""
+                );
+            })
+            .map(variant => ({
+                size: variant.size,
+                stock: Number(variant.stock),
+                regularPrice: Number(variant.regularPrice),
+                salePrice: Number(variant.salePrice)
+            }));
 
-        // Remove empty variants
-        variants = variants.filter(variant => variant.size !== "");
-
+        // At least one complete variant is required
         if (variants.length === 0) {
             return renderAddProduct(
-                "At least one product size is required"
+                "Please fill at least one complete product variant."
             );
         }
 
-        // Validate variant values
+        // Validate completed variants
         for (const variant of variants) {
+
             if (
                 !Number.isFinite(variant.stock) ||
                 !Number.isFinite(variant.regularPrice) ||
                 !Number.isFinite(variant.salePrice)
             ) {
-                return renderAddProduct(
-                    "Please enter valid stock and price values"
-                );
+                return renderAddProduct("Please enter valid stock and price values.");
             }
 
             if (
@@ -274,13 +287,13 @@ const addProduct = async (req, res) => {
                 variant.salePrice < 0
             ) {
                 return renderAddProduct(
-                    "Stock cannot be negative, original price must be positive, and sale price cannot be negative"
+                    "Stock cannot be negative, original price must be positive, and sale price cannot be negative."
                 );
             }
 
             if (variant.salePrice > variant.regularPrice) {
                 return renderAddProduct(
-                    "Sale price cannot be greater than original price"
+                    "Sale price cannot be greater than original price."
                 );
             }
         }
@@ -304,7 +317,6 @@ const addProduct = async (req, res) => {
             category: req.body.category,
             description: req.body.description.trim(),
             variants,
-            offer: req.body.offer,
             productImage: images
         });
 
@@ -392,7 +404,6 @@ const editProduct = async (req, res) => {
 
         const {
             productName,
-            offer,
             description,
             category,
             brand,
@@ -541,7 +552,6 @@ const editProduct = async (req, res) => {
 
         // Update product
         product.productName = productName.trim();
-        product.offer = offer;
         product.description = description;
         product.category = category;
         product.brand = selectedBrand.name;
