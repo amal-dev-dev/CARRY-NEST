@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -17,7 +17,6 @@ import { setUser } from './Middleware/setUser.js';
 import { cartCount } from './Middleware/cartCount.js';
 import { wishlistCount } from './Middleware/wishlistCount.js';
 
-dotenv.config();
 
 const app = express();
 
