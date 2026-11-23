@@ -1,7 +1,6 @@
 import Users from "../../Model/userModel.js";
 import Admin from "../../Model/adminModel.js";
 import Order from "../../Model/orderModel.js";
-import Wallet from "../../Model/walletModel.js";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 
@@ -220,9 +219,6 @@ const loadCustomers = async (req, res) => {
             }
         }
 
-
-        const wallet = await Wallet.find({ UserId })
-
         // Attach statistics to each customer for EJS
         const customers = users.map(user => ({
             ...user,
@@ -238,8 +234,7 @@ const loadCustomers = async (req, res) => {
             totalPages,
             totalUsers,
             activeCustomers,
-            blockedCustomers,
-            wallet
+            blockedCustomers
         });
 
     } catch (error) {

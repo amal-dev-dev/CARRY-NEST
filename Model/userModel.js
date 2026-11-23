@@ -1,12 +1,11 @@
+
 import mongoose from "mongoose";
-import path from "path";
-import { promiseHooks } from "v8";
 
 const userSchema = new mongoose.Schema({
 
     name: {
         type: String,
-        required: true,
+        required: true
     },
 
     email: {
@@ -14,15 +13,15 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         lowercase: true,
-        trim: true,
+        trim: true
     },
 
     phone: {
-        type: String,
+        type: String
     },
 
     password: {
-        type: String,
+        type: String
     },
 
     referralCode: {
@@ -63,6 +62,11 @@ const userSchema = new mongoose.Schema({
         default: null
     },
 
+    isOtpVerified: {
+        type: Boolean,
+        default: false
+    },
+
     isVerified: {
         type: Boolean,
         default: false
@@ -72,13 +76,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
-    
+
     isBlocked: {
-     type: Boolean,
-     default: false
- },
+        type: Boolean,
+        default: false
+    }
 
 }, { timestamps: true });
 
-const Users = mongoose.model('Users', userSchema);
+const Users = mongoose.model("Users", userSchema);
+
 export default Users;

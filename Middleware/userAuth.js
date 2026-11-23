@@ -14,7 +14,7 @@ export const requireAuth = async (req, res, next) => {
 
         if (!user || user.isBlocked) {
             return req.session.destroy(() => {
-                res.clearCookie('connect.sid');
+                res.clearCookie('user.sid', { path: '/' });
                 return res.redirect('/user/login');
             });
         }

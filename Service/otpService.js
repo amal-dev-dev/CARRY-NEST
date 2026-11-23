@@ -1,9 +1,14 @@
+import crypto from "crypto";
+
 const generateOTP = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+    return crypto.randomInt(100000, 1000000);
 };
 
 const otpExpiryTime = () => {
-  return Date.now() + 1 * 60 * 1000; 
+    return new Date(Date.now() + 5 * 60 * 1000);
 };
 
-export { generateOTP, otpExpiryTime };
+export {
+    generateOTP,
+    otpExpiryTime
+};
