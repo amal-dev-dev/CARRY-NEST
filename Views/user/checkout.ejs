@@ -366,7 +366,11 @@
 
                 <div id="couponMessage"></div>
 
-                <div id="appliedCouponBox" style="display:none;">
+                <div id="appliedCouponBox" style="<%= appliedCoupon ? '' : 'display: none;' %>">
+
+                    <span id="appliedCouponCode">
+                        <%= appliedCoupon ? appliedCoupon.code : '' %>
+                    </span>
 
                     <span>
                         Coupon:
@@ -1903,68 +1907,53 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* =====================================================
-    RAZORPAY PAYMENT
-    ===================================================== */
-
 /* =====================================================
    SAVE FAILED PAYMENT ORDER
 ===================================================== */
 
-async function saveFailedPaymentOrder(selectedAddressId) {
 
+async function saveFailedPaymentOrder(selectedAddressId, razorpayOrderId) {
     try {
-
         const response = await fetch(
             "/user/create-failed-payment-order",
             {
                 method: "POST",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
-                    selectedAddress: selectedAddressId
+                    selectedAddress: selectedAddressId,
+                    razorpay_order_id: razorpayOrderId
                 })
             }
         );
 
-
         const data = await response.json();
 
-
         if (!response.ok || !data.success) {
-
             console.error(
                 "FAILED ORDER CREATION ERROR:",
                 data.message
             );
-
             return null;
         }
-
 
         console.log(
             "Failed payment order created:",
             data.orderId
         );
 
-
         return data;
 
-
     } catch (error) {
-
         console.error(
             "SAVE FAILED PAYMENT ORDER ERROR:",
             error
         );
-
         return null;
     }
-
 }
+
 
 
 /* =====================================================
@@ -2029,24 +2018,24 @@ async function saveFailedPaymentOrder(selectedAddressId) {
                             "application/json"
                     },
 
-                    body: JSON.stringify({
-                        amount: grandTotal
-                    })
+                    body: JSON.stringify({})
                 }
             );
 
 
-            if (!response.ok) {
+            const data = await response.json();
 
-                throw new Error(
-                    "Unable to create Razorpay order"
+            if (!response.ok || !data.success) {
+                resetPlaceOrderButton();
+
+                showAlert(
+                    "error",
+                    "Payment Error",
+                    data.message || "Unable to create Razorpay order"
                 );
 
+                return;
             }
-
-
-            const data =
-                await response.json();
 
 
             if (!data.success) {
@@ -2097,14 +2086,16 @@ async function saveFailedPaymentOrder(selectedAddressId) {
                 handler:
                     async function(paymentResponse) {
 
-                        console.log(
-                            "Razorpay payment successful"
-                        );
+                        if (verificationInProgress) {
+                            return;
+                        }
 
-                        console.log(
-                            "Payment response:",
-                            paymentResponse
-                        );
+                        verificationInProgress = true;
+                        paymentSucceeded = true;
+
+                        console.log("Razorpay payment successful");
+
+                        console.log("Payment response:", paymentResponse);
 
 
                         /*
@@ -2233,9 +2224,9 @@ async function saveFailedPaymentOrder(selectedAddressId) {
 
 
                         await saveFailedPaymentOrder(
-                            selectedAddressId
+                            selectedAddressId,
+                            data.order.id
                         );
-
 
                         window.location.href =
                             "/user/payment-failed?message=Payment cancelled";
@@ -2312,9 +2303,10 @@ async function saveFailedPaymentOrder(selectedAddressId) {
                         "Payment failed";
 
 
-                    await saveFailedPaymentOrder(
-                        selectedAddressId
-                    );
+                        await saveFailedPaymentOrder(
+                            selectedAddressId,
+                            data.order.id
+                        );
 
 
                     window.location.href =

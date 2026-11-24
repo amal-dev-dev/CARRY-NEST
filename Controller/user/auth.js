@@ -1,5 +1,5 @@
-import userAuthService from "../../Service/userAuthService.js";
-import homeService from "../../Service/homeService.js";
+import userAuthService from "../../Service/user/userAuthService.js";
+import homeService from "../../Service/user/homeService.js";
 
 
 const redirectWithMessage = (req, res, url, message) => {

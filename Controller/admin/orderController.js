@@ -1,8 +1,8 @@
 import Order from "../../Model/orderModel.js";
 import Wallet from "../../Model/walletModel.js";
 import Product from "../../Model/productModel.js";
-import referralService from "../../Service/referralService.js";
-import refundService from "../../Service/refundService.js";
+import referralService from "../../Service/admin/referralService.js";
+import refundService from "../../Service/admin/refundService.js";
 
 
 const restoreProductStock = async (item) => {

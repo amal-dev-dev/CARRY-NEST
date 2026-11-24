@@ -127,8 +127,8 @@ router.post("/create-razorpay-order", requireAuth, paymentController.createRazor
 router.post("/verify-razorpay-payment", requireAuth, paymentController.verifyRazorpayPayment);
 router.get("/payment-failed", requireAuth, paymentController.loadPaymentFailed);
 router.post("/create-failed-payment-order", requireAuth, paymentController.createFailedPaymentOrder);
-router.post("/retry-payment/:orderId", paymentController.retryPayment);
-router.post("/verify-retry-payment", paymentController.verifyRetryPayment);
+router.post("/retry-payment/:orderId", requireAuth, paymentController.retryPayment);
+router.post("/verify-retry-payment", requireAuth, paymentController.verifyRetryPayment);
 
 //ORDER
 router.get('/orders', requireAuth, orderController.loadOrder);

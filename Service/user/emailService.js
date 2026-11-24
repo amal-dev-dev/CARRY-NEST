@@ -1,4 +1,4 @@
-import emailTransporter from "../Config/email.js";
+import emailTransporter from "../../Config/email.js";
 
 const sendOTPEmail = async (email, otp, subject = "OTP Verification") => {
 

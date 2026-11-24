@@ -5,9 +5,9 @@ import Address from "../../Model/addressModel.js";
 import Cart from "../../Model/cartModel.js";
 import Order from "../../Model/orderModel.js";
 import Product from "../../Model/productModel.js";
-import { getActiveOffers, getProductPricing} from "./checkout.js";
+import checkoutService from "../../Service/user/checkoutService.js";
 import Offer from "../../Model/offerModel.js";
-import generateOrderId from "../../Service/orderIDService.js";
+import generateOrderId from "../../Service/user/orderIDService.js";
 
 
 const isUnavailableProduct = (product) => {
@@ -24,16 +24,7 @@ const isUnavailableProduct = (product) => {
 
 const createRazorpayOrder = async (req, res) => {
     try {
-        const { amount } = req.body;
-
-        if (!amount || amount <= 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid amount"
-            });
-        }
-
-        const userId = req.session.user;
+        const userId = req.session.user?._id || req.session.user;
 
         if (!userId) {
             return res.status(401).json({
@@ -42,43 +33,44 @@ const createRazorpayOrder = async (req, res) => {
             });
         }
 
-        const cart = await Cart.findOne({ userId })
-            .populate({
-                path: "items.productId",
-                populate: {
-                    path: "category",
-                    model: "Category"
-                }
-            });
+        // Get and validate cart
+        const { validItems } =
+            await checkoutService.getCheckoutCart(userId);
 
-        if (!cart || cart.items.length === 0) {
+        // Calculate product and offer discounts
+        const pricing =
+            await checkoutService.calculateCheckoutPricing(
+                validItems,
+                0
+            );
+
+        // Revalidate applied coupon
+        let couponDiscount = 0;
+
+        if (req.session.appliedCoupon?.couponId) {
+            const couponResult =
+                await checkoutService.validateAndCalculateCoupon({
+                    userId,
+                    couponId: req.session.appliedCoupon.couponId,
+                    items: validItems
+                });
+
+            couponDiscount = couponResult.couponDiscount;
+        }
+
+        // Calculate final payable amount on server
+        const amount = Number(
+            (pricing.grandTotal - couponDiscount).toFixed(2)
+        );
+
+        if (!Number.isFinite(amount) || amount <= 0) {
             return res.status(400).json({
                 success: false,
-                message: "Your cart is empty"
+                message: "Invalid payment amount"
             });
         }
 
-        for (const item of cart.items) {
-            const product = item.productId;
-
-            if (isUnavailableProduct(product)) {
-                return res.status(400).json({
-                    success: false,
-                    message:
-                        "A product in your cart is unlisted or unavailable. Please return to your cart."
-                });
-            }
-
-            const variant = product.variants.id(item.variantId);
-
-            if (!variant || variant.stock < item.quantity || variant.stock <= 0) {
-                return res.status(400).json({
-                    success: false,
-                    message: `${product.productName} is unavailable or out of stock`
-                });
-            }
-        }
-
+        // Create Razorpay order
         const options = {
             amount: Math.round(amount * 100),
             currency: "INR",
@@ -93,7 +85,14 @@ const createRazorpayOrder = async (req, res) => {
         });
 
     } catch (error) {
-        console.log("RAZORPAY CREATE ORDER ERROR:", error);
+        console.error("RAZORPAY CREATE ORDER ERROR:", error);
+
+        if (error.code === "CHECKOUT_VALIDATION") {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
 
         return res.status(500).json({
             success: false,
@@ -210,7 +209,7 @@ const verifyRazorpayPayment = async (req, res) => {
         let offerDiscount = 0;
         let totalAmount = 0;
 
-        const offers = await getActiveOffers();
+        const offers = await checkoutService.getActiveOffers();
 
         for (const item of cart.items) {
             const product = item.productId;
@@ -259,11 +258,7 @@ const verifyRazorpayPayment = async (req, res) => {
             }
 
             // Calculate product price and discounts
-            const pricing = getProductPricing(
-                product,
-                variant,
-                offers
-            );
+            const pricing = checkoutService.getProductPricing(product, variant, offers)
 
             orderedProducts.push({
                 productId: product._id,
@@ -416,9 +411,14 @@ const createFailedPaymentOrder = async (req, res) => {
 
         const userId = req.session.user;
 
-        const {
-            selectedAddress
-        } = req.body;
+        const { selectedAddress, razorpay_order_id } = req.body;
+
+        if (!razorpay_order_id) {
+            return res.status(400).json({
+                success: false,
+                message: "Razorpay order ID is required"
+            });
+        }
 
         if (!userId) {
             return res.status(401).json({
@@ -481,7 +481,7 @@ const createFailedPaymentOrder = async (req, res) => {
         let offerDiscount = 0;
         let totalAmount = 0;
 
-        const offers = await getActiveOffers();
+        const offers = await checkoutService.getActiveOffers();
 
         for (const item of cart.items) {
             const product = item.productId;
@@ -513,11 +513,7 @@ const createFailedPaymentOrder = async (req, res) => {
             }
 
             // Use the same offer calculation as checkout
-            const pricing = getProductPricing(
-                product,
-                variant,
-                offers
-            );
+            const pricing = checkoutService.getProductPricing(product, variant, offers)
 
             orderedProducts.push({
                 productId: product._id,
@@ -604,6 +600,7 @@ const createFailedPaymentOrder = async (req, res) => {
             paymentMethod: "RAZORPAY",
             paymentStatus: "failed",
             orderStatus: "payment_failed",
+            razorpayOrderId: razorpay_order_id,
             
             deliveryDate,
 

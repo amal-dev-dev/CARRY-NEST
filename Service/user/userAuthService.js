@@ -2,8 +2,8 @@
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 
-import Users from "../Model/userModel.js";
-import Referral from "../Model/referralModel.js";
+import Users from "../../Model/userModel.js";
+import Referral from "../../Model/referralModel.js";
 
 import emailService from "./emailService.js";
 import { generateOTP, otpExpiryTime } from "./otpService.js";

@@ -1,7 +1,7 @@
-import Product from "../Model/productModel.js";
-import Offer from "../Model/offerModel.js";
-import Order from "../Model/orderModel.js";
-import Review from "../Model/reviewModel.js";
+import Product from "../../Model/productModel.js";
+import Offer from "../../Model/offerModel.js";
+import Order from "../../Model/orderModel.js";
+import Review from "../../Model/reviewModel.js";
 
 const getHomeData = async () => {
     const now = new Date();

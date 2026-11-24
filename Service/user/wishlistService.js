@@ -1,4 +1,4 @@
-import Wishlist from "../Model/wishlistModel.js";
+import Wishlist from "../../Model/wishlistModel.js";
 
 const removeWishlistItem = async (
     userId,

@@ -1,5 +1,5 @@
-import Wallet from "../Model/walletModel.js";
-import User from "../Model/userModel.js";
+import Wallet from "../../Model/walletModel.js";
+import User from "../../Model/userModel.js";
 
 
 const processReferralReward = async (userId, orderId) => {

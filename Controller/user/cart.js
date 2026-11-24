@@ -1,4 +1,3 @@
-import Product from "../../Model/productModel.js";
 import {
     addItemToCart,
     getCart,
@@ -8,62 +7,50 @@ import {
     buildCartItems,
     calculateCartTotals,
     calculateCartCount
-} from "../../Service/cartService.js";
-import { removeWishlistItem } from "../../Service/wishlistService.js";
+} from "../../Service/user/cartService.js";
+
+import { removeWishlistItem } from "../../Service/user/wishlistService.js";
 
 
 // ADD TO CART
 const addToCart = async (req, res) => {
     try {
         const userId = req.session.user;
-        const { variantId, quantity } = req.body;
+        const { variantId, quantity = 1 } = req.body;
 
-        // 1. Find product and its current category status
-        const product = await Product.findOne({
-            "variants._id": variantId
-        }).populate("category");
-
-        // 2. Validate product availability BEFORE adding to cart
-        if (!product) {
+        if (!variantId) {
             return res.status(400).json({
                 success: false,
-                message: "Product or variant not found."
+                message: "Please select a product variant"
             });
         }
 
-        if (
-            product.isBlocked ||
-            !product.category ||
-            product.category.isListed !== true ||
-            product.category.isBlocked === true
-        ) {
-            return res.status(400).json({
-                success: false,
-                message: "This product is currently unavailable because its category is blocked or unlisted."
-            });
+        const cart = await addItemToCart(userId, variantId, quantity);
+
+        // Wishlist removal is optional cleanup.
+        // Its failure should not make a successful cart addition look unsuccessful.
+        try {
+            const product = cart.items.find(
+                item => item.variantId.toString() === variantId.toString()
+            );
+
+            if (product) {
+                await removeWishlistItem(
+                    userId,
+                    product.productId,
+                    variantId
+                );
+            }
+        } catch (wishlistError) {
+            console.error("Wishlist cleanup error:", wishlistError);
         }
 
-        // 3. Only add if the product and category are available
-        await addItemToCart(
-            userId,
-            variantId,
-            quantity
-        );
+        const updatedCart = await getCart(userId);
+        const cartCount = calculateCartCount(updatedCart?.items || []);
 
-        // 4. Remove the same product + variant from wishlist
-        await removeWishlistItem(
-            userId,
-            product._id,
-            variantId
-        );
-
-        // 5. Get updated cart count
-        const cart = await getCart(userId);
-        const cartCount = calculateCartCount(cart.items);
-
-        return res.json({
+        return res.status(200).json({
             success: true,
-            message: "Product added to cart",
+            message: "Product added to cart successfully",
             cartCount
         });
 
@@ -72,7 +59,7 @@ const addToCart = async (req, res) => {
 
         return res.status(400).json({
             success: false,
-            message: error.message || "Unable to add product to cart."
+            message: error.message || "Unable to add product to cart"
         });
     }
 };
@@ -82,7 +69,6 @@ const addToCart = async (req, res) => {
 // ==============================
 // LOAD CART
 // ==============================
-
 const loadCart = async (req, res) => {
     try {
 
@@ -307,9 +293,9 @@ const increaseQuantity = async (req, res) => {
 
         console.error("Increase quantity error:", error);
 
-        return res.status(500).json({
+        return res.status(400).json({
             success: false,
-            message: "Something went wrong. Please try again."
+            message: error.message || "Unable to increase quantity"
         });
     }
 };

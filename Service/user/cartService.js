@@ -1,13 +1,45 @@
-import Product from "../Model/productModel.js";
-import Cart from "../Model/cartModel.js";
-import Offer from "../Model/offerModel.js";
+import Product from "../../Model/productModel.js";
+import Cart from "../../Model/cartModel.js";
+import Offer from "../../Model/offerModel.js";
+
 
 const MAX_QTY_PER_ITEM = 5;
 
+const getAvailableProductVariant = async (variantId) => {
+    const product = await Product.findOne({
+        "variants._id": variantId
+    }).populate("category");
+
+    if (!product) {
+        throw new Error("Product not found");
+    }
+
+    if (product.isBlocked) {
+        throw new Error("This product is unavailable");
+    }
+
+    const category = product.category;
+
+    if (!category || category.isListed !== true || category.isBlocked === true) {
+        throw new Error("This product category is unavailable");
+    }
+
+    const variant = product.variants.id(variantId);
+
+    if (!variant) {
+        throw new Error("Product variant not found");
+    }
+
+    if (variant.stock <= 0) {
+        throw new Error("This product is out of stock");
+    }
+
+    return { product, variant };
+};
+
+
 
 // GET CART
-
-
 const getCart = async (userId) => {
     return await Cart.findOne({ userId })
         .populate({
@@ -147,86 +179,41 @@ const addItemToCart = async (
 
 
 // INCREASE CART ITEM
-
-const increaseCartItem = async (
-    userId,
-    variantId
-) => {
-
-
-    // Find cart
+const increaseCartItem = async (userId, variantId) => {
     const cart = await Cart.findOne({ userId });
 
     if (!cart) {
         throw new Error("Cart not found");
     }
 
-
-    // Find cart item
     const item = cart.items.find(
-        (item) =>
-            item.variantId &&
-            item.variantId.toString() === variantId.toString()
+        item => item.variantId.toString() === variantId.toString()
     );
-
 
     if (!item) {
         throw new Error("Cart item not found");
     }
 
+    const { variant } = await getAvailableProductVariant(variantId);
 
-    // Find product
-    const product = await Product.findOne({
-        "variants._id": variantId
-    });
-
-
-    if (!product || product.isBlocked) {
-        throw new Error("Product unavailable");
-    }
-
-
-    // Find variant
-    const variant = product.variants.id(variantId);
-
-
-    if (!variant) {
-        throw new Error("Variant not found");
-    }
-
-
-    // Maximum quantity check
     if (item.quantity >= MAX_QTY_PER_ITEM) {
-
-        throw new Error(
-            `Maximum ${MAX_QTY_PER_ITEM} quantity allowed`
-        );
+        throw new Error("Maximum 5 quantity allowed");
     }
 
-
-    // Stock check
     if (item.quantity >= variant.stock) {
-
-        throw new Error(
-            "Not enough stock available"
-        );
+        throw new Error(`Only ${variant.stock} items available in stock`);
     }
 
-
-    // Increase quantity
     item.quantity += 1;
-
 
     await cart.save();
 
-
-    // Return updated populated cart
     return await getCart(userId);
 };
 
 
-// DECREASE CART ITEM
 
+// DECREASE CART ITEM
 const decreaseCartItem = async (userId, variantId) => {
 
     const cart = await Cart.findOne({ userId });
@@ -327,7 +314,6 @@ const removeCartItemService = async (
 
 
 // BUILD CART ITEMS
-
 const buildCartItems = (cart) => {
 
     if (!cart) {
@@ -378,8 +364,6 @@ const buildCartItems = (cart) => {
 
 
 // CALCULATE CART TOTALS
-
-
 const calculateCartTotals = async (cartItems) => {
     const offers = await Offer.find({
         isActive: true,
@@ -409,7 +393,18 @@ const calculateCartTotals = async (cartItems) => {
         const variant = item.variant;
         const quantity = Number(item.quantity) || 0;
 
-        if (product.isBlocked) continue;
+        if (!product || !variant) continue;
+
+        const category = product.category;
+
+        if (
+            product.isBlocked ||
+            !category ||
+            category.isListed !== true ||
+            category.isBlocked === true
+        ) {
+            continue;
+        }
 
         const regularPrice = Number(variant.regularPrice) || 0;
         const salePrice = Number(
@@ -535,8 +530,8 @@ const calculateCartCount = (items = []) => {
 
 
 export {
-    getCart,
     addItemToCart,
+    getCart,
     increaseCartItem,
     decreaseCartItem,
     removeCartItemService,
