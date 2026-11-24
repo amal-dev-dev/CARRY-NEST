@@ -1,4 +1,3 @@
-
 import userAuthService from "../../Service/userAuthService.js";
 import homeService from "../../Service/homeService.js";
 
@@ -39,21 +38,21 @@ const login = async (req, res) => {
         req.session.user = user._id;
 
         return req.session.save((error) => {
-            if (error) {
-                console.error("Login session error:", error);
-
-                return res.status(500).render("user/login", {
-                    message: "Unable to start your session. Please try again."
-                });
-            }
+        if (error) {
+            console.error("Login session error:", error);
+            return res.status(500).send("Unable to start your session. Please try again.");
+        }
 
             return res.redirect("/user/home");
         });
 
     } catch (error) {
-        return res.status(error.statusCode || 500).render("user/login", {
-            message: error.message || "Login failed. Please try again."
-        });
+        return redirectWithMessage(
+            req,
+            res,
+            "/user/login",
+            error.message || "Login failed. Please try again."
+        );
     }
 };
 
@@ -139,11 +138,7 @@ const signup = async (req, res) => {
         return req.session.save((error) => {
             if (error) {
                 console.error("Signup session error:", error);
-
-                return res.status(500).render("user/signup", {
-                    message: "Unable to continue signup. Please try again.",
-                    referralCode: req.body.referralCode || ""
-                });
+                return res.status(500).send("Unable to continue signup. Please try again.");
             }
 
             return res.redirect("/user/signup-otp");
@@ -189,6 +184,7 @@ const verifyOTP = async (req, res) => {
         return req.session.save((error) => {
             if (error) {
                 console.error("OTP session save error:", error);
+                return res.status(500).send("Unable to complete verification. Please try again.");
             }
 
             return res.redirect("/user/login");
@@ -197,10 +193,12 @@ const verifyOTP = async (req, res) => {
     } catch (error) {
         console.error("Signup OTP verification error:", error);
 
-        return res.status(error.statusCode || 400).render("user/signup-otp", {
-            email,
-            message: error.message || "OTP verification failed."
-        });
+        return redirectWithMessage(
+            req,
+            res,
+            "/user/signup-otp",
+            error.message || "OTP verification failed."
+        );
     }
 };
 
@@ -246,10 +244,12 @@ const resendOTP = async (req, res) => {
     } catch (error) {
         console.error("Resend signup OTP error:", error);
 
-        return res.status(error.statusCode || 400).render("user/signup-otp", {
-            email,
-            message: error.message || "Unable to resend OTP."
-        });
+        return redirectWithMessage(
+            req,
+            res,
+            "/user/signup-otp",
+            error.message || "Unable to resend OTP."
+        );
     }
 };
 
@@ -323,10 +323,12 @@ const forgot_verifyOTP = async (req, res) => {
     } catch (error) {
         console.error("Forgot password OTP error:", error);
 
-        return res.status(error.statusCode || 400).render("user/forgot-verify-otp", {
-            email,
-            message: error.message || "OTP verification failed."
-        });
+        return redirectWithMessage(
+            req,
+            res,
+            "/user/forgot-otp",
+            error.message || "OTP verification failed."
+        );
     }
 };
 
@@ -339,12 +341,15 @@ const forgot_loadVerifyOTP = async (req, res) => {
             return res.redirect("/user/forgot-password");
         }
 
-        const otpExpiry =
-            await userAuthService.getPasswordResetOtpExpiry(email);
+        const otpExpiry = await userAuthService.getPasswordResetOtpExpiry(email);
+
+        const message = req.session.message;
+        delete req.session.message;
 
         return res.render("user/forgot-otp", {
             email,
-            otpExpiry
+            otpExpiry,
+            message
         });
 
     } catch (error) {
@@ -369,10 +374,12 @@ const forgot_resendOTP = async (req, res) => {
     } catch (error) {
         console.error("Resend password OTP error:", error);
 
-        return res.status(error.statusCode || 400).render("user/forgot-otp", {
-            email,
-            message: error.message || "Unable to resend OTP."
-        });
+        return redirectWithMessage(
+            req,
+            res,
+            "/user/forgot-otp",
+            error.message || "Unable to resend OTP."
+        );
     }
 };
 
@@ -382,7 +389,12 @@ const loadResetPassword = (req, res) => {
         return res.redirect("/user/forgot-password");
     }
 
-    return res.render("user/reset-password");
+    const message = req.session.message;
+    delete req.session.message;
+
+    return res.render("user/reset-password", {
+        message
+    });
 };
 
 // RESET PASSWORD
@@ -400,19 +412,22 @@ const resetPassword = async (req, res) => {
         );
 
         return req.session.destroy((error) => {
-            res.clearCookie("user.sid", { path: "/" });
-
             if (error) {
                 console.error("Reset password session error:", error);
+                return res.status(500).send("Password reset successful, but session cleanup failed.");
             }
 
+            res.clearCookie("user.sid", { path: "/" });
             return res.redirect("/user/login");
         });
 
     } catch (error) {
-        return res.status(error.statusCode || 400).render("user/reset-password", {
-            message: error.message || "Unable to reset password."
-        });
+        return redirectWithMessage(
+            req,
+            res,
+            "/user/reset-password",
+            error.message || "Unable to reset password."
+        );
     }
 };
 
