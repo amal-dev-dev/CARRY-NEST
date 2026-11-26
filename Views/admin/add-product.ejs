@@ -353,24 +353,28 @@
                         <input type="text"
                         name="productName"
                         placeholder="Product name"
-                        class="productName">
+                        class="productName"
+                        value="<%= formData?.productName || '' %>">
 
                     </div>
 
                     <div class="form-group">
                         <label for="brand">Brand</label>
 
-                        <select name="brand" id="brand" required>
-                            <option value="">Select Brand</option>
+                            <select name="brand" id="brand">
+                                <option value="">Select Brand</option>
 
-                            <% if (brands && brands.length > 0) { %>
-                                <% brands.forEach((brand) => { %>
-                                    <option value="<%= brand.name %>">
-                                        <%= brand.name %>
-                                    </option>
-                                <% }) %>
-                            <% } %>
-                        </select>
+                                <% if (brands && brands.length > 0) { %>
+                                    <% brands.forEach((brand) => { %>
+                                        <option
+                                            value="<%= brand.name %>"
+                                            <%= formData?.brand === brand.name ? 'selected' : '' %>
+                                        >
+                                            <%= brand.name %>
+                                        </option>
+                                    <% }) %>
+                                <% } %>
+                            </select>
 
                         <% if (!brands || brands.length === 0) { %>
                             <small class="error-message">
@@ -388,17 +392,14 @@
                         <label>Category</label>
 
                         <select name="category">
-
-                            <% categories.forEach((cat)=>{ %>
-
-                                <option value="<%= cat._id %>">
-
+                            <% categories.forEach((cat) => { %>
+                                <option
+                                    value="<%= cat._id %>"
+                                    <%= formData?.category === cat._id.toString() ? 'selected' : '' %>
+                                >
                                     <%= cat.name %>
-
                                 </option>
-
                             <% }) %>
-
                         </select>
 
                     </div>
@@ -409,8 +410,7 @@
 
                     <label>Description</label>
 
-                    <textarea name="description"
-                    rows="5"></textarea>
+                    <textarea name="description" rows="5"><%= formData?.description || '' %></textarea>
 
                 </div>
 
@@ -436,26 +436,90 @@
                 <!-- VARIANTS CONTAINER -->
                 <div id="variantsContainer">
 
-                    <div class="variant-card">
+                    <%
+                        const submittedColors = Array.isArray(formData?.colors)
+                            ? formData.colors
+                            : formData?.colors
+                                ? [formData.colors]
+                                : [''];
+                    %>
 
-                        <div class="variant-header">
+                    <% submittedColors.forEach((color, index) => { %>
 
-                            <div class="color-info">
-                                <div class="color-circle"></div>
+                        <div class="variant-card">
 
-                                <input
-                                    type="text"
-                                    name="colors[]"
-                                    class="colorInput"
-                                    placeholder="Enter Color"
-                                />
+                            <div class="variant-header">
+
+                                <div class="color-info">
+
+                                    <div
+                                        class="color-circle"
+                                        style="background-color: <%= color %>"
+                                    ></div>
+
+                                    <input
+                                        type="text"
+                                        name="colors[]"
+                                        class="colorInput"
+                                        placeholder="Enter Color"
+                                        value="<%= color %>"
+                                    />
+
+                                </div>
+
+                                <% if (index > 0) { %>
+
+                                    <button
+                                        type="button"
+                                        class="removeVariant"
+                                    >
+                                        <i class="ri-delete-bin-line"></i>
+                                        Remove
+                                    </button>
+
+                                <% } %>
+
                             </div>
 
                         </div>
 
-                    </div>
+                    <% }) %>
 
                 </div>
+
+                <%
+                    const submittedSizes = Array.isArray(formData?.sizes)
+                        ? formData.sizes
+                        : formData?.sizes !== undefined
+                            ? [formData.sizes]
+                            : ['Standard', 'Professional', 'Travel'];
+
+                    const submittedStocks = Array.isArray(formData?.stocks)
+                        ? formData.stocks
+                        : formData?.stocks !== undefined
+                            ? [formData.stocks]
+                            : [];
+
+                    const submittedRegularPrices = Array.isArray(formData?.regularPrices)
+                        ? formData.regularPrices
+                        : formData?.regularPrices !== undefined
+                            ? [formData.regularPrices]
+                            : [];
+
+                    const submittedSalePrices = Array.isArray(formData?.salePrices)
+                        ? formData.salePrices
+                        : formData?.salePrices !== undefined
+                            ? [formData.salePrices]
+                            : [];
+
+                    const variantRowCount = Math.max(
+                        3,
+                        submittedSizes.length,
+                        submittedStocks.length,
+                        submittedRegularPrices.length,
+                        submittedSalePrices.length
+                    );
+                %>
 
                 <!-- TABLE -->
                 <div class="variant-table">
@@ -471,51 +535,52 @@
                         </thead>
 
                         <tbody>
-                            <tr>
-                                <td>
-                                    <input type="text" name="sizes[]" value="Standard">
-                                </td>
-                                <td>
-                                    <input type="number" name="stocks[]" placeholder="Stock">
-                                </td>
-                                <td>
-                                    <input type="number" name="regularPrices[]" placeholder="₹ Original Price">
-                                </td>
-                                <td>
-                                    <input type="number" name="salePrices[]" placeholder="₹ Sale Price">
-                                </td>
-                            </tr>
 
-                            <tr>
-                                <td>
-                                    <input type="text" name="sizes[]" value="Professional">
-                                </td>
-                                <td>
-                                    <input type="number" name="stocks[]" placeholder="Stock">
-                                </td>
-                                <td>
-                                    <input type="number" name="regularPrices[]" placeholder="₹ Original Price">
-                                </td>
-                                <td>
-                                    <input type="number" name="salePrices[]" placeholder="₹ Sale Price">
-                                </td>
-                            </tr>
+                            <% for (let i = 0; i < variantRowCount; i++) { %>
 
-                            <tr>
-                                <td>
-                                    <input type="text" name="sizes[]" value="Travel">
-                                </td>
-                                <td>
-                                    <input type="number" name="stocks[]" placeholder="Stock">
-                                </td>
-                                <td>
-                                    <input type="number" name="regularPrices[]" placeholder="₹ Original Price">
-                                </td>
-                                <td>
-                                    <input type="number" name="salePrices[]" placeholder="₹ Sale Price">
-                                </td>
-                            </tr>
+                                <tr>
+
+                                    <td>
+                                        <input
+                                            type="text"
+                                            name="sizes[]"
+                                            value="<%= submittedSizes[i] ?? '' %>"
+                                        >
+                                    </td>
+
+                                    <td>
+                                        <input
+                                            type="number"
+                                            name="stocks[]"
+                                            placeholder="Stock"
+                                            value="<%= submittedStocks[i] ?? '' %>"
+                                        >
+                                    </td>
+
+                                    <td>
+                                        <input
+                                            type="number"
+                                            name="regularPrices[]"
+                                            placeholder="₹ Original Price"
+                                            value="<%= submittedRegularPrices[i] ?? '' %>"
+                                        >
+                                    </td>
+
+                                    <td>
+                                        <input
+                                            type="number"
+                                            name="salePrices[]"
+                                            placeholder="₹ Sale Price"
+                                            value="<%= submittedSalePrices[i] ?? '' %>"
+                                        >
+                                    </td>
+
+                                </tr>
+
+                            <% } %>
+
                         </tbody>
+                        
                     </table>
 
                 </div>
@@ -818,6 +883,21 @@ Swal.fire({
 </script>
 
 <% } %>
+
+
+<script>
+    const brandSelect = document.getElementById("brand");
+
+    brandSelect.addEventListener("invalid", function () {
+        if (!this.value) {
+            this.setCustomValidity("Please select a valid active brand.");
+        }
+    });
+
+    brandSelect.addEventListener("change", function () {
+        this.setCustomValidity("");
+    });
+</script>
 
 </body>
 </html>

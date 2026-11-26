@@ -488,7 +488,7 @@ const placeOrder = async (
                         }
                     }
                 },
-                { new: true }
+                { returnDocument: "after" }
             );
 
             if (!wallet) {

@@ -60,13 +60,19 @@ const addItemToCart = async (
     requestedQuantity = 1
 ) => {
 
-    // Find product using variant ID
+    // Find product and populate its category
     const product = await Product.findOne({
         "variants._id": variantId
-    });
+    }).populate("category");
 
-    // Product not found or blocked
-    if (!product || product.isBlocked) {
+    // Check product and category availability
+    if (
+        !product ||
+        product.isBlocked ||
+        !product.category ||
+        product.category.isListed !== true ||
+        product.category.isBlocked === true
+    ) {
         throw new Error("Product unavailable");
     }
 

@@ -252,7 +252,9 @@
                         </a>
 
                         <div id="paymentMessage" class="payment-message"
-                             role="status" aria-live="polite"></div>
+                            role="status" aria-live="polite">
+                            <%= typeof errorMessage !== "undefined" ? errorMessage : "" %>
+                        </div>
 
                         <div class="payment-method-note">
                             <i class="fa-solid fa-lock"></i>
@@ -411,10 +413,30 @@
                      * for this existing failed order and render it as
                      * `razorpayOrder`.
                      */
-                    const razorpayOrder = <%- JSON.stringify(razorpayOrder) %>;
+                    // Ask the server to validate the order and create a fresh Razorpay order
+                    const response = await fetch(
+                        "/user/retry-payment/<%= String(order._id) %>/create-order",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        }
+                    );
+
+                    const result = await response.json();
+
+                    if (!response.ok || !result.success) {
+                        throw new Error(
+                            result.message || "Unable to start payment."
+                        );
+                    }
+
+                    const razorpayOrder = result.razorpayOrder;
+                    const razorpayKeyId = result.razorpayKeyId;
 
                     const options = {
-                        key: <%- JSON.stringify(razorpayKeyId) %>,
+                        key: razorpayKeyId,
                         amount: razorpayOrder.amount,
                         currency: razorpayOrder.currency || "INR",
                         name: "CARRY NEST",

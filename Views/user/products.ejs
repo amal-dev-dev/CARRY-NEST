@@ -443,6 +443,9 @@
     </div>
 </footer>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5"></script>
+
 <script>
 
     // Filter accordion dropdowns
@@ -535,7 +538,12 @@
             const variantId = this.dataset.variantId;
 
             if (!variantId) {
-                alert("Product variant not found.");
+                Swal.fire({
+                    icon: "warning",
+                    title: "Oops!",
+                    text: "Product variant not found.",
+                    confirmButtonText: "OK"
+                });
                 return;
             }
 
@@ -556,7 +564,12 @@
                 const result = await response.json();
 
                 if (!response.ok || !result.success) {
-                    alert(result.message || "Unable to update wishlist.");
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Wishlist",
+                        text: result.message || "Unable to update wishlist.",
+                        confirmButtonText: "OK"
+                    });
                     return;
                 }
 
@@ -586,9 +599,24 @@
                         : "none";
                 }
 
+
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: isAdded ? "success" : "info",
+                    title: result.message,
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+
             } catch (error) {
                 console.error("Wishlist request failed:", error);
-                alert("Something went wrong. Please try again.");
+                Swal.fire({
+                    icon: "error",
+                    title: "Something went wrong!",
+                    text: "Please try again."
+                });
             } finally {
                 this.disabled = false;
             }

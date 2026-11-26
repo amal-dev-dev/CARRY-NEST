@@ -1,157 +1,54 @@
-import Product from "../../Model/productModel.js";
-import Category from "../../Model/categoryModel.js";
-import Brand from "../../Model/brandModel.js";
-
-
-
-const validateProductName = (name) => {
-
-    if (typeof name !== "string" || !name.trim()) {
-        return "Product name is required.";
-    }
-
-    const trimmedName = name.trim();
-
-    if (trimmedName.length < 3 || trimmedName.length > 50) {
-        return "Product name must be between 3 and 50 characters.";
-    }
-
-    if (!/[A-Za-z]/.test(trimmedName)) {
-        return "Product name must contain at least one letter.";
-    }
-
-    if (!/^[A-Za-z0-9\s&'()-]+$/.test(trimmedName)) {
-        return "Product name contains invalid characters.";
-    }
-
-    return null;
-};
+import productService from "../../Service/admin/productService.js";
 
 
 const loadProducts = async (req, res) => {
-
     try {
 
         const search = req.query.search || "";
-        const page = parseInt(req.query.page) || 1;
-        const limit = 4;
-        const skip = (page - 1) * limit;
+        const page = req.query.page || 1;
 
-        const searchQuery = {
-            productName: {
-                $regex: search,
-                $options: "i"
-            }
-        };
-
-        // Total products without search
-        const totalProductsCount = await Product.countDocuments();
-
-        // Get products
-        const products = await Product.find(searchQuery)
-            .populate("category")
-            .sort({ createdAt: -1 })
-            .skip(skip)
-            .limit(limit);
-
-        // Calculate total stock for each product
-        const productsWithStock = products.map(product => {
-
-            const totalStock = product.variants.reduce(
-                (total, variant) => {
-                    return total + (Number(variant.stock) || 0);
-                },
-                0
-            );
-
-            return {
-                ...product.toObject(),
-                totalStock
-            };
-
-        });
-
-        // Pagination
-        const totalProducts = await Product.countDocuments(searchQuery);
-        const totalPages = Math.ceil(totalProducts / limit);
-
-        // Get all products for stock statistics
-        const allProducts = await Product.find(
-            searchQuery,
-            { variants: 1 }
-        );
-
-        let lowStockCount = 0;
-        let outOfStockCount = 0;
-
-        allProducts.forEach(product => {
-
-            const totalStock = product.variants.reduce(
-                (total, variant) => {
-                    return total + (Number(variant.stock) || 0);
-                },
-                0
-            );
-
-            if (totalStock === 0) {
-                outOfStockCount++;
-            }
-            else if (totalStock > 0 && totalStock < 10) {
-                lowStockCount++;
-            }
-
+        const data = await productService.getProductsPageData({
+            search,
+            page,
+            limit: 4
         });
 
         const message = req.session.message;
         req.session.message = null;
 
         return res.render("admin/products", {
-
-            products: productsWithStock,
-            currentPage: page,
-            totalPages,
+            ...data,
             search,
-            totalProductsCount,
-            lowStockCount,
-            outOfStockCount,
             message
-
         });
 
     } catch (error) {
 
         console.log("PRODUCT PAGE ERROR:", error);
 
-        res.redirect("/admin/pageerror");
-
+        return res.redirect("/admin/pageerror");
     }
-
 };
 
-const loadAddProduct = async(req,res)=>{
-
-    try{
-
-        const categories = await Category.find({
-            isListed:true
-        });  
-
-        const brands = await Brand.find({
-            isActive: true
-        }).sort({ name: 1 }).lean();
 
 
-        res.render("admin/add-product",{
-            categories,
-            brands,
-            message: null
+const loadAddProduct = async (req, res) => {
+
+    try {
+
+        const data = await productService.getAddProductPageData();
+
+        return res.render("admin/add-product", {
+            ...data,
+            message: null,
+            formData: {}
         });
 
-    }catch(error){
+    } catch (error) {
 
-        console.log("LOAD ADD PRODUCT ERROR:",error);
+        console.log("LOAD ADD PRODUCT ERROR:", error);
 
-        res.redirect("/admin/pageerror");
+        return res.redirect("/admin/pageerror");
 
     }
 
@@ -160,416 +57,89 @@ const loadAddProduct = async(req,res)=>{
 
 
 const addProduct = async (req, res) => {
+
     try {
-        const categories = await Category.find({
-            isListed: true
-        });
 
-        const brands = await Brand.find({
-            isActive: true
-        }).sort({ name: 1 }).lean();
+        const result = await productService.createProduct(
+            req.body,
+            req.files || []
+        );
 
-        // Helper to render the form with all required data
-        const renderAddProduct = (message) => {
+        if (!result.success) {
+
+            const data = await productService.getAddProductPageData();
+
             return res.status(400).render("admin/add-product", {
-                categories,
-                brands,
-                message
+                ...data,
+                message: result.message,
+                formData: req.body
             });
-        };
-
-        // Validate brand
-        const selectedBrand = await Brand.findOne({
-            name: req.body.brand,
-            isActive: true
-        });
-
-        if (!selectedBrand) {
-            return renderAddProduct(
-                "Please select a valid active brand"
-            );
         }
-
-        // Validate product name
-        const nameError = validateProductName(req.body.productName);
-
-        if (nameError) {
-            return renderAddProduct(nameError);
-        }
-
-        // Validate description
-        if (!req.body.description?.trim()) {
-            return renderAddProduct("Description is required");
-        }
-
-        // Validate colors
-        const colors = Array.isArray(req.body.colors)
-            ? req.body.colors
-            : req.body.colors
-                ? [req.body.colors]
-                : [];
-
-        if (!colors.some(color => color?.trim())) {
-            return renderAddProduct(
-                "At least one color is required"
-            );
-        }
-
-        // Normalize variant fields
-        const sizes = Array.isArray(req.body.sizes)
-            ? req.body.sizes
-            : req.body.sizes
-                ? [req.body.sizes]
-                : [];
-
-        const stocks = Array.isArray(req.body.stocks)
-            ? req.body.stocks
-            : req.body.stocks !== undefined
-                ? [req.body.stocks]
-                : [];
-
-        const regularPrices = Array.isArray(req.body.regularPrices)
-            ? req.body.regularPrices
-            : req.body.regularPrices !== undefined
-                ? [req.body.regularPrices]
-                : [];
-
-        const salePrices = Array.isArray(req.body.salePrices)
-            ? req.body.salePrices
-            : req.body.salePrices !== undefined
-                ? [req.body.salePrices]
-                : [];
-
-        // Process only completely filled variants
-        let variants = sizes
-            .map((size, index) => ({
-                size: (size || "").trim(),
-                stock: stocks[index],
-                regularPrice: regularPrices[index],
-                salePrice: salePrices[index]
-            }))
-            .filter(variant => {
-                return (
-                    variant.size !== "" &&
-                    String(variant.stock ?? "").trim() !== "" &&
-                    String(variant.regularPrice ?? "").trim() !== "" &&
-                    String(variant.salePrice ?? "").trim() !== ""
-                );
-            })
-            .map(variant => ({
-                size: variant.size,
-                stock: Number(variant.stock),
-                regularPrice: Number(variant.regularPrice),
-                salePrice: Number(variant.salePrice)
-            }));
-
-        // At least one complete variant is required
-        if (variants.length === 0) {
-            return renderAddProduct(
-                "Please fill at least one complete product variant."
-            );
-        }
-
-        // Validate completed variants
-        for (const variant of variants) {
-
-            if (
-                !Number.isFinite(variant.stock) ||
-                !Number.isFinite(variant.regularPrice) ||
-                !Number.isFinite(variant.salePrice)
-            ) {
-                return renderAddProduct("Please enter valid stock and price values.");
-            }
-
-            if (
-                variant.stock < 0 ||
-                variant.regularPrice <= 0 ||
-                variant.salePrice < 0
-            ) {
-                return renderAddProduct(
-                    "Stock cannot be negative, original price must be positive, and sale price cannot be negative."
-                );
-            }
-
-            if (variant.salePrice > variant.regularPrice) {
-                return renderAddProduct(
-                    "Sale price cannot be greater than original price."
-                );
-            }
-        }
-
-        // Upload images already handled by your upload middleware
-        const images = req.files
-            ? req.files.map(file => file.path)
-            : [];
-
-        if (images.length < 3) {
-            return renderAddProduct(
-                "Please upload at least 3 product images"
-            );
-        }
-
-        // Create product
-        const newProduct = new Product({
-            colors: colors.filter(color => color?.trim()),
-            productName: req.body.productName.trim(),
-            brand: selectedBrand.name,
-            category: req.body.category,
-            description: req.body.description.trim(),
-            variants,
-            productImage: images
-        });
-
-        await newProduct.save();
 
         return res.redirect("/admin/products");
 
     } catch (error) {
+
         console.error("ADD PRODUCT ERROR:", error);
 
         return res.redirect("/admin/add-product");
+
     }
 };
 
 
 
-const loadEditProduct = async(req,res)=>{
-
-    try{
-
+const loadEditProduct = async (req, res) => {
+    try {
         const id = req.params.id;
 
-        const product = await Product.findById(id);
+        const data = await productService.getEditProductPageData(id);
 
-        const categories = await Category.find({
+        if (!data.product) {
+            return res.redirect("/admin/products");
+        }
 
-            isListed:true
-
+        return res.render("admin/edit-product", {
+            ...data
         });
 
-        const brands = await Brand.find({
-            isActive: true
-        }).sort({ name: 1 }).lean();
-
-        res.render("admin/edit-product",{
-
-            product,
-            categories,
-            brands
-
-        });
-
-    }catch(error){
-
-        console.log("LOAD EDIT PRODUCT ERROR:",error);
-
-        res.redirect("/admin/pageerror");
-
+    } catch (error) {
+        console.log("LOAD EDIT PRODUCT ERROR:", error);
+        return res.redirect("/admin/pageerror");
     }
-
 };
 
 
 
 const editProduct = async (req, res) => {
     try {
+
         const id = req.params.id;
 
-        const product = await Product.findById(id);
+        const result = await productService.updateProduct(
+            id,
+            req.body,
+            req.files || []
+        );
 
-        if (!product) {
+        if (result.notFound) {
             return res.redirect("/admin/products");
         }
 
-        const categories = await Category.find({
-            isListed: true
-        });
+        if (!result.success) {
 
-        // Get active brands from MongoDB
-        const brands = await Brand.find({
-            isActive: true
-        }).sort({ name: 1 }).lean();
+            const data = await productService.getEditProductPageData(id);
 
-        // Keep the current brand visible if it is now inactive
-        const currentBrandExists = brands.some(
-            brand => brand.name === product.brand
-        );
-
-        if (product.brand && !currentBrandExists) {
-            brands.unshift({
-                name: product.brand,
-                isActive: false
-            });
-        }
-
-        const {
-            productName,
-            description,
-            category,
-            brand,
-            colors,
-            removedImages
-        } = req.body;
-
-        const nameError = validateProductName(productName);
-
-        if (nameError) {
             return res.status(400).render("admin/edit-product", {
-                product,
-                categories,
-                brands,
-                message: nameError
+                ...data,
+                message: result.message
             });
         }
-
-        // Validate the selected brand
-        const selectedBrand = await Brand.findOne({
-            name: brand,
-            isActive: true
-        });
-
-        if (!selectedBrand) {
-            return res.status(400).render("admin/edit-product", {
-                product,
-                categories,
-                brands,
-                message: "Please select a valid active brand."
-            });
-        }
-
-        // Normalize variant fields because a single input may arrive as a string
-        const sizes = Array.isArray(req.body.size)
-            ? req.body.size
-            : req.body.size
-                ? [req.body.size]
-                : [];
-
-        const stocks = Array.isArray(req.body.stock)
-            ? req.body.stock
-            : req.body.stock !== undefined
-                ? [req.body.stock]
-                : [];
-
-        const regularPrices = Array.isArray(req.body.regularPrice)
-            ? req.body.regularPrice
-            : req.body.regularPrice !== undefined
-                ? [req.body.regularPrice]
-                : [];
-
-        const salePrices = Array.isArray(req.body.salePrice)
-            ? req.body.salePrice
-            : req.body.salePrice !== undefined
-                ? [req.body.salePrice]
-                : [];
-
-        let variants = sizes
-            .map((size, index) => ({
-                size: String(size).trim(),
-                stock: Number(stocks[index]),
-                regularPrice: Number(regularPrices[index]),
-                salePrice: Number(salePrices[index])
-            }))
-            .filter(variant => variant.size !== "");
-
-        // Validate variants only when variant fields are submitted
-        const variantFieldsSubmitted =
-            req.body.size !== undefined ||
-            req.body.stock !== undefined ||
-            req.body.regularPrice !== undefined ||
-            req.body.salePrice !== undefined;
-
-        if (variantFieldsSubmitted) {
-
-            if (variants.length === 0) {
-                return res.status(400).render("admin/edit-product", {
-                    product,
-                    categories,
-                    brands,
-                    message: "Please add at least one product variant."
-                });
-            }
-
-            for (const variant of variants) {
-
-                if (
-                    !Number.isFinite(variant.stock) ||
-                    !Number.isFinite(variant.regularPrice) ||
-                    !Number.isFinite(variant.salePrice)
-                ) {
-                    return res.status(400).render("admin/edit-product", {
-                        product,
-                        categories,
-                        brands,
-                        message: "Please enter valid variant values."
-                    });
-                }
-
-                if (variant.stock < 0) {
-                    return res.status(400).render("admin/edit-product", {
-                        product,
-                        categories,
-                        brands,
-                        message: "Stock cannot be less than 0."
-                    });
-                }
-
-                if (
-                    variant.regularPrice <= 0 ||
-                    variant.salePrice < 0 ||
-                    variant.regularPrice <= variant.salePrice
-                ) {
-                    return res.status(400).render("admin/edit-product", {
-                        product,
-                        categories,
-                        brands,
-                        message: "Regular price must be greater than sale price."
-                    });
-                }
-            }
-
-        }
-
-
-        // Existing images
-        let updatedImages = [...product.productImage];
-
-        // Remove selected images
-        if (removedImages) {
-            const removedIndexes = removedImages
-                .split(",")
-                .map(Number);
-
-            updatedImages = updatedImages.filter(
-                (_, index) => !removedIndexes.includes(index)
-            );
-        }
-
-        // Add newly uploaded images
-        if (req.files && req.files.length > 0) {
-            const newImages = req.files.map(file => file.path);
-            updatedImages.push(...newImages);
-        }
-
-        // Update product
-        product.productName = productName.trim();
-        product.description = description;
-        product.category = category;
-        product.brand = selectedBrand.name;
-        if (variantFieldsSubmitted) {
-            product.variants = variants;
-        }
-        product.colors = Array.isArray(colors)
-            ? colors
-            : colors
-                ? [colors]
-                : [];
-        product.productImage = updatedImages;
-
-        await product.save();
 
         return res.redirect("/admin/products");
 
     } catch (error) {
+
         console.log("EDIT PRODUCT ERROR:", error);
 
         req.session.message = "Unable to update product. Please try again.";
@@ -580,54 +150,52 @@ const editProduct = async (req, res) => {
 
 
 const blockProduct = async (req, res) => {
-
     try {
 
-        const id = req.params.id;
+        const result = await productService.toggleProductBlockStatus(
+            req.params.id
+        );
 
-        const product = await Product.findById(id);
+        if (result.notFound) {
+            req.session.message = "Product not found.";
+            return res.redirect("/admin/products");
+        }
 
-        await Product.findByIdAndUpdate(id, {
-            isBlocked: !product.isBlocked
-        });
-
-        req.session.message = !product.isBlocked
+        req.session.message = result.isBlocked
             ? "Product blocked successfully."
             : "Product unblocked successfully.";
 
-        res.redirect("/admin/products");
+        return res.redirect("/admin/products");
 
     } catch (error) {
 
         console.log("BLOCK PRODUCT ERROR:", error);
 
-        res.redirect("/admin/pageerror");
-
+        return res.redirect("/admin/pageerror");
     }
-
 };
 
-const unblockProduct = async (req,res)=>{
 
-    try{
+const unblockProduct = async (req, res) => {
+    try {
 
-        await Product.findByIdAndUpdate(
-            req.params.id,
-            { isBlocked:false }
-        );
+        const result = await productService.unblockProduct(req.params.id);
+
+        if (result.notFound) {
+            req.session.message = "Product not found.";
+            return res.redirect("/admin/products");
+        }
 
         req.session.message = "Product unblocked successfully.";
 
-        res.redirect("/admin/products");
+        return res.redirect("/admin/products");
 
-    }catch(error){
+    } catch (error) {
 
-        console.log(error);
+        console.log("UNBLOCK PRODUCT ERROR:", error);
 
-        res.redirect("/admin/pageerror");
-
+        return res.redirect("/admin/pageerror");
     }
-
 };
 
 
