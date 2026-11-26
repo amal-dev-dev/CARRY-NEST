@@ -507,7 +507,7 @@
                         <div class="action-buttons">
 
                             <form
-                                action="/admin/return-requests/<%= order._id %>/approve"
+                                action="/admin/return-requests/<%= order._id %>/<%= returnProduct._id %>/approve"
                                 method="POST"
                                 class="approveForm">
 
@@ -519,7 +519,7 @@
                             </form>
 
                             <form
-                                action="/admin/return-requests/<%= order._id %>/reject"
+                                action="/admin/return-requests/<%= order._id %>/<%= returnProduct._id %>/reject"
                                 method="POST"
                                 class="rejectForm">
 
@@ -540,25 +540,25 @@
 
                         <div class="decision-box">
 
-                            <% if(returnProduct.status === "returned"){ %>
+                            <% if(returnProduct.returnStatus === "approved"){ %>
 
-                                <i class="fa-solid fa-circle-check success-icon"></i>
+                                <div class="details-card">
+                                    <div class="decision-box">
+                                        <i class="fa-solid fa-circle-check success-icon"></i>
+                                        <h3>Return Approved</h3>
+                                        <p>This return request has been approved successfully.</p>
+                                    </div>
+                                </div>
 
-                                <h3>Return Approved</h3>
+                            <% } else if(returnProduct.returnStatus === "rejected"){ %>
 
-                                <p>
-                                    This return request has been approved successfully.
-                                </p>
-
-                            <% } else { %>
-
-                                <i class="fa-solid fa-circle-xmark reject-icon"></i>
-
-                                <h3>Return Rejected</h3>
-
-                                <p>
-                                    This return request has been rejected.
-                                </p>
+                                <div class="details-card">
+                                    <div class="decision-box">
+                                        <i class="fa-solid fa-circle-xmark reject-icon"></i>
+                                        <h3>Return Rejected</h3>
+                                        <p>This return request has been rejected.</p>
+                                    </div>
+                                </div>
 
                             <% } %>
 

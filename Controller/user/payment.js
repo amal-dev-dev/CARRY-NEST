@@ -7,7 +7,7 @@ import Order from "../../Model/orderModel.js";
 import Product from "../../Model/productModel.js";
 import checkoutService from "../../Service/user/checkoutService.js";
 import Offer from "../../Model/offerModel.js";
-import generateOrderId from "../../Service/user/orderIDService.js";
+import generateOrderId from "../../Service/user/generateOrderId.js";
 
 
 const isUnavailableProduct = (product) => {

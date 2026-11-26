@@ -281,6 +281,13 @@
                                     <span class="product-status <%= product.status || order.orderStatus %>">
                                         <%= (product.status || order.orderStatus).replaceAll("_", " ") %>
                                     </span>
+
+                                    <% if (product.returnStatus === "rejected") { %>
+                                        <p class="return-rejected-message">
+                                            Your return request was rejected by the admin.
+                                        </p>
+                                    <% } %>
+
                                 </div>
 
                                 <div class="product-price-box">
@@ -321,19 +328,16 @@
                                             class="cancel-order-btn"
                                             onclick="openCancelProductModal(
                                                 '<%= order._id %>',
-                                                '<%= product.productId?._id || product.productId %>'
+                                                '<%= product._id %>'
                                             )">
-
                                             Cancel Product
-
                                         </button>
 
                                     <% } %>
 
                                     <!-- RETURN BUTTON -->
                                     <%
-                                    const canReturn =
-                                        product.status === "delivered";
+                                        const canReturn = product.status === "delivered";
                                     %>
 
                                     <% if (canReturn) { %>
@@ -343,11 +347,9 @@
                                             class="return-order-btn"
                                             onclick="openReturnProductModal(
                                                 '<%= order._id %>',
-                                                '<%= product.productId?._id || product.productId %>'
+                                                '<%= product._id %>'
                                             )">
-
                                             Return Product
-
                                         </button>
 
                                     <% } %>
@@ -829,6 +831,54 @@
         </div>
     </div>
 
+    <!-- =========================
+        RETURN FULL ORDER MODAL
+    ========================= -->
+    <div id="returnOrderModal" class="cancel-modal-overlay">
+        <div class="cancel-modal">
+
+            <div class="cancel-modal-header">
+                <h3>Return Full Order</h3>
+                <button
+                    type="button"
+                    class="close-modal-btn"
+                    onclick="closeReturnOrderModal()">
+                    &times;
+                </button>
+            </div>
+
+            <form id="returnOrderForm" method="POST">
+                <div class="cancel-modal-body">
+                    <label for="returnOrderReason">Reason for return</label>
+
+                    <div class="cancel-input-box">
+                        <input
+                            type="text"
+                            id="returnOrderReason"
+                            name="reason"
+                            placeholder="Type the reason for returning this order"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="cancel-modal-footer">
+                    <button
+                        type="button"
+                        class="modal-cancel-btn"
+                        onclick="closeReturnOrderModal()">
+                        Close
+                    </button>
+
+                    <button type="submit" class="modal-submit-btn">
+                        Submit
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
 <script>
     const cancelOrderModal = document.getElementById("cancelOrderModal");
     const cancelOrderForm = document.getElementById("cancelOrderForm");
@@ -838,6 +888,9 @@
 
     const returnProductModal = document.getElementById("returnProductModal");
     const returnProductForm = document.getElementById("returnProductForm");
+
+    const returnOrderModal = document.getElementById("returnOrderModal");
+    const returnOrderForm = document.getElementById("returnOrderForm");
 
     // FULL ORDER CANCEL
     function openCancelOrderModal(orderId) {
@@ -872,6 +925,17 @@
         document.getElementById("returnProductReason").value = "";
     }
 
+    // RETURN FULL ORDER
+    function openReturnOrderModal(orderId) {
+        returnOrderModal.classList.add("show");
+        returnOrderForm.action = `/user/orders/${orderId}/return`;
+    }
+
+    function closeReturnOrderModal() {
+        returnOrderModal.classList.remove("show");
+        document.getElementById("returnOrderReason").value = "";
+    }
+
     // close modal on outside click
     window.addEventListener("click", function (e) {
         if (e.target === cancelOrderModal) {
@@ -884,6 +948,10 @@
 
         if (e.target === returnProductModal) {
             closeReturnProductModal();
+        }
+
+        if (e.target === returnOrderModal) {
+            closeReturnOrderModal();
         }
     });
 </script>

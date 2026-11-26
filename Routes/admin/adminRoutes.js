@@ -55,9 +55,9 @@ router.post("/order/:orderId/product/:itemId", adminAuth, orderController.update
 
 // Return Approval
 router.get("/return-requests", adminAuth, orderController.loadReturnRequests);
-router.get("/return-request-details/:orderId", adminAuth, orderController.loadReturnRequestDetails);
-router.post("/return-requests/:orderId/approve", adminAuth, orderController.approveReturn);     
-router.post("/return-requests/:orderId/reject", adminAuth, orderController.rejectReturn);
+router.get("/return-request-details/:orderId/:itemId", adminAuth, orderController.loadReturnRequestDetails);
+router.post( "/return-requests/:orderId/:itemId/approve", adminAuth, orderController.approveReturn);
+router.post("/return-requests/:orderId/:itemId/reject", adminAuth, orderController.rejectReturn);
 router.post("/orders/:orderId/items/:itemId/refund", adminAuth, orderController.processRefund);
 
 // COUPON

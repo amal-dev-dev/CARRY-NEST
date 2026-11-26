@@ -376,7 +376,7 @@
                                         <td>
 
                                             <a
-                                                href="/admin/return-request-details/<%= order._id %>"
+                                                href="/admin/return-request-details/<%= order._id %>/<%= item._id %>"
                                                 class="view-btn"
                                             >
                                                 View
@@ -406,7 +406,7 @@
 
             <p>
                 Total Return Requests:
-                <strong><%= orders.length %></strong>
+                <strong><%= totalReturnRequests %></strong>
             </p>
 
         </div>
