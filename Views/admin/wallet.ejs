@@ -1,734 +1,668 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet & Payments | CARRY NEST</title>
 
-    <title>Wallet & Payments</title>
-
-    <link
-        rel="stylesheet"
-        href="/Styles/admin/wallet.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
+    <link rel="stylesheet" href="/Styles/admin/wallet.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
 </head>
 
 <body>
 
-
 <div class="dashboard-container">
 
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- ================= SIDEBAR ================= -->
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
 
-    <aside class="sidebar">
-
-        <div>
-
-            <!-- LOGO -->
+        <div class="sidebar-top">
 
             <div class="logo-section">
-
-                <div class="logo-box">
-                    C
+                <div class="logo-box">C</div>
+                <div class="logo-text">
+                    <h2>CARRY NEST</h2>
                 </div>
-
-                <h2>CARRY NEST</h2>
-
             </div>
 
+            <nav class="menu-wrapper">
 
-            <!-- MENU -->
-
-            <div class="menu-wrapper">
-
-
-                <!-- DASHBOARD -->
-
-                <a
-                    href="/admin/dashboard"
-                    class="menu-item"
-                >
-
+                <a href="/admin/dashboard" class="menu-item">
                     <span class="menu-left">
-
                         <i class="ri-dashboard-line"></i>
-
-                        Dashboard
-
+                        <span>Dashboard</span>
                     </span>
-
                 </a>
 
-
                 <!-- PRODUCTS -->
-
                 <div class="dropdown-wrapper">
 
-                    <button class="dropdown-btn">
-
+                    <button type="button" class="dropdown-btn">
                         <span class="menu-left">
-
                             <i class="ri-shopping-bag-line"></i>
-
-                            Products
-
+                            <span>Products</span>
                         </span>
-
                         <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-
                     </button>
 
-
                     <div class="dropdown-menu">
-
-                        <a href="/admin/products">
-                            All Products
-                        </a>
-
-                        <a href="/admin/add-product">
-                            Add Product
-                        </a>
-
-                        <a href="/admin/category">
-                            Categories
-                        </a>
-
-                        <a href="/admin/brands">
-                            Brands
-                        </a>
-
+                        <a href="/admin/products">All Products</a>
+                        <a href="/admin/add-product">Add Product</a>
+                        <a href="/admin/category">Categories</a>
+                        <a href="/admin/brands">Brands</a>
                     </div>
 
                 </div>
 
-
                 <!-- ORDERS -->
-
                 <div class="dropdown-wrapper">
 
-                    <button class="dropdown-btn">
-
+                    <button type="button" class="dropdown-btn">
                         <span class="menu-left">
-
                             <i class="ri-shopping-cart-line"></i>
-
-                            Orders
-
+                            <span>Orders</span>
                         </span>
-
                         <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-
                     </button>
 
-
                     <div class="dropdown-menu">
-
                         <a href="/admin/orders">All Orders</a>
                         <a href="/admin/orders?status=pending">Pending</a>
                         <a href="/admin/orders?status=shipped">Shipped</a>
                         <a href="/admin/orders?status=delivered">Delivered</a>
-
                     </div>
 
                 </div>
-
 
                 <!-- RETURNS -->
-
                 <div class="dropdown-wrapper">
 
-                    <button class="dropdown-btn">
-
+                    <button type="button" class="dropdown-btn">
                         <span class="menu-left">
-
                             <i class="ri-arrow-go-back-line"></i>
-
-                            Returns
-
+                            <span>Returns</span>
                         </span>
-
                         <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-
                     </button>
 
-
                     <div class="dropdown-menu">
-
-                        <a href="/admin/return-requests">
-                            Requests
-                        </a>
-
+                        <a href="/admin/return-requests">Requests</a>
                     </div>
 
                 </div>
 
-
-                <!-- CUSTOMERS -->
-
-                <a
-                    href="/admin/customers"
-                    class="menu-item"
-                >
-
+                <a href="/admin/customers" class="menu-item">
                     <span class="menu-left">
-
                         <i class="ri-group-line"></i>
-
-                        Customers
-
+                        <span>Customers</span>
                     </span>
-
                 </a>
 
-
-                <!-- WALLET -->
-
-                <a
-                    href="#"
-                    class="menu-item active"
-                >
-
+                <a href="/admin/wallet" class="menu-item active">
                     <span class="menu-left">
-
                         <i class="ri-wallet-3-line"></i>
-
-                        Wallet & Payments
-
+                        <span>Wallet & Payments</span>
                     </span>
-
                 </a>
 
-
-                <!-- PROMOTIONS -->
-
-                <a
-                    href="/admin/coupons"
-                    class="menu-item"
-                >
-
+                <a href="/admin/coupons" class="menu-item">
                     <span class="menu-left">
-
                         <i class="ri-price-tag-3-line"></i>
-
-                        Promotions
-
+                        <span>Promotions</span>
                     </span>
-
                 </a>
 
-
-                <!-- REPORTS -->
-
-                <a
-                    href="/admin/sales-report"
-                    class="menu-item"
-                >
-
+                <a href="/admin/sales-report" class="menu-item">
                     <span class="menu-left">
-
                         <i class="ri-bar-chart-box-line"></i>
-
-                        Reports
-
+                        <span>Reports</span>
                     </span>
-
                 </a>
 
-            </div>
+            </nav>
 
         </div>
 
-
         <!-- LOGOUT -->
-
         <div class="logout-section">
-
-            <a
-                href="/admin/logout"
-                class="logout-btn"
-            >
-
+            <a href="/admin/logout" class="logout-btn">
                 <i class="ri-logout-box-r-line"></i>
-
-                Logout
-
+                <span>Logout</span>
             </a>
-
         </div>
 
     </aside>
 
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
 
+        <!-- TOPBAR -->
+        <header class="topbar">
 
-    <!-- ================= MAIN CONTENT ================= -->
+            <div class="topbar-left">
 
-   <main class="main-content">
+                <button
+                    type="button"
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Toggle sidebar"
+                >
+                    <i class="ri-menu-line"></i>
+                </button>
 
-    <!-- TOPBAR -->
-    <header class="topbar">
-
-        <div class="top-left">
-            <p class="breadcrumb">
-                Admin
-                <span>/</span>
-                Wallet & Payments
-            </p>
-        </div>
-
-        <div class="top-right">
-
-            <span class="notification">
-                <i class="ri-notification-3-line"></i>
-            </span>
-
-            <div class="admin-profile">
-
-                <div class="admin-avatar">
-                    AD
-                </div>
-
-                <div>
-                    <h4>Admin User</h4>
-                    <span>Super Admin</span>
+                <div class="breadcrumb">
+                    <span>Admin</span>
+                    <i class="ri-arrow-right-s-line"></i>
+                    <strong>Wallet & Payments</strong>
                 </div>
 
             </div>
 
-        </div>
+            <div class="topbar-right">
 
-    </header>
+                <div class="admin-profile">
 
+                    <div class="admin-avatar">AD</div>
 
-    <!-- WALLET CONTENT -->
-    <div class="wallet-content">
-
-        <!-- PAGE TITLE -->
-
-        <div class="wallet-heading">
-
-            <h1>Wallet &amp; Payments</h1>
-
-        </div>
-
-
-        <!-- SUMMARY CARDS -->
-
-        <section class="summary-cards">
-
-            <!-- TOTAL TRANSACTIONS -->
-
-            <div class="summary-card">
-
-                <div class="summary-info">
-
-                    <span class="summary-label">
-                        Total Transactions
-                    </span>
-
-                    <h2>
-                        <%= totalTransactions || 0 %>
-                    </h2>
-
-                    <div class="growth positive">
-                        <i class="ri-arrow-up-line"></i>
-                        <span>+5%</span>
+                    <div class="admin-info">
+                        <h4>Admin User</h4>
+                        <span>Super Admin</span>
                     </div>
 
                 </div>
 
-                <div class="summary-icon">
+            </div>
+
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <div class="wallet-content">
+
+            <!-- PAGE HEADING -->
+            <section class="page-heading">
+
+                <div>
+                    <h1>Wallet & Payments</h1>
+                    <p>Monitor transactions, revenue and refund requests.</p>
+                </div>
+
+                <div class="heading-icon">
                     <i class="ri-wallet-3-line"></i>
                 </div>
 
-            </div>
+            </section>
 
+            <!-- SUMMARY CARDS -->
+            <section class="summary-cards">
 
-            <!-- REVENUE -->
+                <!-- TOTAL TRANSACTIONS -->
+                <article class="summary-card">
 
-            <div class="summary-card">
-
-                <div class="summary-info">
-
-                    <span class="summary-label">
-                        Revenue
-                    </span>
+                    <div class="card-top">
+                        <span class="summary-label">Total Transactions</span>
+                        <div class="summary-icon transaction-icon">
+                            <i class="ri-exchange-funds-line"></i>
+                        </div>
+                    </div>
 
                     <h2>
+                        <%= Number(totalTransactions || 0).toLocaleString("en-IN") %>
+                    </h2>
+
+                    <p class="card-description">
+                        <i class="ri-file-list-3-line"></i>
+                        All matching transactions
+                    </p>
+
+                </article>
+
+                <!-- REVENUE -->
+                <article class="summary-card">
+
+                    <div class="card-top">
+                        <span class="summary-label">Razorpay Revenue</span>
+                        <div class="summary-icon revenue-icon">
+                            <i class="ri-money-rupee-circle-line"></i>
+                        </div>
+                    </div>
+
+                    <h2 class="revenue-value">
                         ₹<%= Number(revenue || 0).toLocaleString("en-IN", {
-                            minimumFractionDigits: 2
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
                         }) %>
                     </h2>
 
-                    <div class="growth positive">
-                        <i class="ri-arrow-up-line"></i>
-                        <span>+12%</span>
+                    <p class="card-description">
+                        <i class="ri-shield-check-line"></i>
+                        Completed online payments
+                    </p>
+
+                </article>
+
+                <!-- REFUNDS -->
+                <article class="summary-card">
+
+                    <div class="card-top">
+                        <span class="summary-label">Refunds Due</span>
+                        <div class="summary-icon refund-icon">
+                            <i class="ri-refund-2-line"></i>
+                        </div>
                     </div>
-
-                </div>
-
-                <div class="summary-icon revenue-icon">
-                    <i class="ri-money-rupee-circle-line"></i>
-                </div>
-
-            </div>
-
-
-            <!-- REFUNDS -->
-
-            <div class="summary-card">
-
-                <div class="summary-info">
-
-                    <span class="summary-label">
-                        Refunds Due
-                    </span>
 
                     <h2>
-                        <%= refundsDue || 0 %>
+                        <%= Number(refundsDue || 0).toLocaleString("en-IN") %>
                     </h2>
 
-                    <div class="growth negative">
-                        <span>+3% from last month</span>
+                    <p class="card-description refund-description">
+                        <i class="ri-time-line"></i>
+                        Return requests awaiting action
+                    </p>
+
+                </article>
+
+            </section>
+
+            <!-- TRANSACTIONS -->
+            <section class="transactions-card">
+
+                <!-- TABLE HEADER -->
+                <div class="transactions-header">
+
+                    <div class="transactions-title">
+                        <h2>Transaction History</h2>
+                        <p>View and track customer transactions</p>
                     </div>
 
-                </div>
+                    <div class="transaction-actions">
 
-                <div class="summary-icon refund-icon">
-                    <i class="ri-refresh-line"></i>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- TRANSACTIONS CARD -->
-
-        <section class="transactions-card">
-
-            <!-- TRANSACTIONS HEADER -->
-
-            <div class="transactions-header">
-
-                <h3>Recent Transactions</h3>
-
-                <div class="transaction-actions">
-
-                    <div class="transaction-search">
-
-                        <i class="ri-search-line"></i>
-
-                        <input
-                            type="text"
-                            name="search"
-                            value="<%= search || '' %>"
-                            id="transactionSearch"
-                            placeholder="Search..."
+                        <form
+                            action="/admin/wallet"
+                            method="GET"
+                            class="search-form"
+                            id="searchForm"
                         >
 
+                            <div class="transaction-search">
+                                <i class="ri-search-line"></i>
+
+                                <input
+                                    type="search"
+                                    name="search"
+                                    id="transactionSearch"
+                                    value="<%= search || '' %>"
+                                    placeholder="Search customer..."
+                                    aria-label="Search transactions by customer"
+                                >
+                            </div>
+
+                            <button type="submit" class="search-btn">
+                                Search
+                            </button>
+
+                        </form>
+
+                        <% if (search) { %>
+                            <a href="/admin/wallet" class="clear-search">
+                                <i class="ri-close-line"></i>
+                                Clear
+                            </a>
+                        <% } %>
+
                     </div>
-
-                    <% if (search) { %>
-                        <a href="/admin/wallet" class="clear-search">
-                            Clear
-                        </a>
-                    <% } %>
-
-                    <button
-                        type="button"
-                        class="filter-btn"
-                        id="filterBtn">
-
-                        <i class="ri-filter-3-line"></i>
-
-                    </button>
 
                 </div>
 
-            </div>
+                <!-- SEARCH INFORMATION -->
+                <% if (search) { %>
+                    <div class="search-info">
+                        <i class="ri-search-line"></i>
+                        Showing results for
+                        <strong>"<%= search %>"</strong>
+                    </div>
+                <% } %>
 
+                <!-- TABLE -->
+                <div class="table-wrapper">
 
-            <!-- TABLE -->
+                    <table class="transactions-table">
 
-            <div class="table-wrapper">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Customer</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
 
-                <table class="transactions-table">
+                        <tbody>
 
-                    <thead>
+                            <% if (transactions && transactions.length > 0) { %>
 
-                        <tr>
+                                <% transactions.forEach(transaction => { %>
 
-                            <th>Transaction ID</th>
-                            <th>User</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                            <th>Date</th>
+                                    <tr>
 
-                        </tr>
+                                        <!-- TRANSACTION ID -->
+                                        <td>
+                                            <span class="transaction-id">
+                                                <%= transaction.transactionId || "N/A" %>
+                                            </span>
+                                        </td>
 
-                    </thead>
+                                        <!-- CUSTOMER -->
+                                        <td>
+                                            <div class="user-cell">
 
-                    <tbody>
+                                                <div class="user-avatar">
+                                                    <%= transaction.user?.name
+                                                        ?.charAt(0)
+                                                        ?.toUpperCase() || "U" %>
+                                                </div>
 
-                        <% if (transactions && transactions.length > 0) { %>
+                                                <div class="user-details">
+                                                    <span class="user-name">
+                                                        <%= transaction.user?.name || "Unknown User" %>
+                                                    </span>
 
-                            <% transactions.forEach(transaction => { %>
+                                                    <span class="user-email">
+                                                        <%= transaction.user?.email || "" %>
+                                                    </span>
+                                                </div>
+
+                                            </div>
+                                        </td>
+
+                                        <!-- TYPE -->
+                                        <td>
+                                            <span class="type-badge
+                                                <%= transaction.type?.toLowerCase() === 'refund'
+                                                    ? 'type-refund'
+                                                    : transaction.type?.toLowerCase() === 'deposit'
+                                                        ? 'type-deposit'
+                                                        : 'type-purchase' %>">
+
+                                                <i class="<%= transaction.type?.toLowerCase() === 'refund'
+                                                    ? 'ri-refund-2-line'
+                                                    : transaction.type?.toLowerCase() === 'deposit'
+                                                        ? 'ri-add-circle-line'
+                                                        : 'ri-shopping-bag-line' %>">
+                                                </i>
+
+                                                <%= transaction.type || "Transaction" %>
+                                            </span>
+                                        </td>
+
+                                        <!-- AMOUNT -->
+                                        <td>
+                                            <span class="transaction-amount
+                                                <%= transaction.type === 'Refund' ||
+                                                    transaction.type === 'Deposit'
+                                                    ? 'amount-positive'
+                                                    : 'amount-negative' %>">
+
+                                                <%= transaction.type === 'Refund' ||
+                                                    transaction.type === 'Deposit'
+                                                    ? '+' : '-' %>
+
+                                                ₹<%= Number(transaction.amount || 0)
+                                                    .toLocaleString("en-IN", {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }) %>
+                                            </span>
+                                        </td>
+
+                                        <!-- STATUS -->
+                                        <td>
+                                            <span class="status-badge
+                                                status-<%= (transaction.status || 'unknown').toLowerCase() %>">
+
+                                                <span class="status-dot"></span>
+                                                <%= transaction.status || "Unknown" %>
+                                            </span>
+                                        </td>
+
+                                        <!-- DATE -->
+                                        <td>
+                                            <span class="transaction-date">
+                                                <%= transaction.createdAt
+                                                    ? new Date(transaction.createdAt).toLocaleDateString("en-IN", {
+                                                        day: "2-digit",
+                                                        month: "short",
+                                                        year: "numeric"
+                                                    })
+                                                    : "N/A" %>
+                                            </span>
+                                        </td>
+
+                                    </tr>
+
+                                <% }) %>
+
+                            <% } else { %>
 
                                 <tr>
+                                    <td colspan="6" class="empty-table">
 
-                                    <!-- TRANSACTION ID -->
-
-                                    <td>
-                                        <span class="transaction-id">
-                                            <%= transaction.transactionId %>
-                                        </span>
-                                    </td>
-
-
-                                    <!-- USER -->
-
-                                    <td>
-
-                                        <div class="user-cell">
-
-                                            <div class="user-avatar">
-                                                <%= transaction.user?.name
-                                                    ?.charAt(0)
-                                                    ?.toUpperCase() || "U" %>
+                                        <div class="empty-state">
+                                            <div class="empty-icon">
+                                                <i class="ri-wallet-3-line"></i>
                                             </div>
 
-                                            <span>
-                                                <%= transaction.user?.name || "Unknown User" %>
-                                            </span>
+                                            <h3>No transactions found</h3>
 
+                                            <p>
+                                                <% if (search) { %>
+                                                    No customers match your search.
+                                                <% } else { %>
+                                                    Transactions will appear here when available.
+                                                <% } %>
+                                            </p>
+
+                                            <% if (search) { %>
+                                                <a href="/admin/wallet" class="empty-reset-btn">
+                                                    Clear Search
+                                                </a>
+                                            <% } %>
                                         </div>
 
                                     </td>
-
-
-                                    <!-- TYPE -->
-
-                                    <td>
-                                        <span class="transaction-type">
-                                            <%= transaction.type %>
-                                        </span>
-                                    </td>
-
-
-                                    <!-- AMOUNT -->
-
-                                    <td>
-
-                                        <span class="
-                                            transaction-amount
-                                            <%= transaction.type === 'Refund' ||
-                                                transaction.type === 'Deposit'
-                                                ? 'amount-positive'
-                                                : 'amount-negative' %>
-                                        ">
-
-                                            <%= transaction.type === 'Refund' ||
-                                                transaction.type === 'Deposit'
-                                                ? '+' : '-' %>
-
-                                            ₹<%= Number(transaction.amount || 0)
-                                                .toLocaleString("en-IN", {
-                                                    minimumFractionDigits: 2
-                                                }) %>
-
-                                        </span>
-
-                                    </td>
-
-
-                                    <!-- STATUS -->
-
-                                    <td>
-
-                                        <span class="
-                                            status-badge
-                                            status-<%= transaction.status?.toLowerCase() %>
-                                        ">
-
-                                            <%= transaction.status %>
-
-                                        </span>
-
-                                    </td>
-
-
-                                    <!-- ACTION -->
-
-                                    <td>
-
-                                        <a
-                                            href="/admin/wallet/transaction/<%= transaction._id %>"
-                                            class="view-btn"
-                                            title="View Transaction">
-
-                                            <i class="ri-eye-line"></i>
-
-                                        </a>
-
-                                    </td>
-
-
-                                    <!-- DATE -->
-
-                                    <td>
-
-                                        <span class="transaction-date">
-
-                                            <%= new Date(
-                                                transaction.createdAt
-                                            ).toLocaleDateString("en-GB") %>
-
-                                        </span>
-
-                                    </td>
-
                                 </tr>
 
-                            <% }) %>
+                            <% } %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- TABLE FOOTER -->
+                <div class="transactions-footer">
+
+                    <div class="showing-text">
+                        <% if (totalTransactions > 0) { %>
+
+                            Showing
+                            <strong>
+                                <%= ((currentPage - 1) * 10) + 1 %>
+                            </strong>
+
+                            to
+
+                            <strong>
+                                <%= Math.min(currentPage * 10, totalTransactions) %>
+                            </strong>
+
+                            of
+
+                            <strong>
+                                <%= totalTransactions %>
+                            </strong>
+
+                            transactions
 
                         <% } else { %>
 
-                            <tr>
-
-                                <td
-                                    colspan="7"
-                                    class="empty-table">
-
-                                    <i class="ri-wallet-3-line"></i>
-
-                                    <p>No transactions found</p>
-
-                                </td>
-
-                            </tr>
+                            0 transactions
 
                         <% } %>
+                    </div>
 
-                    </tbody>
+                    <!-- PAGINATION -->
+                    <% if (totalPages > 1) { %>
 
-                </table>
+                        <div class="pagination">
 
-            </div>
-            
-            <% if (totalPages > 1) { %>
+                            <% if (currentPage > 1) { %>
 
-                <div class="pagination">
+                                <a
+                                    href="/admin/wallet?page=<%= currentPage - 1 %>&search=<%= encodeURIComponent(search || '') %>"
+                                    class="page-btn"
+                                    aria-label="Previous page"
+                                >
+                                    <i class="ri-arrow-left-s-line"></i>
+                                    <span>Previous</span>
+                                </a>
 
-                    <!-- Previous -->
-                    <% if (currentPage > 1) { %>
+                            <% } %>
 
-                        <a
-                            href="/admin/wallet?page=<%= currentPage - 1 %>&search=<%= encodeURIComponent(search || '') %>"
-                            class="page-btn"
-                        >
-                            Previous
-                        </a>
+                            <% for (let i = 1; i <= totalPages; i++) { %>
 
-                    <% } %>
+                                <a
+                                    href="/admin/wallet?page=<%= i %>&search=<%= encodeURIComponent(search || '') %>"
+                                    class="page-btn page-number
+                                        <%= currentPage === i ? 'active' : '' %>"
+                                >
+                                    <%= i %>
+                                </a>
 
+                            <% } %>
 
-                    <!-- Page Numbers -->
-                    <% for (let i = 1; i <= totalPages; i++) { %>
+                            <% if (currentPage < totalPages) { %>
 
-                        <a
-                            href="/admin/wallet?page=<%= i %>&search=<%= encodeURIComponent(search || '') %>"
-                            class="page-btn <%= currentPage === i ? 'active' : '' %>"
-                        >
-                            <%= i %>
-                        </a>
+                                <a
+                                    href="/admin/wallet?page=<%= currentPage + 1 %>&search=<%= encodeURIComponent(search || '') %>"
+                                    class="page-btn"
+                                    aria-label="Next page"
+                                >
+                                    <span>Next</span>
+                                    <i class="ri-arrow-right-s-line"></i>
+                                </a>
 
-                    <% } %>
+                            <% } %>
 
-
-                    <!-- Next -->
-                    <% if (currentPage < totalPages) { %>
-                        <a
-                            href="/admin/wallet?page=<%= currentPage + 1 %>&search=<%= encodeURIComponent(search || '') %>"
-                            class="page-btn"
-                        >
-                            Next
-                        </a>
+                        </div>
 
                     <% } %>
 
                 </div>
 
-            <% } %>
+            </section>
 
-        </section>
+        </div>
 
-    </div>
+    </main>
 
-</main>
+</div>
 
-
-
-<!-- ================= JAVASCRIPT ================= -->
-
+<!-- JAVASCRIPT -->
 <script>
 
-const dropdowns = document.querySelectorAll(".dropdown-btn");
+    // SIDEBAR MOBILE TOGGLE
+    const sidebar = document.getElementById("sidebar");
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+    function openSidebar() {
+        sidebar.classList.add("sidebar-open");
+        sidebarOverlay.classList.add("overlay-active");
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove("sidebar-open");
+        sidebarOverlay.classList.remove("overlay-active");
+    }
+
+    sidebarToggle.addEventListener("click", () => {
+        if (sidebar.classList.contains("sidebar-open")) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    sidebarOverlay.addEventListener("click", closeSidebar);
 
 
-dropdowns.forEach(btn => {
+    // SIDEBAR DROPDOWNS
+    const dropdownButtons = document.querySelectorAll(".dropdown-btn");
 
-    btn.addEventListener("click", () => {
+    dropdownButtons.forEach(button => {
 
-        const wrapper =
-            btn.parentElement;
+        button.addEventListener("click", () => {
 
-        const menu =
-            wrapper.querySelector(".dropdown-menu");
+            const wrapper = button.closest(".dropdown-wrapper");
 
-        wrapper.classList.toggle("active");
+            const isOpen = wrapper.classList.contains("active");
 
-        menu.classList.toggle("show");
+            // Close other dropdowns
+            document.querySelectorAll(".dropdown-wrapper").forEach(item => {
+                item.classList.remove("active");
+            });
+
+            // Open selected dropdown
+            if (!isOpen) {
+                wrapper.classList.add("active");
+            }
+
+        });
 
     });
 
-});
 
+    // SEARCH
+    const searchInput = document.getElementById("transactionSearch");
+    const searchForm = document.getElementById("searchForm");
 
-
-const searchInput = document.getElementById("transactionSearch");
-
-searchInput.addEventListener("keydown", function (event) {
-
-    if (event.key === "Enter") {
+    searchForm.addEventListener("submit", event => {
 
         const search = searchInput.value.trim();
 
-        window.location.href =
-            `/admin/wallet?search=${encodeURIComponent(search)}`;
-    }
+        searchInput.value = search;
 
-});
+        // Reset pagination when searching
+        const pageInput = searchForm.querySelector('input[name="page"]');
 
+        if (pageInput) {
+            pageInput.remove();
+        }
+
+    });
+
+
+    // CLOSE SIDEBAR WHEN NAVIGATING ON MOBILE
+    document.querySelectorAll(".sidebar a").forEach(link => {
+        link.addEventListener("click", closeSidebar);
+    });
+
+
+    // ESCAPE KEY CLOSES SIDEBAR
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            closeSidebar();
+        }
+    });
 
 </script>
 
-
 </body>
-
 </html>

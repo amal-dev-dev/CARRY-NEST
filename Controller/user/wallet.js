@@ -1,4 +1,3 @@
-
 import walletService from "../../Service/user/walletService.js";
 
 // 1. LOAD WALLET PAGE

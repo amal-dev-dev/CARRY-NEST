@@ -541,14 +541,31 @@
 
                 <div class="returns-grid">
 
+                    <!-- Return requests awaiting approval -->
                     <div class="mini-card">
                         <span>Pending Requests</span>
                         <h2><%= returnRequests || 0 %></h2>
                     </div>
 
+                    <!-- All eligible pending refunds -->
                     <div class="mini-card">
                         <span>Refunds Pending</span>
-                        <h2><%= refundPending || 0 %></h2>
+
+                        <% if (pendingRefundOrderId) { %>
+                            <a href="/admin/order-details/<%= pendingRefundOrderId %>">
+                                <h2><%= refundPending || 0 %></h2>
+                            </a>
+                        <% } else { %>
+                            <h2><%= refundPending || 0 %></h2>
+                        <% } %>
+                    </div>
+
+                    <!-- Eligible cancellation refunds only -->
+                    <div class="mini-card">
+                        <span>Cancellation Refunds Pending</span>
+                        <a href="/admin/orders?refundFilter=cancellation">
+                            <h2><%= cancellationRefundPending || 0 %></h2>
+                        </a>
                     </div>
 
                 </div>

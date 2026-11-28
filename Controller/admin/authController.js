@@ -1,10 +1,6 @@
-import Users from "../../Model/userModel.js";
-import Admin from "../../Model/adminModel.js";
-import Order from "../../Model/orderModel.js";
-import dotenv from "dotenv";
-import bcrypt from "bcrypt";
 
-dotenv.config();
+import authService from "../../Service/admin/authService.js";
+
 
 const loadLogin = (req, res) => {
     res.render("admin/login", {
@@ -12,61 +8,40 @@ const loadLogin = (req, res) => {
     });
 };
 
+
 const login = async (req, res) => {
     try {
-
         const { email, password } = req.body;
 
-        // Find admin by email
-        const admin = await Admin.findOne({ email });
+        const result = await authService.authenticateAdmin(
+            email,
+            password
+        );
 
-        if(!email && !password) {
+        if (!result.success) {
             return res.render("admin/login", {
-                message: "Please ender email and password"
+                message: result.message
             });
         }
 
-        if(!password) {
-            return res.render("admin/login", {
-                message: "Please ender password"
-            })
-        }
-
-        if (!admin) {
-            return res.render("admin/login", {
-                message: "Invalid admin credentials"
-            });
-        }
-
-        // Compare entered password with hashed password
-        const isMatch = await bcrypt.compare(password, admin.password);
-
-        if (!isMatch) {
-            return res.render("admin/login", {
-                message: "Invalid admin credentials"
-            });
-        }
-
-        req.session.admin = admin._id;
-
+        req.session.admin = result.adminId;
 
         req.session.save((err) => {
-
             if (err) {
-                console.log(err);
+                console.error("ADMIN SESSION ERROR:", err);
+
                 return res.render("admin/login", {
                     message: "Login failed"
                 });
             }
 
-            res.redirect("/admin/dashboard");
-
+            return res.redirect("/admin/dashboard");
         });
 
     } catch (error) {
-        console.log("ADMIN LOGIN ERROR:", error);
+        console.error("ADMIN LOGIN ERROR:", error);
 
-        res.render("admin/login", {
+        return res.render("admin/login", {
             message: "Something went wrong"
         });
     }
@@ -74,200 +49,98 @@ const login = async (req, res) => {
 
 
 const blockUser = async (req, res) => {
-
     try {
+        await authService.updateCustomerBlockStatus(
+            req.params.id,
+            true
+        );
 
-        await Users.findByIdAndUpdate(req.params.id, {
-
-            isBlocked: true
-
-        });
-
-        res.redirect("/admin/customers");
+        return res.redirect("/admin/customers");
 
     } catch (error) {
+        console.error("BLOCK USER ERROR:", error);
 
-        console.log(error);
-
+        return res.redirect("/admin/customers");
     }
-
 };
 
+
 const unblockUser = async (req, res) => {
-
     try {
+        await authService.updateCustomerBlockStatus(
+            req.params.id,
+            false
+        );
 
-        await Users.findByIdAndUpdate(req.params.id, {
-
-            isBlocked: false
-
-        });
-
-        res.redirect("/admin/customers");
+        return res.redirect("/admin/customers");
 
     } catch (error) {
+        console.error("UNBLOCK USER ERROR:", error);
 
-        console.log(error);
-
+        return res.redirect("/admin/customers");
     }
-
 };
 
 
 const loadCustomers = async (req, res) => {
     try {
         const search = (req.query.search || "").trim();
-        const sort = req.query.sort === "oldest" ? "oldest" : "latest";
 
-        const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-        const limit = 5;
-        const skip = (page - 1) * limit;
+        const sort = req.query.sort === "oldest"
+            ? "oldest"
+            : "latest";
 
-        // Escape special characters in the search input
-        const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const page = Math.max(
+            1,
+            parseInt(req.query.page, 10) || 1
+        );
 
-        const searchRegex = new RegExp(escapedSearch, "i");
-
-        // Search by name, email, or phone
-        const filter = search
-            ? {
-                $or: [
-                    { name: searchRegex },
-                    { email: searchRegex },
-                    { phone: searchRegex }
-                ]
-            }
-            : {};
-
-        const sortOption = {
-            createdAt: sort === "latest" ? -1 : 1,
-            _id: -1
-        };
-
-        // Fetch customers for the current page
-        const users = await Users.find(filter)
-            .sort(sortOption)
-            .skip(skip)
-            .limit(limit)
-            .lean();
-
-        const totalUsers = await Users.countDocuments(filter);
-
-        const totalPages = Math.max(1, Math.ceil(totalUsers / limit));
-
-        // Overall customer statistics (not affected by search)
-        const [activeCustomers, blockedCustomers] = await Promise.all([
-            Users.countDocuments({ isBlocked: { $ne: true } }),
-            Users.countDocuments({ isBlocked: true })
-        ]);
-
-        // Get orders belonging to the customers on this page
-        const userIds = users.map(user => user._id);
-
-        const orders = userIds.length
-            ? await Order.find({ userId: { $in: userIds } })
-                .select("userId totalAmount paymentStatus orderStatus paymentMethod")
-                .lean()
-            : [];
-
-        // Calculate order count and spending per customer
-        const customerStats = {};
-
-        for (const user of users) {
-            customerStats[user._id.toString()] = {
-                orderCount: 0,
-                totalSpent: 0
-            };
-        }
-
-        for (const order of orders) {
-            const customerId = order.userId?.toString();
-
-            if (!customerId || !customerStats[customerId]) {
-                continue;
-            }
-
-            // Exclude cancelled and failed orders from order count
-            const excludedStatuses = [
-                "cancelled",
-                "payment_failed"
-            ];
-
-            const excludedPayments = ["failed"];
-
-            if (
-                excludedStatuses.includes(order.orderStatus) ||
-                excludedPayments.includes(order.paymentStatus)
-            ) {
-                continue;
-            }
-
-            customerStats[customerId].orderCount++;
-
-            // Count successfully paid orders.
-            // COD orders count as spent once delivered.
-            const isPaid =
-                order.paymentStatus === "completed" ||
-                (
-                    order.paymentMethod === "COD" &&
-                    order.orderStatus === "delivered"
-                );
-
-            if (isPaid) {
-                customerStats[customerId].totalSpent +=
-                    Number(order.totalAmount) || 0;
-            }
-        }
-
-        // Attach statistics to each customer for EJS
-        const customers = users.map(user => ({
-            ...user,
-            orderCount: customerStats[user._id.toString()].orderCount,
-            totalSpent: customerStats[user._id.toString()].totalSpent
-        }));
-
-        return res.render("admin/customers", {
-            users: customers,
+        const data = await authService.getCustomersPageData({
             search,
             sort,
-            currentPage: page,
-            totalPages,
-            totalUsers,
-            activeCustomers,
-            blockedCustomers
+            page,
+            limit: 5
+        });
+
+        return res.render("admin/customers", {
+            users: data.customers,
+            search: data.search,
+            sort: data.sort,
+            currentPage: data.currentPage,
+            totalPages: data.totalPages,
+            totalUsers: data.totalUsers,
+            activeCustomers: data.activeCustomers,
+            blockedCustomers: data.blockedCustomers
         });
 
     } catch (error) {
         console.error("LOAD CUSTOMERS ERROR:", error);
+
         return res.status(500).send("Unable to load customers");
     }
 };
 
 
 const logout = (req, res) => {
-
     delete req.session.admin;
 
     req.session.save((err) => {
-
         if (err) {
-            console.log(err);
+            console.error("ADMIN LOGOUT ERROR:", err);
+
             return res.redirect("/admin/dashboard");
         }
 
-        res.redirect("/admin/login");
-
+        return res.redirect("/admin/login");
     });
-
 };
 
-export default {
 
+export default {
     loadLogin,
     login,
     blockUser,
     unblockUser,
     loadCustomers,
     logout
-
 };

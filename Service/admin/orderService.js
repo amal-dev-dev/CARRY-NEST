@@ -6,12 +6,18 @@ import referralService from "./referralService.js";
 
 
     // Get all admin orders with search, filter and pagination
-    const getAdminOrders = async (search, page, status) => {
+    const getAdminOrders = async (
+        search,
+        page,
+        status,
+        refundFilter
+    ) => {
         const limit = 6;
         const skip = (page - 1) * limit;
 
         const query = {};
 
+        // Search by order ID
         if (search) {
             query.orderId = {
                 $regex: search,
@@ -19,8 +25,21 @@ import referralService from "./referralService.js";
             };
         }
 
+        // Filter by order status
         if (status && status !== "all") {
             query.orderStatus = status;
+        }
+
+        // Filter paid cancellation refunds pending
+        if (refundFilter === "cancellation") {
+            query.paymentStatus = "completed";
+
+            query.products = {
+                $elemMatch: {
+                    status: "cancelled",
+                    refundStatus: "pending"
+                }
+            };
         }
 
         const totalOrders = await Order.countDocuments(query);

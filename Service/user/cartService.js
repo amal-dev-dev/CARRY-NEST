@@ -1,6 +1,7 @@
 import Product from "../../Model/productModel.js";
 import Cart from "../../Model/cartModel.js";
 import Offer from "../../Model/offerModel.js";
+import Brand from "../../Model/brandModel.js";
 
 
 const MAX_QTY_PER_ITEM = 5;
@@ -22,6 +23,16 @@ const getAvailableProductVariant = async (variantId) => {
 
     if (!category || category.isListed !== true || category.isBlocked === true) {
         throw new Error("This product category is unavailable");
+    }
+
+    // Check brand availability
+    const activeBrand = await Brand.findOne({
+        name: product.brand,
+        isActive: true
+    });
+
+    if (!activeBrand) {
+        throw new Error("This product brand is unavailable");
     }
 
     const variant = product.variants.id(variantId);
@@ -88,6 +99,16 @@ const addItemToCart = async (
     // Check stock
     if (variant.stock <= 0) {
         throw new Error("Product is out of stock");
+    }
+
+    // Check brand availability
+    const activeBrand = await Brand.findOne({
+        name: product.brand,
+        isActive: true
+    });
+
+    if (!activeBrand) {
+        throw new Error("This product brand is unavailable");
     }
 
 
@@ -320,53 +341,55 @@ const removeCartItemService = async (
 
 
 // BUILD CART ITEMS
-const buildCartItems = (cart) => {
 
+const buildCartItems = async (cart) => {
     if (!cart) {
         return [];
     }
 
+    const activeBrandNames = await Brand.find({
+        isActive: true
+    }).distinct("name");
 
     return cart.items
         .map((item) => {
-
             const product = item.productId;
 
-
-            // Product deleted
             if (!product) {
                 return null;
             }
 
-
-            // Find variant
             const variant = product.variants.find(
                 (v) =>
                     v._id.toString() ===
                     item.variantId.toString()
             );
 
-
-            // Variant deleted
             if (!variant) {
                 return null;
             }
 
+            const category = product.category;
+
+            if (
+                product.isBlocked ||
+                !category ||
+                category.isListed !== true ||
+                category.isBlocked === true ||
+                !activeBrandNames.includes(product.brand)
+            ) {
+                return null;
+            }
 
             return {
-
                 ...item.toObject(),
-
                 productId: product,
-
-                variant: variant
-
+                variant
             };
-
         })
-
         .filter(Boolean);
 };
+
 
 
 // CALCULATE CART TOTALS
@@ -403,11 +426,17 @@ const calculateCartTotals = async (cartItems) => {
 
         const category = product.category;
 
+        const activeBrand = await Brand.findOne({
+            name: product.brand,
+            isActive: true
+        });
+
         if (
             product.isBlocked ||
             !category ||
             category.isListed !== true ||
-            category.isBlocked === true
+            category.isBlocked === true ||
+            !activeBrand
         ) {
             continue;
         }

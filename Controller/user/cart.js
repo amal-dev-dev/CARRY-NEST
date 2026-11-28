@@ -240,7 +240,7 @@ const increaseQuantity = async (req, res) => {
         );
 
 
-        const cartItems = buildCartItems(updatedCart);
+        const cartItems = await buildCartItems(updatedCart);
 
 
         const totals = await calculateCartTotals(cartItems);
@@ -313,7 +313,7 @@ const decreaseQuantity = async (req, res) => {
         const result = await decreaseCartItem(userId, variantId);
 
         const updatedCart = result.cart;
-        const cartItems = buildCartItems(updatedCart);
+        const cartItems = await buildCartItems(updatedCart);
 
         const totals = await calculateCartTotals(cartItems);
         const cartCount = calculateCartCount(cartItems);
@@ -365,7 +365,7 @@ const removeCartItem = async (req, res) => {
             variantId
         );
 
-        const cartItems = buildCartItems(updatedCart);
+        const cartItems = await buildCartItems(updatedCart);
 
         const totals = await calculateCartTotals(cartItems);
 

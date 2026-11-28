@@ -377,6 +377,17 @@ body {
     font-size: 17px;
 }
 
+.alert-message {
+    padding: 12px 16px;
+    margin: 15px 0;
+    background-color: #fff0f0;
+    color: #c62828;
+    border: 1px solid #ffcaca;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
 
 /* =========================================
    FORM CARD

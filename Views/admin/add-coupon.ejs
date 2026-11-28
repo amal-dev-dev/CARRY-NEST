@@ -365,6 +365,11 @@
 
             </div>
 
+            <% if (message) { %>
+                <div class="alert-message">
+                    <%= message %>
+                </div>
+            <% } %>
 
             <div class="header-actions">
 
@@ -443,7 +448,6 @@
                                 type="text"
                                 name="discountName"
                                 placeholder="NEW YEAR OFFER"
-                                required
                             >
 
                         </div>
@@ -462,7 +466,6 @@
                                 type="text"
                                 name="discountCode"
                                 placeholder="WELCOME26"
-                                required
                             >
 
                         </div>
@@ -524,7 +527,6 @@
 
                             <select
                                 name="discountType"
-                                required
                             >
 
                                 <option value="">
@@ -558,7 +560,6 @@
                                 name="discountValue"
                                 placeholder="35"
                                 min="0"
-                                required
                             >
 
                         </div>
@@ -734,7 +735,6 @@
                             <input
                                 type="date"
                                 name="validFrom"
-                                required
                             >
 
                         </div>
@@ -752,7 +752,6 @@
                             <input
                                 type="date"
                                 name="validTo"
-                                required
                             >
 
                         </div>
@@ -851,6 +850,26 @@ if (startDate && endDate) {
     });
 
 }
+
+
+const couponForm = document.getElementById("couponForm");
+
+couponForm.addEventListener("submit", function (event) {
+    if (!this.checkValidity()) {
+        event.preventDefault();
+
+        const invalidField = this.querySelector(":invalid");
+
+        if (invalidField) {
+            invalidField.setCustomValidity("Please fill in this field.");
+            invalidField.reportValidity();
+            invalidField.addEventListener("input", function () {
+                this.setCustomValidity("");
+            }, { once: true });
+        }
+    }
+});
+
 
 </script>
 

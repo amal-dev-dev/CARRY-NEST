@@ -1,271 +1,544 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Offer | CARRY NEST</title>
 
-<link rel="stylesheet" href="/Styles/admin/add-offer.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css">
-
-
+    <link rel="stylesheet" href="/Styles/admin/add-offer.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css">
 </head>
+
 <body>
-<div class="admin-layout">
 
-<aside class="sidebar" id="sidebar">
-    <a href="/admin/dashboard" class="brand">
-        <span class="brand-icon">C</span>
-        <span>CARRY NEST</span>
-    </a>
+<div class="dashboard-container">
 
-    <nav class="sidebar-nav">
-        <a href="/admin/dashboard" class="nav-link">
-            <i class="ri-dashboard-line"></i><span>Dashboard</span>
-        </a>
-        <a href="/admin/products" class="nav-link">
-            <i class="ri-shopping-bag-3-line"></i><span>Products</span>
-        </a>
-        <a href="/admin/orders" class="nav-link">
-            <i class="ri-shopping-cart-line"></i><span>Orders</span>
-        </a>
-        <a href="/admin/return-requests" class="nav-link">
-            <i class="ri-arrow-go-back-line"></i><span>Returns</span>
-        </a>
-        <a href="/admin/customers" class="nav-link">
-            <i class="ri-team-line"></i><span>Customers</span>
-        </a>
-        <a href="/admin/wallet" class="nav-link">
-            <i class="ri-wallet-3-line"></i><span>Wallet & Payments</span>
-        </a>
-        <a href="/admin/coupons" class="nav-link active">
-            <i class="ri-price-tag-3-line"></i><span>Promotions</span>
-        </a>
-        <a href="/admin/sales-report" class="nav-link">
-            <i class="ri-bar-chart-line"></i><span>Reports</span>
-        </a>
-    </nav>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
 
-    <a href="/admin/logout" class="logout-link">
-        <i class="ri-logout-box-r-line"></i><span>Logout</span>
-    </a>
-</aside>
-
-<main class="main-content">
-
-    <header class="topbar">
-        <button type="button" class="menu-toggle"
-                id="menuToggle" aria-label="Toggle sidebar">
-            <i class="ri-menu-line"></i>
-        </button>
-
-        <div class="breadcrumb">
-            <span>Admin</span>
-            <i class="ri-arrow-right-s-line"></i>
-            <a href="/admin/coupons">Promotions</a>
-            <i class="ri-arrow-right-s-line"></i>
-            <strong>Edit Offer</strong>
-        </div>
-
-        <div class="admin-profile">
-            <div class="avatar">AD</div>
-            <div>
-                <strong>Admin User</strong>
-                <small>Super Admin</small>
+        <div>
+            <div class="logo-section">
+                <div class="logo-box">C</div>
+                <h2>CARRY NEST</h2>
             </div>
-        </div>
-    </header>
 
-    <section class="page-content">
+            <div class="menu-wrapper">
 
-        <div class="page-heading">
-            <div>
-                <h1>Edit Offer</h1>
-                <p>Update your product or category discount.</p>
-            </div>
-            <a href="/admin/coupons" class="btn btn-light">Cancel</a>
-        </div>
+                <a href="/admin/dashboard" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-dashboard-line"></i>
+                        Dashboard
+                    </span>
+                </a>
 
-        <% if (typeof error !== "undefined" && error) { %>
-            <div class="alert-error" role="alert">
-                <i class="ri-error-warning-line"></i>
-                <span><%= error %></span>
-            </div>
-        <% } %>
+                <!-- PRODUCTS DROPDOWN -->
+                <div class="dropdown-wrapper">
 
-        <form action="/admin/edit-offer/<%= offer._id %>?_method=PATCH"
-              method="POST" id="offerForm">
-
-            <section class="form-card">
-                <div class="card-heading">
-                    <h2>Basic Details</h2>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="title">Offer Title <span>*</span></label>
-                        <input type="text" id="title" name="title"
-                               maxlength="100" required
-                               value="<%= offer.title || '' %>"
-                               placeholder="e.g. Winter Sale 20% Off">
-                    </div>
-
-                    <div class="form-group status-group">
-                        <label>Offer Status</label>
-                        <label class="switch">
-                            <input type="checkbox" name="isActive"
-                                   <%= offer.isActive ? "checked" : "" %>>
-                            <span class="slider"></span>
-                        </label>
-                        <span class="status-text" id="statusText">
-                            <%= offer.isActive ? "Active" : "Inactive" %>
+                    <button type="button" class="dropdown-btn">
+                        <span class="menu-left">
+                            <i class="ri-shopping-bag-line"></i>
+                            Products
                         </span>
-                    </div>
-                </div>
-            </section>
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+                    </button>
 
-            <section class="form-card">
-                <div class="card-heading">
-                    <h2>Offer Applicability</h2>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label>Apply Offer For <span>*</span></label>
-                        <div class="radio-options">
-                            <label>
-                                <input type="radio" name="offerType"
-                                       value="product"
-                                       <%= offer.offerType === "product" ? "checked" : "" %>>
-                                Product
-                            </label>
-                            <label>
-                                <input type="radio" name="offerType"
-                                       value="category"
-                                       <%= offer.offerType === "category" ? "checked" : "" %>>
-                                Category
-                            </label>
-                        </div>
+                    <div class="dropdown-menu">
+                        <a href="/admin/products">All Products</a>
+                        <a href="/admin/add-product">Add Product</a>
+                        <a href="/admin/category">Categories</a>
+                        <a href="/admin/brands">Brands</a>
                     </div>
 
-                    <div class="form-group" id="productGroup">
-                        <label for="productId">Select Product <span>*</span></label>
-                        <select id="productId" name="productId">
-                            <option value="">Choose a product...</option>
-                            <% products.forEach(product => { %>
-                                <option value="<%= product._id %>"
-                                    <%= offer.productId && String(offer.productId._id || offer.productId) === String(product._id) ? "selected" : "" %>>
-                                    <%= product.productName %>
-                                </option>
-                            <% }) %>
-                        </select>
+                </div>
+
+                <!-- ORDERS DROPDOWN -->
+                <div class="dropdown-wrapper">
+
+                    <button type="button" class="dropdown-btn">
+                        <span class="menu-left">
+                            <i class="ri-shopping-cart-line"></i>
+                            Orders
+                        </span>
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+                    </button>
+
+                    <div class="dropdown-menu">
+                        <a href="/admin/orders">All Orders</a>
+                        <a href="/admin/orders?status=pending">Pending</a>
+                        <a href="/admin/orders?status=shipped">Shipped</a>
+                        <a href="/admin/orders?status=delivered">Delivered</a>
                     </div>
 
-                    <div class="form-group" id="categoryGroup" hidden>
-                        <label for="categoryId">Select Category <span>*</span></label>
-                        <select id="categoryId" name="categoryId">
-                            <option value="">Choose a category...</option>
-                            <% categories.forEach(category => { %>
-                                <option value="<%= category._id %>"
-                                    <%= offer.categoryId && String(offer.categoryId._id || offer.categoryId) === String(category._id) ? "selected" : "" %>>
-                                    <%= category.name %>
-                                </option>
-                            <% }) %>
-                        </select>
-                    </div>
                 </div>
-            </section>
 
-            <section class="form-card">
-                <div class="card-heading">
-                    <h2>Discount Configuration</h2>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="discountType">Discount Type</label>
-                        <select id="discountType" disabled>
-                            <option value="percentage">Percentage (%)</option>
-                        </select>
-                        <small>Currently, only percentage discounts are supported.</small>
+                <!-- RETURNS DROPDOWN -->
+                <div class="dropdown-wrapper">
+
+                    <button type="button" class="dropdown-btn">
+                        <span class="menu-left">
+                            <i class="ri-arrow-go-back-line"></i>
+                            Returns
+                        </span>
+                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
+                    </button>
+
+                    <div class="dropdown-menu">
+                        <a href="/admin/return-requests">Requests</a>
                     </div>
 
-                    <div class="form-group">
-                        <label for="discountPercentage">
-                            Discount Percentage <span>*</span>
-                        </label>
-                        <div class="input-suffix">
-                            <input type="number" id="discountPercentage"
-                                   name="discountPercentage"
-                                   min="1" max="90" step="1" required
-                                   value="<%= offer.discountPercentage %>">
-                            <span>%</span>
-                        </div>
-                        <small>Enter a whole number between 1 and 90.</small>
-                    </div>
                 </div>
-            </section>
 
-            <section class="form-card">
-                <div class="card-heading">
-                    <h2>Validity Period</h2>
-                </div>
-                <div class="card-body date-grid">
-                    <div class="form-group">
-                        <label for="validFrom">Start Date <span>*</span></label>
-                        <input type="date" id="validFrom" name="validFrom"
-                               required
-                               value="<%= new Date(offer.validFrom).toISOString().slice(0, 10) %>">
-                    </div>
+                <a href="/admin/customers" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-group-line"></i>
+                        Customers
+                    </span>
+                </a>
 
-                    <div class="form-group">
-                        <label for="validTo">End Date <span>*</span></label>
-                        <input type="date" id="validTo" name="validTo"
-                               required
-                               value="<%= new Date(offer.validTo).toISOString().slice(0, 10) %>">
-                        <small>The end date must be after the start date.</small>
-                    </div>
-                </div>
-            </section>
+                <a href="/admin/wallet" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-wallet-3-line"></i>
+                        Wallet & Payments
+                    </span>
+                </a>
 
-            <section class="banner-card">
-                <div class="banner-icon">
-                    <i class="ri-image-add-line"></i>
-                </div>
-                <div class="banner-info">
-                    <strong>Feature on Homepage</strong>
-                    <p>Mark this offer for homepage promotion.</p>
-                </div>
-                <label class="checkbox-control">
-                    <input type="checkbox" name="showOnHomepage"
-                           <%= offer.showOnHomepage ? "checked" : "" %>>
-                    <span>Show banner</span>
-                </label>
-            </section>
+                <!-- PROMOTIONS ACTIVE -->
+                <a href="/admin/coupons" class="menu-item active">
+                    <span class="menu-left">
+                        <i class="ri-price-tag-3-line"></i>
+                        Promotions
+                    </span>
+                </a>
 
-            <div class="form-actions">
-                <a href="/admin/coupons" class="btn btn-light">Cancel</a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="ri-save-line"></i> Update Offer
-                </button>
+                <a href="/admin/sales-report" class="menu-item">
+                    <span class="menu-left">
+                        <i class="ri-bar-chart-box-line"></i>
+                        Reports
+                    </span>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- LOGOUT -->
+        <div class="logout-section">
+            <a href="/admin/logout" class="logout-btn">
+                <i class="ri-logout-box-r-line"></i>
+                Logout
+            </a>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <button type="button"
+                    class="menu-toggle"
+                    id="menuToggle"
+                    aria-label="Toggle sidebar">
+                <i class="ri-menu-line"></i>
+            </button>
+
+            <div class="breadcrumb">
+                <span>Admin</span>
+                <i class="ri-arrow-right-s-line"></i>
+                <a href="/admin/coupons">Promotions</a>
+                <i class="ri-arrow-right-s-line"></i>
+                <strong>Edit Offer</strong>
             </div>
 
-        </form>
-    </section>
-</main>
+            <div class="admin-profile">
+                <div class="avatar">AD</div>
+                <div>
+                    <strong>Admin User</strong>
+                    <small>Super Admin</small>
+                </div>
+            </div>
+
+        </header>
+
+
+        <!-- PAGE CONTENT -->
+        <section class="page-content">
+
+            <div class="page-heading">
+                <div>
+                    <h1>Edit Offer</h1>
+                    <p>Update your product or category discount.</p>
+                </div>
+
+                <a href="/admin/coupons" class="btn btn-light">
+                    Cancel
+                </a>
+            </div>
+
+
+            <!-- ERROR MESSAGE -->
+            <% if (typeof error !== "undefined" && error) { %>
+                <div class="alert-error" role="alert">
+                    <i class="ri-error-warning-line"></i>
+                    <span><%= error %></span>
+                </div>
+            <% } %>
+
+
+            <!-- EDIT OFFER FORM -->
+            <form action="/admin/edit-offer/<%= offer._id %>?_method=PATCH"
+                  method="POST"
+                  id="offerForm">
+
+
+                <!-- BASIC DETAILS -->
+                <section class="form-card">
+
+                    <div class="card-heading">
+                        <h2>Basic Details</h2>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="form-group">
+                            <label for="title">
+                                Offer Title <span>*</span>
+                            </label>
+
+                            <input type="text"
+                                   id="title"
+                                   name="title"
+                                   maxlength="100"
+                                   required
+                                   value="<%= typeof formData !== 'undefined' && formData.title !== undefined ? formData.title : (offer.title || '') %>"
+                                   placeholder="e.g. Winter Sale 20% Off">
+                        </div>
+
+
+                        <div class="form-group status-group">
+
+                            <label>Offer Status</label>
+
+                            <label class="switch">
+                                <input type="checkbox"
+                                       name="isActive"
+                                       <%= typeof formData !== 'undefined' && formData.isActive !== undefined
+                                           ? (formData.isActive ? "checked" : "")
+                                           : (offer.isActive ? "checked" : "") %>>
+
+                                <span class="slider"></span>
+                            </label>
+
+                            <span class="status-text" id="statusText">
+                                <%= typeof formData !== 'undefined' && formData.isActive !== undefined
+                                    ? (formData.isActive ? "Active" : "Inactive")
+                                    : (offer.isActive ? "Active" : "Inactive") %>
+                            </span>
+
+                        </div>
+
+                    </div>
+                </section>
+
+
+                <!-- OFFER APPLICABILITY -->
+                <section class="form-card">
+
+                    <div class="card-heading">
+                        <h2>Offer Applicability</h2>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="form-group">
+
+                            <label>
+                                Apply Offer For <span>*</span>
+                            </label>
+
+                            <div class="radio-options">
+
+                                <label>
+                                    <input type="radio"
+                                           name="offerType"
+                                           value="product"
+                                           <%= typeof formData !== 'undefined' && formData.offerType !== undefined
+                                               ? (formData.offerType === "product" ? "checked" : "")
+                                               : (offer.offerType === "product" ? "checked" : "") %>>
+
+                                    Product
+                                </label>
+
+                                <label>
+                                    <input type="radio"
+                                           name="offerType"
+                                           value="category"
+                                           <%= typeof formData !== 'undefined' && formData.offerType !== undefined
+                                               ? (formData.offerType === "category" ? "checked" : "")
+                                               : (offer.offerType === "category" ? "checked" : "") %>>
+
+                                    Category
+                                </label>
+
+                            </div>
+                        </div>
+
+
+                        <!-- PRODUCT SELECT -->
+                        <div class="form-group" id="productGroup">
+
+                            <label for="productId">
+                                Select Product <span>*</span>
+                            </label>
+
+                            <select id="productId" name="productId">
+
+                                <option value="">Choose a product...</option>
+
+                                <% products.forEach(product => { %>
+
+                                    <option value="<%= product._id %>"
+                                        <%= typeof formData !== 'undefined' && formData.productId !== undefined
+                                            ? (String(formData.productId) === String(product._id) ? "selected" : "")
+                                            : (offer.productId && String(offer.productId._id || offer.productId) === String(product._id) ? "selected" : "") %>>
+
+                                        <%= product.productName %>
+
+                                    </option>
+
+                                <% }) %>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- CATEGORY SELECT -->
+                        <div class="form-group" id="categoryGroup" hidden>
+
+                            <label for="categoryId">
+                                Select Category <span>*</span>
+                            </label>
+
+                            <select id="categoryId" name="categoryId">
+
+                                <option value="">Choose a category...</option>
+
+                                <% categories.forEach(category => { %>
+
+                                    <option value="<%= category._id %>"
+                                        <%= typeof formData !== 'undefined' && formData.categoryId !== undefined
+                                            ? (String(formData.categoryId) === String(category._id) ? "selected" : "")
+                                            : (offer.categoryId && String(offer.categoryId._id || offer.categoryId) === String(category._id) ? "selected" : "") %>>
+
+                                        <%= category.name %>
+
+                                    </option>
+
+                                <% }) %>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+                </section>
+
+
+                <!-- DISCOUNT CONFIGURATION -->
+                <section class="form-card">
+
+                    <div class="card-heading">
+                        <h2>Discount Configuration</h2>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="form-group">
+
+                            <label for="discountType">
+                                Discount Type
+                            </label>
+
+                            <select id="discountType" disabled>
+                                <option value="percentage">
+                                    Percentage (%)
+                                </option>
+                            </select>
+
+                            <small>
+                                Currently, only percentage discounts are supported.
+                            </small>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="discountPercentage">
+                                Discount Percentage <span>*</span>
+                            </label>
+
+                            <div class="input-suffix">
+
+                                <input type="number"
+                                       id="discountPercentage"
+                                       name="discountPercentage"
+                                       min="1"
+                                       max="90"
+                                       step="1"
+                                       required
+                                       placeholder="e.g. 20"
+                                       value="<%= typeof formData !== 'undefined' && formData.discountPercentage !== undefined
+                                           ? formData.discountPercentage
+                                           : offer.discountPercentage %>">
+
+                                <span>%</span>
+
+                            </div>
+
+                            <small>
+                                Enter a whole number between 1 and 90.
+                            </small>
+
+                        </div>
+
+                    </div>
+                </section>
+
+
+                <!-- VALIDITY PERIOD -->
+                <section class="form-card">
+
+                    <div class="card-heading">
+                        <h2>Validity Period</h2>
+                    </div>
+
+                    <div class="card-body date-grid">
+
+                        <div class="form-group">
+
+                            <label for="validFrom">
+                                Start Date <span>*</span>
+                            </label>
+
+                            <input type="date"
+                                   id="validFrom"
+                                   name="validFrom"
+                                   required
+                                   value="<%= typeof formData !== 'undefined' && formData.validFrom !== undefined
+                                       ? formData.validFrom
+                                       : new Date(offer.validFrom).toISOString().slice(0, 10) %>">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="validTo">
+                                End Date <span>*</span>
+                            </label>
+
+                            <input type="date"
+                                   id="validTo"
+                                   name="validTo"
+                                   required
+                                   value="<%= typeof formData !== 'undefined' && formData.validTo !== undefined
+                                       ? formData.validTo
+                                       : new Date(offer.validTo).toISOString().slice(0, 10) %>">
+
+                            <small>
+                                The end date must be after the start date.
+                            </small>
+
+                        </div>
+
+                    </div>
+                </section>
+
+
+                <!-- HOMEPAGE PROMOTION -->
+                <section class="banner-card">
+
+                    <div class="banner-icon">
+                        <i class="ri-image-add-line"></i>
+                    </div>
+
+                    <div class="banner-info">
+                        <strong>Feature on Homepage</strong>
+                        <p>Mark this offer for homepage promotion.</p>
+                    </div>
+
+                    <label class="checkbox-control">
+
+                        <input type="checkbox"
+                               name="showOnHomepage"
+                               <%= typeof formData !== 'undefined' && formData.showOnHomepage !== undefined
+                                   ? (formData.showOnHomepage ? "checked" : "")
+                                   : (offer.showOnHomepage ? "checked" : "") %>>
+
+                        <span>Show banner</span>
+
+                    </label>
+
+                </section>
+
+
+                <!-- FORM ACTIONS -->
+                <div class="form-actions">
+
+                    <a href="/admin/coupons" class="btn btn-light">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="ri-save-line"></i>
+                        Update Offer
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
 
 </div>
 
+
+<!-- JAVASCRIPT -->
 <script>
+
+    // =====================================
+    // ELEMENTS
+    // =====================================
+
     const offerForm = document.getElementById("offerForm");
+
     const productGroup = document.getElementById("productGroup");
     const categoryGroup = document.getElementById("categoryGroup");
+
     const productSelect = document.getElementById("productId");
     const categorySelect = document.getElementById("categoryId");
+
     const statusCheckbox = document.querySelector('[name="isActive"]');
     const statusText = document.getElementById("statusText");
+
     const startInput = document.getElementById("validFrom");
     const endInput = document.getElementById("validTo");
 
+
+    // =====================================
+    // PRODUCT / CATEGORY SELECTION
+    // =====================================
+
     function updateOfferType() {
+
         const selectedType = document.querySelector(
             'input[name="offerType"]:checked'
         )?.value || "product";
@@ -282,47 +555,116 @@
         categorySelect.disabled = isProduct;
     }
 
-    document.querySelectorAll('input[name="offerType"]').forEach(radio => {
-        radio.addEventListener("change", updateOfferType);
-    });
+    document.querySelectorAll('input[name="offerType"]')
+        .forEach(radio => {
+            radio.addEventListener("change", updateOfferType);
+        });
+
+
+    // =====================================
+    // OFFER STATUS
+    // =====================================
 
     statusCheckbox.addEventListener("change", () => {
-        statusText.textContent = statusCheckbox.checked ? "Active" : "Inactive";
+
+        statusText.textContent = statusCheckbox.checked
+            ? "Active"
+            : "Inactive";
+
     });
 
+
+    // =====================================
+    // DATE VALIDATION
+    // =====================================
+
+    function validateDates() {
+
+        endInput.setCustomValidity("");
+
+        if (
+            startInput.value &&
+            endInput.value &&
+            endInput.value <= startInput.value
+        ) {
+
+            endInput.setCustomValidity(
+                "End date must be after the start date."
+            );
+
+        }
+    }
+
     startInput.addEventListener("change", () => {
+
         endInput.min = startInput.value;
+
         validateDates();
+
     });
 
     endInput.addEventListener("change", validateDates);
 
-    function validateDates() {
-        endInput.setCustomValidity("");
 
-        if (startInput.value && endInput.value &&
-            endInput.value <= startInput.value) {
-            endInput.setCustomValidity(
-                "End date must be after the start date."
-            );
-        }
-    }
+    // =====================================
+    // FORM SUBMISSION
+    // =====================================
 
     offerForm.addEventListener("submit", event => {
+
         validateDates();
 
         if (!offerForm.checkValidity()) {
+
             event.preventDefault();
+
             offerForm.reportValidity();
+
         }
+
     });
+
+
+    // =====================================
+    // SIDEBAR DROPDOWNS
+    // =====================================
+
+    const dropdownButtons = document.querySelectorAll(".dropdown-btn");
+
+    dropdownButtons.forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const wrapper = button.closest(".dropdown-wrapper");
+            const menu = wrapper.querySelector(".dropdown-menu");
+
+            wrapper.classList.toggle("active");
+            menu.classList.toggle("show");
+
+        });
+
+    });
+
+
+    // =====================================
+    // MOBILE SIDEBAR
+    // =====================================
 
     document.getElementById("menuToggle").addEventListener("click", () => {
+
         document.getElementById("sidebar").classList.toggle("sidebar-open");
+
     });
 
+
+    // =====================================
+    // INITIALIZE
+    // =====================================
+
     updateOfferType();
+
     endInput.min = startInput.value;
+
 </script>
 
 </body>

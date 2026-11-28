@@ -9,11 +9,13 @@ const loadOrders = async (req, res) => {
 
         const page = parseInt(req.query.page) || 1;
         const status = req.query.status;
+        const refundFilter = req.query.refundFilter;
 
         const data = await orderService.getAdminOrders(
             search,
             page,
-            status
+            status,
+            refundFilter
         );
 
         return res.render("admin/orders", {
@@ -22,7 +24,8 @@ const loadOrders = async (req, res) => {
             currentPage: data.currentPage,
             totalPages: data.totalPages,
             totalOrders: data.totalOrders,
-            status
+            status,
+            refundFilter
         });
 
     } catch (error) {

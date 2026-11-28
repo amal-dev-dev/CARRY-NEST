@@ -1,642 +1,469 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promotions | Carry Nest</title>
 
-    <title>Coupons | Carry Nest</title>
-
-    <link
-        rel="stylesheet"
-        href="/Styles/admin/coupons.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
+    <link rel="stylesheet" href="/Styles/admin/coupons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-
 <div class="dashboard-container">
 
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
 
-    <!-- ================= SIDEBAR ================= -->
-
-    <aside class="sidebar">
-
-        <div>
-
-            <!-- LOGO -->
+        <div class="sidebar-top">
 
             <div class="logo-section">
-
-                <div class="logo-box">
-                    C
-                </div>
-
+                <div class="logo-box">C</div>
                 <h2>CARRY NEST</h2>
-
+                <button type="button" class="sidebar-close" id="sidebarClose" aria-label="Close menu">
+                    <i class="ri-close-line"></i>
+                </button>
             </div>
 
+            <nav class="menu-wrapper">
 
-            <!-- MENU -->
-
-            <div class="menu-wrapper">
-
-
-                <!-- DASHBOARD -->
-
-                <a
-                    href="/admin/dashboard"
-                    class="menu-item"
-                >
-
+                <a href="/admin/dashboard" class="menu-item">
                     <span class="menu-left">
-
                         <i class="ri-dashboard-line"></i>
-
                         Dashboard
-
                     </span>
-
                 </a>
 
-
-                <!-- PRODUCTS -->
-
                 <div class="dropdown-wrapper">
-
-                    <button class="dropdown-btn">
-
+                    <button type="button" class="dropdown-btn">
                         <span class="menu-left">
-
                             <i class="ri-shopping-bag-line"></i>
-
                             Products
-
                         </span>
-
                         <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-
                     </button>
 
-
                     <div class="dropdown-menu">
-
-                        <a href="/admin/products">
-                            All Products
-                        </a>
-
-                        <a href="/admin/add-product">
-                            Add Product
-                        </a>
-
-                        <a href="/admin/category">
-                            Categories
-                        </a>
-
-                        <a href="/admin/brands">
-                            Brands
-                        </a>
-
+                        <a href="/admin/products">All Products</a>
+                        <a href="/admin/add-product">Add Product</a>
+                        <a href="/admin/category">Categories</a>
+                        <a href="/admin/brands">Brands</a>
                     </div>
-
                 </div>
 
-
-                <!-- ORDERS -->
-
                 <div class="dropdown-wrapper">
-
-                    <button class="dropdown-btn">
-
+                    <button type="button" class="dropdown-btn">
                         <span class="menu-left">
-
                             <i class="ri-shopping-cart-line"></i>
-
                             Orders
-
                         </span>
-
                         <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-
                     </button>
 
-
                     <div class="dropdown-menu">
-
                         <a href="/admin/orders">All Orders</a>
                         <a href="/admin/orders?status=pending">Pending</a>
                         <a href="/admin/orders?status=shipped">Shipped</a>
                         <a href="/admin/orders?status=delivered">Delivered</a>
-
                     </div>
-
                 </div>
-
-
-                <!-- RETURNS -->
 
                 <div class="dropdown-wrapper">
-
-                    <button class="dropdown-btn">
-
+                    <button type="button" class="dropdown-btn">
                         <span class="menu-left">
-
                             <i class="ri-arrow-go-back-line"></i>
-
                             Returns
-
                         </span>
-
                         <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-
                     </button>
 
-
                     <div class="dropdown-menu">
-
-                        <a href="/admin/return-requests">
-                            Requests
-                        </a>
-
+                        <a href="/admin/return-requests">Requests</a>
                     </div>
-
                 </div>
 
-
-                <!-- CUSTOMERS -->
-
-                <a
-                    href="/admin/customers"
-                    class="menu-item"
-                >
-
+                <a href="/admin/customers" class="menu-item">
                     <span class="menu-left">
-
                         <i class="ri-group-line"></i>
-
                         Customers
-
                     </span>
-
                 </a>
 
-
-                <!-- WALLET -->
-
-                <a
-                    href="/admin/wallet"
-                    class="menu-item"
-                >
-
+                <a href="/admin/wallet" class="menu-item">
                     <span class="menu-left">
-
                         <i class="ri-wallet-3-line"></i>
-
                         Wallet & Payments
-
                     </span>
-
                 </a>
 
-
-                <!-- PROMOTIONS -->
-
-                <a
-                    href="/admin/coupons"
-                    class="menu-item active"
-                >
-
+                <a href="/admin/coupons" class="menu-item active">
                     <span class="menu-left">
-
                         <i class="ri-price-tag-3-line"></i>
-
                         Promotions
-
                     </span>
-
                 </a>
 
-
-                <!-- REPORTS -->
-
-                <a
-                    href="/admin/sales-report"
-                    class="menu-item"
-                >
-
+                <a href="/admin/sales-report" class="menu-item">
                     <span class="menu-left">
-
                         <i class="ri-bar-chart-box-line"></i>
-
                         Reports
-
                     </span>
-
                 </a>
 
-            </div>
-
+            </nav>
         </div>
 
-
-        <!-- LOGOUT -->
-
         <div class="logout-section">
-
-            <a
-                href="/admin/logout"
-                class="logout-btn"
-            >
-
+            <a href="/admin/logout" class="logout-btn">
                 <i class="ri-logout-box-r-line"></i>
-
                 Logout
-
             </a>
-
         </div>
 
     </aside>
 
+    <!-- MOBILE SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-
-    <!-- ================= MAIN CONTENT ================= -->
-
+    <!-- MAIN CONTENT -->
     <main class="main-content">
 
-
         <!-- TOPBAR -->
-
         <header class="topbar">
 
-            <div>
+            <div class="topbar-left">
+                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation">
+                    <i class="ri-menu-line"></i>
+                </button>
 
-                <p class="breadcrumb">
-
-                    Admin
-                    /
-                    Promotions
-                    /
-                    Coupons
-
-                </p>
-
+                <div>
+                    <p class="breadcrumb">
+                        Admin <span>/</span> Promotions
+                    </p>
+                </div>
             </div>
-
 
             <div class="top-right">
 
-                <i
-                    class="ri-notification-3-line notification"
-                ></i>
-
-
                 <div class="admin-profile">
-
-                    <div class="admin-avatar">
-                        AD
-                    </div>
-
-                    <div>
-
+                    <div class="admin-avatar">AD</div>
+                    <div class="admin-profile-info">
                         <h4>Admin User</h4>
-
                         <span>Super Admin</span>
-
                     </div>
-
                 </div>
 
             </div>
 
         </header>
 
-
-
-        <!-- ================= PAGE HEADER ================= -->
-
+        <!-- PAGE HEADER -->
         <section class="page-header">
 
-            <div>
-
-                <h1>
-                    Active Coupons
-                </h1>
-
-                <p>
-                    Manage discounts and promotional offers
-                </p>
-
-            </div>
-
-
-            <a
-                href="/admin/coupons/add"
-                class="create-btn"
-            >
-
-                <i class="ri-add-line"></i>
-
-                Create Coupon
-
-            </a>
-
-        </section>
-
-
-
-        <!-- ================= COUPON TABLE ================= -->
-
-        <section class="coupon-card">
-
-            <div class="table-responsive">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>ID</th>
-
-                            <th>Offer Name</th>
-
-                            <th>Code</th>
-
-                            <th>Type</th>
-
-                            <th>Target</th>
-
-                            <th>Discount</th>
-
-                            <th>Valid Period</th>
-
-                            <th>Status</th>
-
-                            <th>Actions</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        <% if (coupons && coupons.length > 0) { %>
-
-                            <% coupons.forEach((coupon, index) => { %>
-
-                                <tr>
-
-                                    <!-- ID -->
-
-                                    <td>
-                                        <%= (couponPage - 1) * 5 + index + 1 %>
-                                    </td>
-
-
-                                    <!-- OFFER NAME -->
-
-                                    <td>
-
-                                        <div class="offer-name">
-
-                                            <strong>
-                                                <%= coupon.description %>
-                                            </strong>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <!-- CODE -->
-
-                                    <td>
-
-                                        <span class="coupon-code">
-
-                                            <%= coupon.discountCode %>
-
-                                        </span>
-
-                                    </td>
-
-
-                                    <!-- TYPE -->
-
-                                    <td>
-
-                                        <span class="type-text">
-
-                                            <%= coupon.discountType === "percentage"
-                                                ? "Percentage"
-                                                : "Flat" %>
-
-                                        </span>
-
-                                    </td>
-
-
-                                    <!-- TARGET -->
-
-                                    <td>
-
-                                        <%= coupon.applyTo === "cart_total"
-                                            ? "All Products"
-                                            : "Each Product" %>
-
-                                    </td>
-
-
-                                    <!-- DISCOUNT -->
-
-                                    <td>
-
-                                        <% if (coupon.discountType === "percentage") { %>
-
-                                            <strong>
-                                                <%= coupon.discountValue %>%
-                                            </strong>
-
-                                        <% } else { %>
-
-                                            <strong>
-                                                ₹<%= coupon.discountValue %>
-                                            </strong>
-
-                                        <% } %>
-
-                                    </td>
-
-
-                                    <!-- VALID PERIOD -->
-
-                                    <td>
-
-                                        <div class="valid-period">
-
-                                            <%= new Date(coupon.validFrom)
-                                                .toISOString()
-                                                .split("T")[0] %>
-
-                                            <span>to</span>
-
-                                            <%= new Date(coupon.validTo)
-                                                .toISOString()
-                                                .split("T")[0] %>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <!-- STATUS -->
-
-                                    <td>
-                                        <div class="status-wrapper">
-
-                                            <form
-                                                action="/admin/coupons/toggle/<%= coupon._id %>?_method=PATCH"
-                                                method="POST"
-                                            >
-                                                <button
-                                                    type="submit"
-                                                    class="status-toggle <%= coupon.isActive ? 'active' : '' %>"
-                                                >
-                                                    <span class="toggle-circle"></span>
-                                                </button>
-                                            </form>
-
-                                            <span class="status-text <%= coupon.isActive ? 'active-text' : 'inactive-text' %>">
-                                                <%= coupon.isActive ? "Active" : "Inactive" %>
-                                            </span>
-
-                                        </div>
-                                    </td>
-
-
-                                    <!-- ACTIONS -->
-
-                                    <td>
-
-                                        <div class="action-buttons">
-
-                                            <a
-                                                href="/admin/coupons/edit/<%= coupon._id %>"
-                                                class="edit-btn"
-                                            >
-
-                                                <i class="ri-pencil-line"></i>
-
-                                            </a>
-
-
-                                                    <form
-                                                        action="/admin/coupons/delete/<%= coupon._id %>?_method=DELETE"
-                                                        method="POST"
-                                                        class="delete-coupon-form"
-                                                    >
-
-                                                    <button type="submit" class="delete-btn">
-
-                                                        <i class="ri-delete-bin-line"></i>
-
-                                                    </button>
-
-                                                </form>
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-
-                            <% }) %>
-
-                        <% } else { %>
-
-                            <tr>
-
-                                <td
-                                    colspan="9"
-                                    class="empty-row"
-                                >
-
-                                    No coupons found.
-
-                                </td>
-
-                            </tr>
-
-                        <% } %>
-
-                    </tbody>
-
-                </table>
-
+            <div class="page-header-info">
+                <div class="page-eyebrow">
+                    <i class="ri-price-tag-3-line"></i>
+                    Promotion Management
+                </div>
+
+                <h1>Promotions</h1>
+
+                <p>Manage coupon codes, product discounts and category offers.</p>
             </div>
 
         </section>
 
-        <div class="pagination">
+        <!-- COUPONS SECTION -->
+        <section class="management-section">
 
-            <% if (couponPage > 1) { %>
-                <a href="?couponPage=<%= couponPage - 1 %>&offerPage=<%= offerPage %>"
-                class="page-btn">
-                    Previous
-                </a>
-            <% } %>
+            <div class="section-heading">
 
-            <% for (let i = 1; i <= couponTotalPages; i++) { %>
-                <a href="?couponPage=<%= i %>&offerPage=<%= offerPage %>"
-                class="page-btn <%= couponPage === i ? 'active' : '' %>">
-                    <%= i %>
-                </a>
-            <% } %>
-
-            <% if (couponPage < couponTotalPages) { %>
-                <a href="?couponPage=<%= couponPage + 1 %>&offerPage=<%= offerPage %>"
-                class="page-btn">
-                    Next
-                </a>
-            <% } %>
-
-        </div>
-
-
-
-        <!-- ================= ACTIVE OFFERS ================= -->
-
-        <section class="offers-section">
-
-            <div class="offers-table-container">
-                <div class="offers-table-header">
-                    <div>
-                        <h2>Product & Category Offers</h2>
-                        <p>Manage your offers, discounts, and validity periods.</p>
+                <div class="section-heading-info">
+                    <div class="section-icon coupon-section-icon">
+                        <i class="ri-coupon-3-line"></i>
                     </div>
-                    <a href="/admin/add-offer" class="add-offer-btn">
-                        <i class="ri-add-line"></i> Add New Offer
-                    </a>
+
+                    <div>
+                        <h2>Coupons</h2>
+                        <p>Manage coupon codes and customer discounts.</p>
+                    </div>
+                </div>
+
+                <a href="/admin/coupons/add" class="section-action-btn">
+                    <i class="ri-add-line"></i>
+                    Add Coupon
+                </a>
+
+            </div>
+
+            <div class="table-card">
+
+                <div class="table-card-header">
+                    <div>
+                        <h3>Coupon List</h3>
+                        <p>Manage coupon validity, discount and status.</p>
+                    </div>
+
+                    <span class="section-label">
+                        <i class="ri-ticket-2-line"></i>
+                        Coupon Management
+                    </span>
                 </div>
 
                 <div class="table-responsive">
+
+                    <table class="coupons-table">
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Coupon Details</th>
+                                <th>Code</th>
+                                <th>Type</th>
+                                <th>Applies To</th>
+                                <th>Discount</th>
+                                <th>Validity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <% if (coupons && coupons.length > 0) { %>
+
+                                <% coupons.forEach((coupon, index) => { %>
+
+                                    <tr>
+
+                                        <td class="row-number">
+                                            <%= (couponPage - 1) * 5 + index + 1 %>
+                                        </td>
+
+                                        <td>
+                                            <div class="coupon-details">
+                                                <strong><%= coupon.description %></strong>
+                                                <span>Coupon promotion</span>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <span class="coupon-code">
+                                                <%= coupon.discountCode %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="type-badge">
+                                                <%= coupon.discountType === "percentage"
+                                                    ? "Percentage"
+                                                    : "Fixed Amount" %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="target-text">
+                                                <%= coupon.applyTo === "cart_total"
+                                                    ? "Cart Total"
+                                                    : "Each Product" %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="discount-value">
+                                                <% if (coupon.discountType === "percentage") { %>
+                                                    <%= coupon.discountValue %>%
+                                                <% } else { %>
+                                                    ₹<%= Number(coupon.discountValue || 0).toLocaleString("en-IN") %>
+                                                <% } %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <div class="date-range">
+                                                <span>
+                                                    <%= new Date(coupon.validFrom).toLocaleDateString("en-IN") %>
+                                                </span>
+                                                <i class="ri-arrow-right-line"></i>
+                                                <span>
+                                                    <%= new Date(coupon.validTo).toLocaleDateString("en-IN") %>
+                                                </span>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="status-cell">
+
+                                                <form
+                                                    action="/admin/coupons/toggle/<%= coupon._id %>?_method=PATCH"
+                                                    method="POST"
+                                                    class="coupon-toggle-form"
+                                                >
+                                                    <button
+                                                        type="submit"
+                                                        class="status-toggle <%= coupon.isActive ? 'active' : '' %>"
+                                                        aria-label="Toggle coupon status"
+                                                        title="Toggle coupon status"
+                                                    >
+                                                        <span class="toggle-circle"></span>
+                                                    </button>
+                                                </form>
+
+                                                <span class="status-text <%= coupon.isActive ? 'active-text' : 'inactive-text' %>">
+                                                    <%= coupon.isActive ? "Active" : "Inactive" %>
+                                                </span>
+
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="action-buttons">
+
+                                                <a
+                                                    href="/admin/coupons/edit/<%= coupon._id %>"
+                                                    class="action-btn edit-action"
+                                                    title="Edit coupon"
+                                                    aria-label="Edit coupon"
+                                                >
+                                                    <i class="ri-pencil-line"></i>
+                                                </a>
+
+                                                <form
+                                                    action="/admin/coupons/delete/<%= coupon._id %>?_method=DELETE"
+                                                    method="POST"
+                                                    class="delete-coupon-form"
+                                                >
+                                                    <button
+                                                        type="submit"
+                                                        class="action-btn delete-action"
+                                                        title="Delete coupon"
+                                                        aria-label="Delete coupon"
+                                                    >
+                                                        <i class="ri-delete-bin-line"></i>
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                        </td>
+
+                                    </tr>
+
+                                <% }) %>
+
+                            <% } else { %>
+
+                                <tr>
+                                    <td colspan="9" class="empty-row">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">
+                                                <i class="ri-coupon-3-line"></i>
+                                            </div>
+                                            <strong>No coupons available</strong>
+                                            <p>Create your first coupon to start offering discounts.</p>
+                                            <a href="/admin/coupons/add" class="empty-action">
+                                                <i class="ri-add-line"></i>
+                                                Create Coupon
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            <% } %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- COUPON PAGINATION -->
+                <% if (couponTotalPages > 1) { %>
+
+                    <div class="pagination-footer">
+
+                        <span class="pagination-info">
+                            Coupon page <strong><%= couponPage %></strong> of <strong><%= couponTotalPages %></strong>
+                        </span>
+
+                        <div class="pagination">
+
+                            <% if (couponPage > 1) { %>
+                                <a href="?couponPage=<%= couponPage - 1 %>&offerPage=<%= offerPage %>" class="page-btn">
+                                    <i class="ri-arrow-left-line"></i>
+                                    Previous
+                                </a>
+                            <% } %>
+
+                            <% for (let i = 1; i <= couponTotalPages; i++) { %>
+                                <a
+                                    href="?couponPage=<%= i %>&offerPage=<%= offerPage %>"
+                                    class="page-btn <%= couponPage === i ? 'active' : '' %>"
+                                >
+                                    <%= i %>
+                                </a>
+                            <% } %>
+
+                            <% if (couponPage < couponTotalPages) { %>
+                                <a href="?couponPage=<%= couponPage + 1 %>&offerPage=<%= offerPage %>" class="page-btn">
+                                    Next
+                                    <i class="ri-arrow-right-line"></i>
+                                </a>
+                            <% } %>
+
+                        </div>
+
+                    </div>
+
+                <% } %>
+
+            </div>
+
+        </section>
+
+        <!-- OFFERS SECTION -->
+        <section class="management-section offers-section">
+
+            <div class="section-heading">
+
+                <div class="section-heading-info">
+                    <div class="section-icon offer-section-icon">
+                        <i class="ri-percent-line"></i>
+                    </div>
+
+                    <div>
+                        <h2>Product & Category Offers</h2>
+                        <p>Manage product-specific and category discounts.</p>
+                    </div>
+                </div>
+
+                <a href="/admin/add-offer" class="section-action-btn">
+                    <i class="ri-add-line"></i>
+                    Add New Offer
+                </a>
+
+            </div>
+
+            <div class="table-card">
+
+                <div class="table-card-header">
+                    <div>
+                        <h3>Offer List</h3>
+                        <p>Manage offer details, discount percentage and validity.</p>
+                    </div>
+
+                    <span class="section-label offer-label">
+                        <i class="ri-percent-line"></i>
+                        Offers Management
+                    </span>
+                </div>
+
+                <div class="table-responsive">
+
                     <table class="offers-table">
+
                         <thead>
                             <tr>
                                 <th>Offer Details</th>
@@ -650,15 +477,19 @@
                         </thead>
 
                         <tbody>
+
                             <% if (offers && offers.length > 0) { %>
+
                                 <% offers.forEach(offer => { %>
+
                                     <tr>
+
                                         <td>
-                                            <div class="offer-title">
+                                            <div class="offer-details">
                                                 <strong><%= offer.title %></strong>
-                                                <small>
+                                                <span>
                                                     ID: <%= String(offer._id).slice(-6).toUpperCase() %>
-                                                </small>
+                                                </span>
                                             </div>
                                         </td>
 
@@ -669,27 +500,29 @@
                                         </td>
 
                                         <td>
-                                            <span class="offer-target">
+                                            <div class="offer-target">
                                                 <% if (offer.offerType === "product") { %>
+                                                    <i class="ri-shopping-bag-line"></i>
                                                     <%= offer.productId?.productName || "Product unavailable" %>
                                                 <% } else { %>
+                                                    <i class="ri-folder-line"></i>
                                                     <%= offer.categoryId?.name || "Category unavailable" %>
                                                 <% } %>
-                                            </span>
+                                            </div>
                                         </td>
 
                                         <td>
-                                            <span class="discount-badge">
+                                            <span class="offer-discount">
                                                 <%= offer.discountPercentage %>% OFF
                                             </span>
                                         </td>
 
                                         <td>
-                                            <div class="validity-info">
+                                            <div class="offer-date-range">
                                                 <span>
                                                     <%= new Date(offer.validFrom).toLocaleDateString("en-IN") %>
                                                 </span>
-                                                <small>to</small>
+                                                <span class="date-separator">to</span>
                                                 <span>
                                                     <%= new Date(offer.validTo).toLocaleDateString("en-IN") %>
                                                 </span>
@@ -697,7 +530,7 @@
                                         </td>
 
                                         <td>
-                                            <span class="status-badge <%= offer.isActive ? 'active' : 'inactive' %>">
+                                            <span class="offer-status <%= offer.isActive ? 'active' : 'inactive' %>">
                                                 <span class="status-dot"></span>
                                                 <%= offer.isActive ? "Active" : "Inactive" %>
                                             </span>
@@ -705,10 +538,12 @@
 
                                         <td>
                                             <div class="offer-actions">
+
                                                 <a
                                                     href="/admin/edit-offer/<%= offer._id %>"
-                                                    class="action-btn edit-btn"
+                                                    class="action-btn edit-action"
                                                     title="Edit offer"
+                                                    aria-label="Edit offer"
                                                 >
                                                     <i class="ri-pencil-line"></i>
                                                 </a>
@@ -718,7 +553,12 @@
                                                     method="POST"
                                                     class="toggle-offer-form"
                                                 >
-                                                    <button type="submit" class="action-btn toggle-btn">
+                                                    <button
+                                                        type="submit"
+                                                        class="action-btn toggle-action"
+                                                        title="Toggle offer"
+                                                        aria-label="Toggle offer status"
+                                                    >
                                                         <i class="ri-refresh-line"></i>
                                                     </button>
                                                 </form>
@@ -728,168 +568,211 @@
                                                     method="POST"
                                                     class="delete-offer-form"
                                                 >
-                                                    <button type="submit" class="action-btn delete-btn">
+                                                    <button
+                                                        type="submit"
+                                                        class="action-btn delete-action"
+                                                        title="Delete offer"
+                                                        aria-label="Delete offer"
+                                                    >
                                                         <i class="ri-delete-bin-line"></i>
                                                     </button>
                                                 </form>
 
                                             </div>
                                         </td>
+
                                     </tr>
-                                <% }); %>
+
+                                <% }) %>
+
                             <% } else { %>
+
                                 <tr>
-                                    <td colspan="7" class="empty-offers">
-                                        <i class="ri-coupon-3-line"></i>
-                                        <strong>No offers found</strong>
-                                        <span>Create your first product or category offer.</span>
+                                    <td colspan="7" class="empty-row">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">
+                                                <i class="ri-percent-line"></i>
+                                            </div>
+                                            <strong>No offers available</strong>
+                                            <p>Create your first product or category offer.</p>
+                                            <a href="/admin/add-offer" class="empty-action">
+                                                <i class="ri-add-line"></i>
+                                                Create Offer
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
+
                             <% } %>
+
                         </tbody>
+
                     </table>
+
                 </div>
+
+                <!-- OFFER PAGINATION -->
+                <% if (offerTotalPages > 1) { %>
+
+                    <div class="pagination-footer">
+
+                        <span class="pagination-info">
+                            Offer page <strong><%= offerPage %></strong> of <strong><%= offerTotalPages %></strong>
+                        </span>
+
+                        <div class="pagination">
+
+                            <% if (offerPage > 1) { %>
+                                <a href="?couponPage=<%= couponPage %>&offerPage=<%= offerPage - 1 %>" class="page-btn">
+                                    <i class="ri-arrow-left-line"></i>
+                                    Previous
+                                </a>
+                            <% } %>
+
+                            <% for (let i = 1; i <= offerTotalPages; i++) { %>
+                                <a
+                                    href="?couponPage=<%= couponPage %>&offerPage=<%= i %>"
+                                    class="page-btn <%= offerPage === i ? 'active' : '' %>"
+                                >
+                                    <%= i %>
+                                </a>
+                            <% } %>
+
+                            <% if (offerPage < offerTotalPages) { %>
+                                <a href="?couponPage=<%= couponPage %>&offerPage=<%= offerPage + 1 %>" class="page-btn">
+                                    Next
+                                    <i class="ri-arrow-right-line"></i>
+                                </a>
+                            <% } %>
+
+                        </div>
+
+                    </div>
+
+                <% } %>
+
             </div>
 
         </section>
 
-        <div class="pagination">
-
-            <% if (offerPage > 1) { %>
-                <a href="?couponPage=<%= couponPage %>&offerPage=<%= offerPage - 1 %>"
-                class="page-btn">
-                    Previous
-                </a>
-            <% } %>
-
-            <% for (let i = 1; i <= offerTotalPages; i++) { %>
-                <a href="?couponPage=<%= couponPage %>&offerPage=<%= i %>"
-                class="page-btn <%= offerPage === i ? 'active' : '' %>">
-                    <%= i %>
-                </a>
-            <% } %>
-
-            <% if (offerPage < offerTotalPages) { %>
-                <a href="?couponPage=<%= couponPage %>&offerPage=<%= offerPage + 1 %>"
-                class="page-btn">
-                    Next
-                </a>
-            <% } %>
-
-        </div>
-
+        <footer class="page-footer">
+            <span>Carry Nest Admin</span>
+            <span>Promotion Management</span>
+        </footer>
 
     </main>
 
 </div>
 
-
-
-<!-- ================= JAVASCRIPT ================= -->
-
+<!-- SWEETALERT -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-document.querySelectorAll(".toggle-offer-form").forEach(form => {
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
+    // SIDEBAR DROPDOWNS
+    document.querySelectorAll(".dropdown-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            const wrapper = button.closest(".dropdown-wrapper");
 
-        const offerForm = this;
+            document.querySelectorAll(".dropdown-wrapper").forEach(item => {
+                if (item !== wrapper) {
+                    item.classList.remove("active");
+                    item.querySelector(".dropdown-menu")?.classList.remove("show");
+                }
+            });
 
-        Swal.fire({
-            title: "Change Offer Status?",
-            text: "Do you want to change this offer's status?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#2563eb",
-            cancelButtonColor: "#6b7280",
-            confirmButtonText: "Yes, change it",
-            cancelButtonText: "Cancel"
-        }).then(result => {
-            if (result.isConfirmed) {
-                offerForm.submit();
-            }
+            wrapper.classList.toggle("active");
+            wrapper.querySelector(".dropdown-menu")?.classList.toggle("show");
         });
     });
-});
-</script>
 
-<script>
-document.querySelectorAll(".delete-offer-form").forEach(form => {
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
+    // MOBILE SIDEBAR
+    const sidebar = document.getElementById("sidebar");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+    const sidebarClose = document.getElementById("sidebarClose");
 
-        const deleteForm = this;
+    function openSidebar() {
+        sidebar.classList.add("sidebar-open");
+        sidebarOverlay.classList.add("show");
+        document.body.classList.add("sidebar-visible");
+    }
 
-        Swal.fire({
-            title: "Delete this offer?",
-            text: "This action cannot be undone.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#dc2626",
-            cancelButtonColor: "#6b7280",
-            confirmButtonText: "Yes, delete",
-            cancelButtonText: "Cancel"
-        }).then(result => {
-            if (result.isConfirmed) {
-                deleteForm.submit();
-            }
+    function closeSidebar() {
+        sidebar.classList.remove("sidebar-open");
+        sidebarOverlay.classList.remove("show");
+        document.body.classList.remove("sidebar-visible");
+    }
+
+    mobileMenuBtn?.addEventListener("click", openSidebar);
+    sidebarClose?.addEventListener("click", closeSidebar);
+    sidebarOverlay?.addEventListener("click", closeSidebar);
+
+    // COUPON DELETE CONFIRMATION
+    document.querySelectorAll(".delete-coupon-form").forEach(form => {
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "Delete this coupon?",
+                text: "This coupon will be permanently deleted.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#dc2626",
+                cancelButtonColor: "#64748b",
+                confirmButtonText: "Delete Coupon",
+                cancelButtonText: "Cancel"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
     });
-});
 
+    // OFFER STATUS CONFIRMATION
+    document.querySelectorAll(".toggle-offer-form").forEach(form => {
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
 
-document.querySelectorAll(".delete-coupon-form").forEach(form => {
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        const deleteForm = this;
-
-        Swal.fire({
-            title: "Delete this coupon?",
-            text: "Are you sure you want to delete this coupon? This action cannot be undone.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#dc2626",
-            cancelButtonColor: "#6b7280",
-            confirmButtonText: "Yes, delete",
-            cancelButtonText: "Cancel"
-        }).then(result => {
-            if (result.isConfirmed) {
-                deleteForm.submit();
-            }
+            Swal.fire({
+                title: "Change offer status?",
+                text: "Do you want to activate or deactivate this offer?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#2563eb",
+                cancelButtonColor: "#64748b",
+                confirmButtonText: "Yes, change",
+                cancelButtonText: "Cancel"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
     });
-});
 
-</script>
+    // OFFER DELETE CONFIRMATION
+    document.querySelectorAll(".delete-offer-form").forEach(form => {
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
 
-<script>
-
-const dropdowns = document.querySelectorAll(".dropdown-btn");
-
-
-dropdowns.forEach(btn => {
-
-    btn.addEventListener("click", () => {
-
-        const wrapper =
-            btn.parentElement;
-
-        const menu =
-            wrapper.querySelector(".dropdown-menu");
-
-        wrapper.classList.toggle("active");
-
-        menu.classList.toggle("show");
-
+            Swal.fire({
+                title: "Delete this offer?",
+                text: "This action cannot be undone.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#dc2626",
+                cancelButtonColor: "#64748b",
+                confirmButtonText: "Delete Offer",
+                cancelButtonText: "Cancel"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
     });
-
-});
-
 </script>
-
 
 </body>
-
 </html>

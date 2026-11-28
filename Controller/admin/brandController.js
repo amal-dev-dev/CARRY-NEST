@@ -1,73 +1,45 @@
-import Brand from "../../Model/brandModel.js";
-import Product from "../../Model/productModel.js";
+
+import brandService from "../../Service/admin/brandService.js";
+
 
 // BRANDS PAGE
 const loadBrands = async (req, res) => {
     try {
-        const brands = await Brand.find().sort({ createdAt: -1 }).lean();
+        const brands = await brandService.getAllBrands();
 
-        const brandsWithCount = await Promise.all(
-            brands.map(async (brand) => {
-                const productCount = await Product.countDocuments({
-                    brand: brand.name
-                });
-
-                return {
-                    ...brand,
-                    productCount
-                };
-            })
-        );
-
-        res.render("admin/brands", {
-            brands: brandsWithCount,
+        return res.render("admin/brands", {
+            brands,
             error: null
         });
+
     } catch (error) {
         console.error("LOAD BRANDS ERROR:", error);
-        res.status(500).send("Unable to load brands");
+
+        return res.status(500).send("Unable to load brands");
     }
 };
 
-const escapeRegex = (value) =>
-    value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 // ADD BRAND
 const addBrand = async (req, res) => {
     try {
         const { name, logo } = req.body;
 
-        if (!name?.trim() || !logo?.trim()) {
-            return res.status(400).json({
+        const result = await brandService.addBrand(name, logo);
+
+        if (!result.success) {
+            return res.status(result.statusCode).json({
                 success: false,
-                message: "Brand name and logo are required"
+                message: result.message
             });
         }
 
-        const existingBrand = await Brand.findOne({
-            name: {
-                $regex: `^${escapeRegex(name.trim())}$`,
-                $options: "i"
-            }
-        });
-
-        if (existingBrand) {
-            return res.status(409).json({
-                success: false,
-                message: "This brand already exists"
-            });
-        }
-
-        const brand = await Brand.create({
-            name: name.trim(),
-            logo: logo.trim()
-        });
-
-        return res.status(201).json({
+        return res.status(result.statusCode).json({
             success: true,
-            message: "Brand added successfully",
-            brand
+            message: result.message,
+            brand: result.brand
         });
+
     } catch (error) {
         console.error("ADD BRAND ERROR:", error);
 
@@ -78,52 +50,31 @@ const addBrand = async (req, res) => {
     }
 };
 
+
 // EDIT BRAND
 const updateBrand = async (req, res) => {
     try {
         const { name, logo } = req.body;
 
-        if (!name?.trim() || !logo?.trim()) {
-            return res.status(400).json({
+        const result = await brandService.updateBrand(
+            req.params.id,
+            name,
+            logo
+        );
+
+        if (!result.success) {
+            return res.status(result.statusCode).json({
                 success: false,
-                message: "Brand name and logo are required"
+                message: result.message
             });
         }
-
-        const brand = await Brand.findById(req.params.id);
-
-        if (!brand) {
-            return res.status(404).json({
-                success: false,
-                message: "Brand not found"
-            });
-        }
-
-        const duplicate = await Brand.findOne({
-            _id: { $ne: brand._id },
-            name: {
-                $regex: `^${escapeRegex(name.trim())}$`,
-                $options: "i"
-            }
-        });
-
-        if (duplicate) {
-            return res.status(409).json({
-                success: false,
-                message: "Another brand already uses this name"
-            });
-        }
-
-        brand.name = name.trim();
-        brand.logo = logo.trim();
-
-        await brand.save();
 
         return res.json({
             success: true,
-            message: "Brand updated successfully",
-            brand
+            message: result.message,
+            brand: result.brand
         });
+
     } catch (error) {
         console.error("UPDATE BRAND ERROR:", error);
 
@@ -134,26 +85,25 @@ const updateBrand = async (req, res) => {
     }
 };
 
+
 // CHANGE BRAND STATUS
 const toggleBrandStatus = async (req, res) => {
     try {
-        const brand = await Brand.findById(req.params.id);
+        const result = await brandService.toggleBrandStatus(req.params.id);
 
-        if (!brand) {
-            return res.status(404).json({
+        if (!result.success) {
+            return res.status(result.statusCode).json({
                 success: false,
-                message: "Brand not found"
+                message: result.message
             });
         }
 
-        brand.isActive = !brand.isActive;
-        await brand.save();
-
         return res.json({
             success: true,
-            message: `Brand ${brand.isActive ? "activated" : "deactivated"} successfully`,
-            isActive: brand.isActive
+            message: result.message,
+            isActive: result.isActive
         });
+
     } catch (error) {
         console.error("TOGGLE BRAND ERROR:", error);
 
@@ -163,6 +113,7 @@ const toggleBrandStatus = async (req, res) => {
         });
     }
 };
+
 
 export default {
     loadBrands,

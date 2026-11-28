@@ -1,726 +1,139 @@
-import Coupon from "../../Model/couponModel.js";
-import Offer from "../../Model/offerModel.js";
 
+import couponService from "../../Service/admin/couponService.js";
 
-// ==============================
 // LOAD COUPON LIST
-// ==============================
-
 const loadCoupons = async (req, res) => {
     try {
+        const {
+            couponPage = 1,
+            offerPage = 1
+        } = req.query;
 
-        const ITEMS_PER_PAGE = 5;
-
-        // Get page numbers
-        let couponPage = Math.max(
-            1,
-            parseInt(req.query.couponPage) || 1
-        );
-
-        let offerPage = Math.max(
-            1,
-            parseInt(req.query.offerPage) || 1
-        );
-
-        // Count total coupons and offers
-        const [totalCoupons, totalOffers] = await Promise.all([
-            Coupon.countDocuments(),
-            Offer.countDocuments()
-        ]);
-
-        // Calculate total pages
-        const couponTotalPages = Math.max(
-            1,
-            Math.ceil(totalCoupons / ITEMS_PER_PAGE)
-        );
-
-        const offerTotalPages = Math.max(
-            1,
-            Math.ceil(totalOffers / ITEMS_PER_PAGE)
-        );
-
-        // Prevent invalid page numbers
-        couponPage = Math.min(couponPage, couponTotalPages);
-        offerPage = Math.min(offerPage, offerTotalPages);
-
-        // Fetch paginated coupons
-        const coupons = await Coupon.find()
-            .sort({ createdAt: -1 })
-            .skip((couponPage - 1) * ITEMS_PER_PAGE)
-            .limit(ITEMS_PER_PAGE)
-            .lean();
-
-        // Fetch paginated offers
-        const offers = await Offer.find()
-            .populate("productId", "productName")
-            .populate("categoryId", "name")
-            .sort({ createdAt: -1 })
-            .skip((offerPage - 1) * ITEMS_PER_PAGE)
-            .limit(ITEMS_PER_PAGE)
-            .lean();
-
-        return res.render("admin/coupons", {
-
-            coupons,
-            offers,
-
+        const data = await couponService.getCouponsPageData(
             couponPage,
-            couponTotalPages,
-            totalCoupons,
+            offerPage
+        );
 
-            offerPage,
-            offerTotalPages,
-            totalOffers
-
-        });
+        return res.render("admin/coupons", data);
 
     } catch (error) {
-
-        console.log("LOAD COUPONS ERROR:", error);
-
+        console.error("LOAD COUPONS ERROR:", error);
         return res.redirect("/admin/pageerror");
     }
 };
 
 
-// ==============================
 // LOAD ADD COUPON PAGE
-// ==============================
-
-const loadAddCoupon = async (req, res) => {
+const loadAddCoupon = (req, res) => {
     try {
-        const message = req.session.message;
+        const message = req.session.message || null;
+
         delete req.session.message;
 
-        return res.render("admin/add-coupon", {
+        res.render("admin/add-coupon", {
             message
         });
 
     } catch (error) {
-        console.log("LOAD ADD COUPON ERROR:", error);
-        return res.redirect("/admin/coupons");
+        console.error("Load Add Coupon Error:", error);
+        res.redirect("/admin/coupons");
     }
 };
 
 
-// ==============================
 // ADD COUPON
-// ==============================
-
 const addCoupon = async (req, res) => {
     try {
+        const result = await couponService.addCoupon(req.body);
 
-        const {
-            discountName,
-            discountCode,
-            discountType,
-            discountValue,
-            maxDiscountAmount,
-            description,
-            minOrderDiscountAmount,
-            applyTo,
-            validFrom,
-            validTo,
-            usageLimit,
-            userLimit
-        } = req.body;
-
-
-        // ==============================
-        // BASIC VALIDATION
-        // ==============================
-
-        if (
-            !discountName ||
-            !discountCode ||
-            !discountType ||
-            !discountValue ||
-            !description ||
-            !validFrom ||
-            !validTo ||
-            !usageLimit ||
-            !userLimit
-        ) {
-            req.session.message = "Please fill all required fields";
-
+        if (!result.success) {
+            req.session.message = result.message;
             return res.redirect("/admin/coupons/add");
         }
 
-
-        // ==============================
-        // CHECK DISCOUNT VALUE
-        // ==============================
-
-        if (Number(discountValue) <= 0) {
-
-            req.session.message = "Discount value must be greater than 0";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-
-        // ==============================
-        // MAX DISCOUNT VALIDATION
-        // ==============================
-
-        if (
-            maxDiscountAmount !== undefined &&
-            maxDiscountAmount !== "" &&
-            Number(maxDiscountAmount) < 0
-        ) {
-            req.session.message = "Maximum discount amount cannot be negative";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-
-        // ==============================
-        // USAGE LIMIT VALIDATION
-        // ==============================
-
-        if (Number(usageLimit) <= 0) {
-
-            req.session.message = "Total usage limit must be greater than 0";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-
-        if (Number(userLimit) <= 0) {
-
-            req.session.message = "User usage limit must be greater than 0";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-
-        if (Number(userLimit) > Number(usageLimit)) {
-
-            req.session.message = "User usage limit cannot exceed total usage limit";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-
-        // ==============================
-        // MINIMUM ORDER VALIDATION
-        // ==============================
-
-        if (
-            minOrderDiscountAmount !== undefined &&
-            minOrderDiscountAmount !== "" &&
-            Number(minOrderDiscountAmount) < 0
-        ) {
-            req.session.message = "Minimum order amount cannot be negative";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-        if(minOrderDiscountAmount < discountValue) {
-            req.session.message = "Minimum order amount cannot be lessthan value";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-
-        // ==============================
-        // CHECK DATES
-        // ==============================
-
-        if (new Date(validTo) <= new Date(validFrom)) {
-
-            req.session.message =
-                "Valid To date must be after Valid From date";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-
-        // ==============================
-        // PERCENTAGE VALIDATION
-        // ==============================
-
-        if (
-            discountType === "percentage" &&
-            Number(discountValue) > 100
-        ) {
-
-            req.session.message =
-                "Percentage discount cannot exceed 100%";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-
-        // ==============================
-        // FIXED DISCOUNT VALIDATION
-        // ==============================
-
-        if (
-            discountType === "fixed" &&
-            Number(maxDiscountAmount) > 0
-        ) {
-            req.session.message =
-                "Maximum discount amount is only applicable to percentage discounts";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-
-        // ==============================
-        // CHECK EXISTING COUPON
-        // ==============================
-
-        const existingCoupon = await Coupon.findOne({
-            discountCode: discountCode.trim().toUpperCase()
-        });
-
-        if (existingCoupon) {
-
-            req.session.message =
-                "Coupon code already exists";
-
-            return res.redirect("/admin/coupons/add");
-        }
-
-
-        // ==============================
-        // CREATE COUPON
-        // ==============================
-
-        const coupon = new Coupon({
-
-            discountName:
-                discountName.trim(),
-
-            discountCode:
-                discountCode.trim().toUpperCase(),
-
-            discountType,
-
-            discountValue:
-                Number(discountValue),
-
-            maxDiscountAmount:
-                Number(maxDiscountAmount) || 0,
-
-            description:
-                description.trim(),
-
-            minOrderDiscountAmount:
-                Number(minOrderDiscountAmount) || 0,
-
-            applyTo,
-
-            validFrom:
-                new Date(validFrom),
-
-            validTo:
-                new Date(validTo),
-
-            usageLimit:
-                Number(usageLimit),
-
-            usedCount: 0,
-
-            userUsageLimit:
-                Number(userLimit),
-
-            isActive: true
-        });
-
-
-        await coupon.save();
-
-
-        req.session.message =
-            "Coupon created successfully";
-
+        req.session.message = "Coupon created successfully!";
         return res.redirect("/admin/coupons");
 
-
     } catch (error) {
+        console.error("Add Coupon Controller Error:", error);
 
-        console.log("ADD COUPON ERROR:", error);
-
-        req.session.message =
-            "Unable to create coupon";
-
+        req.session.message = "Unable to create coupon. Please try again.";
         return res.redirect("/admin/coupons/add");
     }
 };
 
 
-// ==============================
 // LOAD EDIT COUPON
-// ==============================
-
 const loadEditCoupon = async (req, res) => {
     try {
-
-        const { id } = req.params;
-
-        const coupon = await Coupon.findById(id);
+        const coupon = await couponService.getCouponById(req.params.id);
 
         if (!coupon) {
-
-            req.session.message =
-                "Coupon not found";
-
             return res.redirect("/admin/coupons");
         }
 
+        const message = req.session.message || null;
+        delete req.session.message;
 
-        return res.render("admin/edit-coupon", {
+        res.render("admin/edit-coupon", {
             coupon,
-            message: req.session.message
+            message
         });
 
     } catch (error) {
-
-        console.log("LOAD EDIT COUPON ERROR:", error);
-
-        return res.redirect("/admin/coupons");
+        console.error("Load Edit Coupon Error:", error);
+        res.redirect("/admin/coupons");
     }
 };
 
 
-// ==============================
 // UPDATE COUPON
-// ==============================
-
 const updateCoupon = async (req, res) => {
     try {
-
         const { id } = req.params;
 
-        const {
-            discountName,
-            discountCode,
-            discountType,
-            discountValue,
-            maxDiscountAmount,
-            description,
-            minOrderDiscountAmount,
-            applyTo,
-            validFrom,
-            validTo,
-            usageLimit,
-            userUsageLimit
-        } = req.body;
+        const result = await couponService.updateCoupon(
+            id,
+            req.body
+        );
 
+        if (!result.success) {
+            req.session.message = result.message;
 
-        // ==================================================
-        // FIND COUPON
-        // ==================================================
-
-        const coupon = await Coupon.findById(id);
-
-        if (!coupon) {
-
-            req.session.message =
-                "Coupon not found";
-
-            return res.redirect("/admin/coupons");
-        }
-
-
-        // ==================================================
-        // REQUIRED FIELD VALIDATION
-        // ==================================================
-
-        if (
-            !discountName?.trim() ||
-            !discountCode?.trim() ||
-            !discountType ||
-            !discountValue ||
-            !description?.trim() ||
-            !validFrom ||
-            !validTo ||
-            !usageLimit ||
-            !userUsageLimit
-        ) {
-
-            req.session.message =
-                "Please fill all required fields";
+            if (result.notFound) {
+                return res.redirect("/admin/coupons");
+            }
 
             return res.redirect(`/admin/coupons/edit/${id}`);
         }
 
-
-        // ==================================================
-        // CONVERT VALUES TO NUMBERS
-        // ==================================================
-
-        const discount = Number(discountValue);
-        const maxDiscount = Number(maxDiscountAmount || 0);
-        const minimumOrder = Number(minOrderDiscountAmount || 0);
-        const totalUsage = Number(usageLimit);
-        const userUsage = Number(userUsageLimit);
-
-
-        // ==================================================
-        // NUMERIC VALIDATION
-        // ==================================================
-
-        if (!Number.isFinite(discount) || discount <= 0) {
-
-            req.session.message =
-                "Discount value must be a valid positive number";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        if (!Number.isFinite(totalUsage) || totalUsage <= 0) {
-
-            req.session.message =
-                "Total usage limit must be a valid positive number";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        if (!Number.isFinite(userUsage) || userUsage <= 0) {
-
-            req.session.message =
-                "User usage limit must be a valid positive number";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        if (!Number.isFinite(maxDiscount) || maxDiscount < 0) {
-
-            req.session.message =
-                "Maximum discount amount cannot be negative";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        if (!Number.isFinite(minimumOrder) || minimumOrder < 0) {
-
-            req.session.message =
-                "Minimum order amount cannot be negative";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        // ==================================================
-        // USER LIMIT VS TOTAL LIMIT
-        // ==================================================
-
-        if (userUsage > totalUsage) {
-
-            req.session.message =
-                "User usage limit cannot exceed total usage limit";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        // ==================================================
-        // DISCOUNT TYPE VALIDATION
-        // ==================================================
-
-        if (!["percentage", "fixed"].includes(discountType)) {
-
-            req.session.message =
-                "Invalid discount type";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        // ==================================================
-        // PERCENTAGE VALIDATION
-        // ==================================================
-
-        if (
-            discountType === "percentage" &&
-            discount > 100
-        ) {
-
-            req.session.message =
-                "Percentage discount cannot exceed 100%";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        // ==================================================
-        // FIXED DISCOUNT VALIDATION
-        // ==================================================
-
-        if (
-            discountType === "fixed" &&
-            maxDiscount > 0
-        ) {
-
-            req.session.message =
-                "Maximum discount amount is only applicable to percentage discounts";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        // ==================================================
-        // DATE VALIDATION
-        // ==================================================
-
-        const startDate = new Date(validFrom);
-        const endDate = new Date(validTo);
-
-        if (
-            Number.isNaN(startDate.getTime()) ||
-            Number.isNaN(endDate.getTime())
-        ) {
-
-            req.session.message =
-                "Invalid coupon dates";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        if (endDate <= startDate) {
-
-            req.session.message =
-                "Valid To date must be after Valid From date";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        // ==================================================
-        // NORMALIZE CODE
-        // ==================================================
-
-        const normalizedCode =
-            discountCode.trim().toUpperCase();
-
-
-        // ==================================================
-        // CHECK DUPLICATE CODE
-        // ==================================================
-
-        const existingCoupon = await Coupon.findOne({
-            discountCode: normalizedCode,
-            _id: { $ne: id }
-        });
-
-        if (existingCoupon) {
-
-            req.session.message =
-                "Coupon code already exists";
-
-            return res.redirect(`/admin/coupons/edit/${id}`);
-        }
-
-
-        // ==================================================
-        // UPDATE COUPON
-        // ==================================================
-
-        coupon.discountName =
-            discountName.trim();
-
-        coupon.discountCode =
-            normalizedCode;
-
-        coupon.discountType =
-            discountType;
-
-        coupon.discountValue =
-            discount;
-
-        coupon.maxDiscountAmount =
-            discountType === "percentage"
-                ? maxDiscount
-                : 0;
-
-        coupon.description =
-            description.trim();
-
-        coupon.minOrderDiscountAmount =
-            minimumOrder;
-
-        coupon.applyTo =
-            applyTo;
-
-        coupon.validFrom =
-            startDate;
-
-        coupon.validTo =
-            endDate;
-
-        coupon.usageLimit =
-            totalUsage;
-
-        coupon.userUsageLimit =
-            userUsage;
-
-
-        await coupon.save();
-
-
-        req.session.message =
-            "Coupon updated successfully";
+        req.session.message = "Coupon updated successfully";
 
         return res.redirect("/admin/coupons");
 
-
     } catch (error) {
+        console.error("UPDATE COUPON ERROR:", error);
 
-        console.log("UPDATE COUPON ERROR:", error);
+        req.session.message = "Unable to update coupon";
 
-        req.session.message =
-            "Unable to update coupon";
-
-        return res.redirect(
-            `/admin/coupons/edit/${req.params.id}`
-        );
+        return res.redirect(`/admin/coupons/edit/${req.params.id}`);
     }
 };
 
-// ==============================
-// TOGGLE COUPON STATUS
-// ==============================
 
+// TOGGLE COUPON STATUS
 const toggleCouponStatus = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const coupon = await Coupon.findById(id);
+        const result = await couponService.toggleCouponStatus(id);
 
-        if (!coupon) {
-            req.session.message = "Coupon not found";
+        if (!result.success) {
+            req.session.message = result.message;
             return res.redirect("/admin/coupons");
         }
 
-        const newStatus = !coupon.isActive;
-
-        const updatedCoupon = await Coupon.findByIdAndUpdate(
-            id,
-            {
-                $set: {
-                    isActive: newStatus
-                }
-            },
-            {
-                returnDocument: "after",
-                runValidators: true
-            }
-        );
-
-        if (!updatedCoupon) {
-            req.session.message = "Unable to update coupon status";
-            return res.redirect("/admin/coupons");
-        }
-
-        req.session.message = newStatus
+        req.session.message = result.isActive
             ? "Coupon activated successfully"
             : "Coupon deactivated successfully";
 
@@ -736,42 +149,26 @@ const toggleCouponStatus = async (req, res) => {
 };
 
 
-// ==============================
 // DELETE COUPON
-// ==============================
-
 const deleteCoupon = async (req, res) => {
     try {
-
         const { id } = req.params;
 
-        const coupon =
-            await Coupon.findByIdAndDelete(id);
+        const result = await couponService.deleteCoupon(id);
 
-        if (!coupon) {
-
-            req.session.message =
-                "Coupon not found";
-
+        if (!result.success) {
+            req.session.message = result.message;
             return res.redirect("/admin/coupons");
         }
 
-
-        req.session.message =
-            "Coupon deleted successfully";
+        req.session.message = "Coupon deleted successfully";
 
         return res.redirect("/admin/coupons");
 
-
     } catch (error) {
+        console.error("DELETE COUPON ERROR:", error);
 
-        console.log(
-            "DELETE COUPON ERROR:",
-            error
-        );
-
-        req.session.message =
-            "Unable to delete coupon";
+        req.session.message = "Unable to delete coupon";
 
         return res.redirect("/admin/coupons");
     }

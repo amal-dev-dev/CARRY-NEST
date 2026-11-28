@@ -1,7 +1,6 @@
 import productService from "../../Service/user/productService.js";
 
 
-
 const loadProducts = async (req, res) => {
     try {
         const {

@@ -5,6 +5,7 @@ import Order from "../../Model/orderModel.js";
 import Address from "../../Model/addressModel.js";
 import Wallet from "../../Model/walletModel.js";
 import Product from "../../Model/productModel.js";
+import Brand from "../../Model/brandModel.js";
 
 
 const createCheckoutError = (message) => {
@@ -117,6 +118,7 @@ const getProductPricing = (product, variant, offers) => {
 };
 
 // Get and validate checkout cart
+// Get and validate checkout cart
 const getCheckoutCart = async (userId) => {
     const cart = await Cart.findOne({ userId })
         .populate({
@@ -131,14 +133,27 @@ const getCheckoutCart = async (userId) => {
         throw createCheckoutError("Your cart is empty");
     }
 
+    // Get all currently active brand names
+    const activeBrandNames = await Brand.find({
+        isActive: true
+    }).distinct("name");
+
     const validItems = [];
 
     for (const item of cart.items) {
         const product = item.productId;
 
+        // Check product and category availability
         if (isUnavailableProduct(product)) {
             throw createCheckoutError(
                 "Your cart contains an unavailable product. Please review your cart."
+            );
+        }
+
+        // Check brand availability
+        if (!activeBrandNames.includes(product.brand)) {
+            throw createCheckoutError(
+                `${product.productName} belongs to an unavailable brand. Please review your cart.`
             );
         }
 

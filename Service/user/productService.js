@@ -29,10 +29,16 @@ const getProductsPageData = async ({
         isBlocked: { $ne: true }
     }).distinct("_id");
 
+    // Get active brand names
+    const activeBrandNames = await Brand.find({
+        isActive: true
+    }).distinct("name");
+
     // Base product query
     const query = {
         isBlocked: false,
-        category: { $in: activeCategoryIds }
+        category: { $in: activeCategoryIds },
+        brand: { $in: activeBrandNames }
     };
 
     // Search filter
@@ -70,7 +76,10 @@ const getProductsPageData = async ({
 
     // Brand filter
     if (brand) {
-        query.brand = brand;
+        query.brand = {
+            $in: activeBrandNames,
+            $eq: brand
+        };
     }
 
     // Color filter
@@ -190,6 +199,16 @@ const getProductDetailsPageData = async (productId, userId = null) => {
         product.category.isListed !== true ||
         product.category.isBlocked === true
     ) {
+        return null;
+    }
+
+    // Check active brands
+    const activeBrandNames = await Brand.find({
+        isActive: true
+    }).distinct("name");
+
+    // Check whether product belongs to an active brand
+    if (!activeBrandNames.includes(product.brand)) {
         return null;
     }
 
@@ -315,6 +334,7 @@ const getProductDetailsPageData = async (productId, userId = null) => {
     const relatedProducts = await Product.find({
         category: product.category,
         isBlocked: false,
+        brand: { $in: activeBrandNames },
         _id: { $ne: product._id }
     }).limit(4);
 

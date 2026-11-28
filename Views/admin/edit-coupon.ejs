@@ -293,7 +293,6 @@
 
     <main class="main-content">
 
-
         <!-- TOPBAR -->
 
         <header class="topbar">
@@ -375,6 +374,12 @@
                 </div>
 
             </div>
+
+                <% if (message) { %>
+                    <div class="alert-message">
+                        <%= message %>
+                    </div>
+                <% } %>
 
 
             <div class="header-actions">
